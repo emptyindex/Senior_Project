@@ -56,15 +56,15 @@ public class GameManager : MonoBehaviour
                     }
                     if(j == 1)
                     {
-                        player1Pieces.Add(CreateNewPiece(pawn, i, j));
+                        player1Pieces.Add(CreateNewPiece(pawn, i, j, false));
                     }
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        player2Pieces.Add(CreateNewPiece(pawn, i, j));
+                        player2Pieces.Add(CreateNewPiece(pawn, i, j, true));
                     }
                     if(j == boardArr.GetLength(0) - 1)
                     {
-                        player2Pieces.Add(CreateNewPiece(higherOrder[i], i, j));
+                        player2Pieces.Add(CreateNewPiece(higherOrder[i], i, j, true));
                     }
                 }
             }
@@ -74,13 +74,19 @@ public class GameManager : MonoBehaviour
     private void SetPosition(GameObject piece, int i, int j)
     {
         piece.transform.SetPositionAndRotation(boardArr[i, j].transform.position + new Vector3(0, 0.01f, 0), Quaternion.identity);
-        piece.transform.localScale *= 0.75f;
+
+        piece.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
     }
 
-    private GameObject CreateNewPiece(GameObject piece, int i, int j)
+    private GameObject CreateNewPiece(GameObject piece, int i, int j, bool isBlack)
     {
         var newPawn = Object.Instantiate(piece);
         SetPosition(newPawn, i, j);
+
+        if (isBlack)
+        {
+            newPawn.GetComponent<Renderer>().material.color *= 0.5f;
+        }
 
         return newPawn;
     }
