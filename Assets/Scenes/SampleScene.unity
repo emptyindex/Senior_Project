@@ -293,13 +293,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.7148137, y: -0, z: -0, w: 0.69931495}
+  m_LocalRotation: {x: 0.4876246, y: -0.52266806, z: 0.51133424, w: 0.47705105}
   m_LocalPosition: {x: -0.3, y: 93.5, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 91.25598, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 91.25598, y: 0.0010070801, z: 93.974}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,7 +313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerPosition: {x: -0.3, y: 94, z: 2.5}
-  rotation: {x: 0.71325046, y: -5.384848e-10, z: -5.384848e-10, w: 0.70090926}
+  rotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
 --- !u!1 &1138500923
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,6 +357,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7303f2ebba0e85e488cb885dcf9504b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camera: {fileID: 963194227}
+  player: {fileID: 5624974584527986448, guid: 310b9e9741ba9544bb383816e4b04df6, type: 3}
+  ai: {fileID: 6842021588314291327, guid: 685180f412680e644a57b29d2ad24de5, type: 3}
   board: {fileID: 8613167783982941162, guid: 8f4cf91595743f1429703a7a42c585b9, type: 3}
   whiteCell: {fileID: 9189313963750730607, guid: 4aac226e122cbdc41a62d0932946dbdc, type: 3}
   blackCell: {fileID: 3318682728836690927, guid: 9bfccdb7d0823d14e83275a6877fa418, type: 3}

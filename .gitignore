@@ -31,6 +31,9 @@
 *.out
 *.app
 
+# Other extensions
+*.bak
+
 # folders
 /[Ll]ibrary/
 /[Tt]emp/
@@ -40,3 +43,4 @@
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 .vs/
+

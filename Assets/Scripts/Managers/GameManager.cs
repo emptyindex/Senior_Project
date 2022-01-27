@@ -2,20 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameMode
+{
+    PvP,
+    PvAI,
+    AIvAI    
+}
+
 public class GameManager : MonoBehaviour
 {
+    public Camera camera;
+
+    public GameObject player;
+    public GameObject ai;
+
     public GameObject board;
 
     public GameObject whiteCell;
     public GameObject blackCell;
 
     public GameObject castle, knight, rook, queen, king, pawn;
-    public readonly GameObject[] higherOrder = new GameObject[8];
+
+    private readonly GameObject[] higherOrder = new GameObject[8];
 
     private readonly GameObject[,] boardArr = new GameObject[8,8];
-    
-    private readonly ArrayList player1Pieces = new ArrayList();
-    private readonly ArrayList player2Pieces = new ArrayList();
+
+    private readonly List<GameObject> player1Pieces = new List<GameObject>();
+    private readonly List<GameObject> player2Pieces = new List<GameObject>();
+
+    private GameMode currGameMode = GameMode.PvAI;
 
     // Start is called before the first frame update
     void Start()
@@ -52,23 +67,58 @@ public class GameManager : MonoBehaviour
                     if(j == 0)
                     {
                         SetPosition(higherOrder[i], i, j);
+
+                        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = higherOrder[i];
+
                         player1Pieces.Add(higherOrder[i]);
                     }
                     if(j == 1)
                     {
-                        player1Pieces.Add(CreateNewPiece(pawn, i, j));
+                        PopulateCell(player1Pieces, pawn, i, j);
                     }
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        player2Pieces.Add(CreateNewPiece(pawn, i, j));
+                        PopulateCell(player2Pieces, pawn, i, j);
                     }
                     if(j == boardArr.GetLength(0) - 1)
                     {
-                        player2Pieces.Add(CreateNewPiece(higherOrder[i], i, j));
+                        PopulateCell(player2Pieces, higherOrder[i], i, j);
                     }
                 }
             }
         }
+
+        switch(currGameMode)
+        {
+            case GameMode.PvP:
+                break;
+            case GameMode.PvAI:
+                Object.Instantiate(player);
+                Object.Instantiate(ai);
+
+                player.GetComponent<PlayerManager>().SetPieces(player1Pieces.ToArray());
+                break;
+            case GameMode.AIvAI:
+                break;
+        }
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButtonUp(0))
+        {
+            Debug.Log("position: " + camera.ScreenPointToRay(Input.mousePosition));
+        }
+
+    }
+
+    private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j)
+    {
+        var newPiece = CreateNewPiece(piece, i, j);
+
+        playerList.Add(newPiece);
+
+        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
     }
 
     private void SetPosition(GameObject piece, int i, int j)

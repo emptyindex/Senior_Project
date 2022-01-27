@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cell : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
-    private GameObject contains;
+    private GameObject[] pieces = new GameObject[16];
 
     // Start is called before the first frame update
     void Start()
@@ -18,14 +18,8 @@ public class Cell : MonoBehaviour
         
     }
 
-    public GameObject GetCurrentPiece
+    public void SetPieces(GameObject[] setPieces)
     {
-        get => contains;
-        set => contains = value;
-    }
-
-    public bool hasPiece()
-    {
-        return contains != null;
+        pieces = setPieces;
     }
 }
