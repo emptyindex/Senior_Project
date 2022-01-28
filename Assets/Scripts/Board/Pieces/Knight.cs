@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knight : MonoBehaviour
+public class Knight : BasePiece
 {
     // Start is called before the first frame update
     void Start()
@@ -14,5 +14,11 @@ public class Knight : MonoBehaviour
     void Update()
     {
         
+    }
+
+    // TODO: Add Jump Restriction
+    public List<GameObject> HighlightCells(GameObject[,] board, int x, int y)
+    {
+        return base.HighlightCells(board, x, y, 4);
     }
 }

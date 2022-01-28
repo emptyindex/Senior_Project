@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rook : MonoBehaviour
+public class Rook : BasePiece
 {
     // Start is called before the first frame update
     void Start()
@@ -14,5 +14,10 @@ public class Rook : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public List<GameObject> HighlightCells(GameObject[,] board, int x, int y)
+    {
+        return base.HighlightCells(board, x, y, 2);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum GameMode
 {
@@ -18,10 +19,9 @@ public class GameManager : MonoBehaviour
 
     public GameObject board;
 
-    public GameObject whiteCell;
-    public GameObject blackCell;
+    public GameObject whiteCell, blackCell;
 
-    public GameObject castle, knight, rook, queen, king, pawn;
+    public GameObject castle, knight, bishop, queen, king, pawn;
 
     private readonly GameObject[] higherOrder = new GameObject[8];
 
@@ -29,6 +29,11 @@ public class GameManager : MonoBehaviour
 
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
+
+    private List<GameObject> highlightedCells = new List<GameObject>();
+
+    private bool hasSelectedAPiece = false;
+    private Cell previousCell;
 
     private GameMode currGameMode = GameMode.PvAI;
 
@@ -42,10 +47,10 @@ public class GameManager : MonoBehaviour
 
         higherOrder[0] = GameObject.Instantiate(castle);
         higherOrder[1] = GameObject.Instantiate(knight);
-        higherOrder[2] = GameObject.Instantiate(rook);
+        higherOrder[2] = GameObject.Instantiate(bishop);
         higherOrder[3] = GameObject.Instantiate(queen);
         higherOrder[4] = GameObject.Instantiate(king);
-        higherOrder[5] = GameObject.Instantiate(rook);
+        higherOrder[5] = GameObject.Instantiate(bishop);
         higherOrder[6] = GameObject.Instantiate(knight);
         higherOrder[7] = GameObject.Instantiate(castle);
 
@@ -64,7 +69,7 @@ public class GameManager : MonoBehaviour
 
                 if (j < 2 || j > boardArr.GetLength(0) - 3)
                 {
-                    if(j == 0)
+                    if (j == 0)
                     {
                         SetPosition(higherOrder[i], i, j);
 
@@ -72,7 +77,7 @@ public class GameManager : MonoBehaviour
 
                         player1Pieces.Add(higherOrder[i]);
                     }
-                    if(j == 1)
+                    if (j == 1)
                     {
                         PopulateCell(player1Pieces, pawn, i, j);
                     }
@@ -80,7 +85,7 @@ public class GameManager : MonoBehaviour
                     {
                         PopulateCell(player2Pieces, pawn, i, j);
                     }
-                    if(j == boardArr.GetLength(0) - 1)
+                    if (j == boardArr.GetLength(0) - 1)
                     {
                         PopulateCell(player2Pieces, higherOrder[i], i, j);
                     }
@@ -108,8 +113,44 @@ public class GameManager : MonoBehaviour
         if(Input.GetMouseButtonUp(0))
         {
             Debug.Log("position: " + camera.ScreenPointToRay(Input.mousePosition));
-        }
 
+            RaycastHit hit;
+            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity);
+
+            var cell = hit.transform.gameObject.GetComponent<Cell>();
+
+            Debug.Log(hit.transform.gameObject.name);
+
+            if (cell)
+            {
+                if(cell.GetCurrentPiece && !hasSelectedAPiece)
+                {
+                    previousCell = cell;
+                    var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
+
+                    // highlight available slots
+                    highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().HighlightCells(boardArr, indexes[0], indexes[1], 2);
+                    Debug.Log("I have a piece");
+                }
+                else
+                {
+                    if(highlightedCells.Contains(hit.transform.gameObject))
+                    {
+                        SetPositionFromCell(previousCell.GetCurrentPiece, hit.transform.gameObject);
+
+                        cell.GetCurrentPiece = previousCell.GetCurrentPiece;
+                        previousCell.GetCurrentPiece = null;
+
+                        previousCell = null;
+
+                        hasSelectedAPiece = false;
+
+                        highlightedCells.ForEach(c => c.GetComponent<Cell>().IsHighlighted = false);
+                        highlightedCells.Clear();
+                    }
+                }
+            }
+        }
     }
 
     private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j)
@@ -118,12 +159,17 @@ public class GameManager : MonoBehaviour
 
         playerList.Add(newPiece);
 
-        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
+        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = piece;
+    }
+
+    private void SetPositionFromCell(GameObject piece, GameObject cell)
+    {
+        piece.transform.SetPositionAndRotation(cell.transform.position + new Vector3(0, 0.02f, 0), Quaternion.identity);
     }
 
     private void SetPosition(GameObject piece, int i, int j)
     {
-        piece.transform.SetPositionAndRotation(boardArr[i, j].transform.position + new Vector3(0, 0.01f, 0), Quaternion.identity);
+        piece.transform.SetPositionAndRotation(boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0), Quaternion.identity);
         piece.transform.localScale *= 0.75f;
     }
 
@@ -143,7 +189,7 @@ public class GameManager : MonoBehaviour
         var offsetX = cellRenderer.bounds.size.x * i;
         var offsetZ = cellRenderer.bounds.size.z * j;
 
-        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 1.2f, offsetZ));
+        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 1.25f, offsetZ));
         return newCell;
     }
 }
