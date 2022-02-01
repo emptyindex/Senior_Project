@@ -123,34 +123,52 @@ public class GameManager : MonoBehaviour
 
             if (cell)
             {
-                if(cell.GetCurrentPiece && !hasSelectedAPiece)
+                if(cell.GetCurrentPiece)
                 {
-                    previousCell = cell;
-                    var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
-
-                    // highlight available slots
-                    highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().HighlightCells(boardArr, indexes[0], indexes[1], 2);
-                    Debug.Log("I have a piece");
+                    if(!hasSelectedAPiece)
+                    {
+                        SetSelectedPiece(hit, cell);
+                    }
+                    else
+                    {
+                        ClearSelected();
+                        SetSelectedPiece(hit, cell);
+                    }
                 }
                 else
                 {
-                    if(highlightedCells.Contains(hit.transform.gameObject))
+                    if(hasSelectedAPiece && highlightedCells.Contains(hit.transform.gameObject))
                     {
                         SetPositionFromCell(previousCell.GetCurrentPiece, hit.transform.gameObject);
 
                         cell.GetCurrentPiece = previousCell.GetCurrentPiece;
                         previousCell.GetCurrentPiece = null;
 
-                        previousCell = null;
-
-                        hasSelectedAPiece = false;
-
-                        highlightedCells.ForEach(c => c.GetComponent<Cell>().IsHighlighted = false);
-                        highlightedCells.Clear();
+                        ClearSelected();
                     }
                 }
             }
         }
+    }
+
+    private void SetSelectedPiece(RaycastHit hit, Cell cell)
+    {
+        previousCell = cell;
+        var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
+
+        // highlight available slots
+        highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+        Debug.Log("I have a piece");
+    }
+
+    private void ClearSelected()
+    {
+        previousCell = null;
+
+        hasSelectedAPiece = false;
+
+        highlightedCells.ForEach(c => c.GetComponent<Cell>().IsHighlighted = false);
+        highlightedCells.Clear();
     }
 
     private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j)

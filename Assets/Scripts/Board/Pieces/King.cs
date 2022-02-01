@@ -17,7 +17,7 @@ public class King : BasePiece
     }
 
     // TODO: Add Jump Restriction
-    public List<GameObject> HighlightCells(GameObject[,] board, int x, int y)
+    public override List<GameObject> Highlight(GameObject[,] board, int x, int y)
     {
         return base.HighlightCells(board, x, y, 3);
     }

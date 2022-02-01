@@ -21,7 +21,19 @@ public abstract class BasePiece : MonoBehaviour
         
     }
 
-    public List<GameObject> HighlightCells(GameObject[,] board, int x, int y, int maxTimes)
+    public abstract List<GameObject> Highlight(GameObject[,] board, int x, int y);
+
+    public List<GameObject> HighlightCells(GameObject[,] board,
+        int x, int y,
+        int maxTimes,
+        bool diaRight = true,
+        bool diaLeft = true,
+        bool diaRightUp = true,
+        bool diaLeftUp = true,
+        bool up = true,
+        bool down = true,
+        bool left = true,
+        bool right = true)
     {
         List<GameObject> inRange = new List<GameObject>();
 
@@ -36,34 +48,74 @@ public abstract class BasePiece : MonoBehaviour
             moveY = y + timesMoved;
 
             // get diagonal down left
-            GetMove(board, x - timesMoved, moveY, inRange);
+            if (diaLeft)
+            {
+                diaLeft = !IsPopulated(board, x - timesMoved, moveY);
+
+                GetMove(board, x - timesMoved, moveY, inRange, diaLeft);
+            }
 
             moveX = x + timesMoved;
 
             // move right
-            GetMove(board, moveX, y, inRange);
+            if (right)
+            {
+                right = !IsPopulated(board, moveX, y);
+
+                GetMove(board, moveX, y, inRange, right);
+            }
 
             // move forward
-            GetMove(board, x, moveY, inRange);
+            if(up)
+            {
+                up = !IsPopulated(board, x, moveY);
+
+                GetMove(board, x, moveY, inRange, up);
+            }
 
             // move diagonal down right
-            GetMove(board, moveX, moveY, inRange);
+            if(diaRight)
+            {
+                diaRight = !IsPopulated(board, moveX, moveY);
+
+                GetMove(board, moveX, moveY, inRange, diaRight);
+            }
 
             moveY = y - timesMoved;
 
             // move diagonal up right
-            GetMove(board, moveX, moveY, inRange);
+            if(diaRightUp)
+            {
+                diaRightUp = !IsPopulated(board, moveX, moveY);
+
+                GetMove(board, moveX, moveY, inRange, diaRightUp);
+            }
 
             // move backwards
-            GetMove(board, x, moveY, inRange);
+            if(down)
+            {
+                down = !IsPopulated(board, x, moveY);
+
+                GetMove(board, x, moveY, inRange, down);
+            }
 
             moveX = x - timesMoved;
 
             // move left
-            GetMove(board, moveX, y, inRange);
+            if(left)
+            {
+                left = !IsPopulated(board, moveX, y);
+
+                GetMove(board, moveX, y, inRange, left);
+            }
 
             // move diagonal up left
-            GetMove(board, moveX, moveY, inRange);
+            if(diaLeftUp)
+            {
+                diaLeftUp = !IsPopulated(board, moveX, moveY);
+
+                GetMove(board, moveX, moveY, inRange, diaLeftUp);
+            }
 
             timesMoved++;
         }
@@ -71,9 +123,19 @@ public abstract class BasePiece : MonoBehaviour
         return inRange;
     }
 
-    protected static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange)
+    private static bool IsPopulated(GameObject[,] board, int indexX, int indexY)
     {
-        if (InBounds(board, coord, offset) && !inRange.Contains(board[coord, offset]) && !board[coord, offset].GetComponent<Cell>().GetCurrentPiece)
+        if(!InBounds(board, indexX, indexY) || board[indexX, indexY].GetComponent<Cell>().GetCurrentPiece)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool canMove)
+    {
+        if (canMove && !IsPopulated(board, coord, offset) && !inRange.Contains(board[coord, offset]))
         {
             inRange.Add(board[coord, offset]);
             board[coord, offset].GetComponent<Cell>().IsHighlighted = true;

@@ -16,7 +16,7 @@ public class Rook : BasePiece
         
     }
 
-    public List<GameObject> HighlightCells(GameObject[,] board, int x, int y)
+    public override List<GameObject> Highlight(GameObject[,] board, int x, int y)
     {
         return base.HighlightCells(board, x, y, 2);
     }
