@@ -317,11 +317,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e44b498b3575546b6501a4fb621ae0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pos1: {x: 0, y: 0, z: 1}
-  pos2: {x: 0, y: 0, z: 1}
-  xAngle: 0
-  yAngle: 1
-  zAngle: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xAngle: 0
-  yAngle: 2
+  yAngle: 100
   zAngle: 0
 --- !u!114 &963194231
 MonoBehaviour:
@@ -365,10 +360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0876f5e7659c34439e5192bcf5a1259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  targetZoom: 0
-  zoomFactor: 3
-  zoomLerpSpeed: 10
 --- !u!1 &1315161172
 GameObject:
   m_ObjectHideFlags: 0

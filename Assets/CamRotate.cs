@@ -20,22 +20,20 @@ public float xAngle, yAngle, zAngle;
     void Update()
     {
 
-        
-
-
         if (Input.GetKey(KeyCode.Q))
-        {
-             
-             transform.Rotate(-xAngle, -yAngle, -zAngle);
+        {             
 
+            Vector3 vector = new Vector3(-xAngle, -yAngle, -zAngle);
+             transform.Rotate(vector * Time.deltaTime);
         //Detect when the left arrow key has been released
+
             Debug.Log("Q key was released.");
         }
 
         if (Input.GetKey(KeyCode.E))
-        {
-           
-            transform.Rotate(xAngle, yAngle, zAngle);
+        {        
+             Vector3 vector = new Vector3(xAngle, yAngle, zAngle);
+             transform.Rotate(vector * Time.deltaTime);
 
         //Detect when the left arrow key has been released
             Debug.Log("E key was released.");
