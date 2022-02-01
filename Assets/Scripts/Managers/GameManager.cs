@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     private List<GameObject> highlightedCells = new List<GameObject>();
 
     private bool hasSelectedAPiece = false;
+
     private Cell previousCell;
 
     private GameMode currGameMode = GameMode.PvAI;
@@ -56,7 +57,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < boardArr.GetLength(0); i++)
         {
-            for(int j = 0; j < boardArr.GetLength(1); j++)
+            for (int j = 0; j < boardArr.GetLength(1); j++)
             {
                 if ((i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1))
                 {
@@ -71,11 +72,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (j == 0)
                     {
-                        SetPosition(higherOrder[i], i, j);
-
-                        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = higherOrder[i];
-
-                        player1Pieces.Add(higherOrder[i]);
+                        SetPosition(player1Pieces, i, j, higherOrder[i]);
                     }
                     if (j == 1)
                     {
@@ -93,7 +90,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        switch(currGameMode)
+        switch (currGameMode)
         {
             case GameMode.PvP:
                 break;
@@ -112,14 +109,10 @@ public class GameManager : MonoBehaviour
     {
         if(Input.GetMouseButtonUp(0))
         {
-            Debug.Log("position: " + camera.ScreenPointToRay(Input.mousePosition));
-
-            RaycastHit hit;
-            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity);
+            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
 
             var cell = hit.transform.gameObject.GetComponent<Cell>();
-
-            Debug.Log(hit.transform.gameObject.name);
+            var obj = hit.transform.gameObject;
 
             if (cell)
             {
@@ -137,13 +130,24 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    if(hasSelectedAPiece && highlightedCells.Contains(hit.transform.gameObject))
+                    if(highlightedCells.Contains(obj))
                     {
-                        SetPositionFromCell(previousCell.GetCurrentPiece, hit.transform.gameObject);
+                        foreach(Transform child in previousCell.transform)
+                        {
+                            if (child == null || child.name == "InnerCell")
+                                continue;
+
+                            child.transform.parent = obj.transform;
+                            child.transform.localPosition = new Vector3(0, 0.02f, 0);
+                        }
 
                         cell.GetCurrentPiece = previousCell.GetCurrentPiece;
                         previousCell.GetCurrentPiece = null;
 
+                        ClearSelected();
+                    }
+                    else
+                    {
                         ClearSelected();
                     }
                 }
@@ -153,8 +157,12 @@ public class GameManager : MonoBehaviour
 
     private void SetSelectedPiece(RaycastHit hit, Cell cell)
     {
+        hasSelectedAPiece = true;
+
         previousCell = cell;
         var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
+
+        highlightedCells.Add(hit.transform.gameObject);
 
         // highlight available slots
         highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
@@ -173,35 +181,24 @@ public class GameManager : MonoBehaviour
 
     private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j)
     {
-        var newPiece = CreateNewPiece(piece, i, j);
+        var newPiece = Instantiate(piece);
 
+        SetPosition(playerList, i, j, newPiece);
+    }
+
+    private void SetPosition(List<GameObject> playerList, int i, int j, GameObject newPiece)
+    {
         playerList.Add(newPiece);
 
-        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = piece;
-    }
+        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
 
-    private void SetPositionFromCell(GameObject piece, GameObject cell)
-    {
-        piece.transform.SetPositionAndRotation(cell.transform.position + new Vector3(0, 0.02f, 0), Quaternion.identity);
-    }
-
-    private void SetPosition(GameObject piece, int i, int j)
-    {
-        piece.transform.SetPositionAndRotation(boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0), Quaternion.identity);
-        piece.transform.localScale *= 0.75f;
-    }
-
-    private GameObject CreateNewPiece(GameObject piece, int i, int j)
-    {
-        var newPawn = Object.Instantiate(piece);
-        SetPosition(newPawn, i, j);
-
-        return newPawn;
+        newPiece.transform.parent = boardArr[i, j].transform;
+        newPiece.transform.localPosition = new Vector3(0, 0.02f, 0);
     }
 
     private GameObject CreateNewCell(GameObject cell, Vector3 startPos, int i, int j)
     {
-        var newCell = Object.Instantiate(cell);
+        var newCell = Instantiate(cell);
         var cellRenderer = newCell.GetComponent<Renderer>();
 
         var offsetX = cellRenderer.bounds.size.x * i;
