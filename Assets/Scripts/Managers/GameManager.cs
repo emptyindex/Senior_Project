@@ -12,8 +12,6 @@ public enum GameMode
 
 public class GameManager : MonoBehaviour
 {
-    public Camera camera;
-
     public GameObject player;
     public GameObject ai;
 
@@ -23,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject castle, knight, bishop, queen, king, pawn;
 
+    private GameObject[] players = new GameObject[2];
+
     private readonly GameObject[] higherOrder = new GameObject[8];
 
     private readonly GameObject[,] boardArr = new GameObject[8,8];
@@ -30,13 +30,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private List<GameObject> highlightedCells = new List<GameObject>();
-
-    private bool hasSelectedAPiece = false;
-
-    private Cell previousCell;
-
-    private GameMode currGameMode = GameMode.PvAI;
+    private GameMode currGameMode = GameMode.PvP;
 
     // Start is called before the first frame update
     void Start()
@@ -93,99 +87,70 @@ public class GameManager : MonoBehaviour
         switch (currGameMode)
         {
             case GameMode.PvP:
+                players[0] = CreatePlayer(player1Pieces);
+                players[1] = CreatePlayer(player2Pieces);
+
                 break;
             case GameMode.PvAI:
-                Object.Instantiate(player);
-                Object.Instantiate(ai);
+                players[0] = Object.Instantiate(ai);
+                players[1] = CreatePlayer(player2Pieces);
 
-                player.GetComponent<PlayerManager>().SetPieces(player1Pieces.ToArray());
                 break;
             case GameMode.AIvAI:
                 break;
         }
+
+        players[0].GetComponent<BasePlayer>().IsTurn(true);
     }
 
-    private void Update()
+    public void ChangeTurn(GameObject player)
     {
-        if(Input.GetMouseButtonUp(0))
+        int index = players.FindIndex(player).FirstOrDefault();
+
+        switch(index)
         {
-            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
-
-            var cell = hit.transform.gameObject.GetComponent<Cell>();
-            var obj = hit.transform.gameObject;
-
-            if (cell)
-            {
-                if(cell.GetCurrentPiece)
-                {
-                    if(!hasSelectedAPiece)
-                    {
-                        SetSelectedPiece(hit, cell);
-                    }
-                    else
-                    {
-                        ClearSelected();
-                        SetSelectedPiece(hit, cell);
-                    }
-                }
-                else
-                {
-                    if(highlightedCells.Contains(obj))
-                    {
-                        MovePiece(cell, obj);
-                        ClearSelected();
-                    }
-                    else
-                    {
-                        ClearSelected();
-                    }
-                }
-            }
+            case 0:
+                players[1].GetComponent<BasePlayer>().IsTurn(true);
+                break;
+            case 1:
+                players[0].GetComponent<BasePlayer>().IsTurn(true);
+                break;
         }
     }
 
-    private void MovePiece(Cell cell, GameObject obj)
+    public List<GameObject> SetSelectedPiece(RaycastHit hit, Cell cell)
     {
-        foreach (Transform child in previousCell.transform)
-        {
-            if (child == null || child.name == "InnerCell")
-                continue;
-
-            child.transform.parent = obj.transform;
-            child.transform.localPosition = new Vector3(0, 0.02f, 0);
-        }
-
-        cell.GetCurrentPiece = previousCell.GetCurrentPiece;
-        previousCell.GetCurrentPiece = null;
-    }
-
-    private void SetSelectedPiece(RaycastHit hit, Cell cell)
-    {
-        hasSelectedAPiece = true;
-
-        previousCell = cell;
         var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
 
-        highlightedCells.Add(hit.transform.gameObject);
-
         // highlight available slots
-        highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+        var highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+
         Debug.Log("I have a piece");
+
+        return highlightedCells;
     }
 
-    private void ClearSelected()
+    private GameObject CreatePlayer(List<GameObject> pieces)
     {
-        previousCell = null;
+        var p = Object.Instantiate(player);
 
-        hasSelectedAPiece = false;
+        p.GetComponent<PlayerManager>().SetPieces(pieces.ToArray());
+        p.GetComponent<PlayerManager>().Manager = this;
 
-        highlightedCells.ForEach(c => c.GetComponent<Cell>().IsHighlighted = false);
-        highlightedCells.Clear();
+        return p;
     }
 
     private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j)
     {
         var newPiece = Instantiate(piece);
+
+        if (newPiece.GetComponent<Pawn>())
+        {
+            if(j > 2)
+            {
+                newPiece.GetComponent<Pawn>().MoveUp = false;
+            }
+        }
 
         SetPosition(playerList, i, j, newPiece);
     }
