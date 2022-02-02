@@ -132,18 +132,7 @@ public class GameManager : MonoBehaviour
                 {
                     if(highlightedCells.Contains(obj))
                     {
-                        foreach(Transform child in previousCell.transform)
-                        {
-                            if (child == null || child.name == "InnerCell")
-                                continue;
-
-                            child.transform.parent = obj.transform;
-                            child.transform.localPosition = new Vector3(0, 0.02f, 0);
-                        }
-
-                        cell.GetCurrentPiece = previousCell.GetCurrentPiece;
-                        previousCell.GetCurrentPiece = null;
-
+                        MovePiece(cell, obj);
                         ClearSelected();
                     }
                     else
@@ -153,6 +142,21 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void MovePiece(Cell cell, GameObject obj)
+    {
+        foreach (Transform child in previousCell.transform)
+        {
+            if (child == null || child.name == "InnerCell")
+                continue;
+
+            child.transform.parent = obj.transform;
+            child.transform.localPosition = new Vector3(0, 0.02f, 0);
+        }
+
+        cell.GetCurrentPiece = previousCell.GetCurrentPiece;
+        previousCell.GetCurrentPiece = null;
     }
 
     private void SetSelectedPiece(RaycastHit hit, Cell cell)

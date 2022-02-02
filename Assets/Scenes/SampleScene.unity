@@ -365,7 +365,7 @@ MonoBehaviour:
   blackCell: {fileID: 2998303320213981060, guid: 9bfccdb7d0823d14e83275a6877fa418, type: 3}
   castle: {fileID: 2231781461662517875, guid: edfcb98dc93f486498d05a76395efb21, type: 3}
   knight: {fileID: 6610024121660726624, guid: a80793e54da94a94f897a3f483436d26, type: 3}
-  bishop: {fileID: 99231901566364429, guid: 9b95058d406a90d47a9b3801fb4dced0, type: 3}
+  bishop: {fileID: 99231901566364429, guid: 679e02199f6a9e24d829bf751a7e98b3, type: 3}
   queen: {fileID: 8769190385780204174, guid: 89d3f866749bf56429aea593a57baa2d, type: 3}
   king: {fileID: 2425099257607933997, guid: 324b29dd14a889c46824df8d9179f3dd, type: 3}
   pawn: {fileID: 1222142455936776488, guid: d21e8fc1299d23f48bbb253632bbad97, type: 3}
