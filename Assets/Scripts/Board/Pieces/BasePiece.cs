@@ -4,22 +4,10 @@ using UnityEngine;
 
 public abstract class BasePiece : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void Move(GameObject[,] board, int i, int j)
-    {
-        
-    }
+    [HideInInspector]
+    public int positionX;
+    [HideInInspector]
+    public int positionY;
 
     public abstract List<GameObject> Highlight(GameObject[,] board, int x, int y);
 
@@ -121,6 +109,10 @@ public abstract class BasePiece : MonoBehaviour
         }
 
         return inRange;
+    }
+    public void Move(Vector3 position)
+    {
+        gameObject.transform.position = position + new Vector3(0, 0.02f, 0);
     }
 
     private static bool IsPopulated(GameObject[,] board, int indexX, int indexY)

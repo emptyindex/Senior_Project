@@ -87,14 +87,9 @@ public class PlayerManager : BasePlayer
 
     private void MovePiece(Cell cell, GameObject obj)
     {
-        foreach (Transform child in previousCell.transform)
-        {
-            if (child == null || child.name == "InnerCell")
-                continue;
+        var newPos = Manager.GetMovePosition(cell.gameObject, previousCell.GetCurrentPiece);
 
-            child.transform.parent = obj.transform;
-            child.transform.localPosition = new Vector3(0, 0.02f, 0);
-        }
+        previousCell.GetCurrentPiece.GetComponent<BasePiece>().Move(newPos);
 
         cell.GetCurrentPiece = previousCell.GetCurrentPiece;
         previousCell.GetCurrentPiece = null;
