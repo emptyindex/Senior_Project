@@ -70,15 +70,15 @@ public class GameManager : MonoBehaviour
                     }
                     if (j == 1)
                     {
-                        PopulateCell(player1Pieces, pawn, i, j);
+                        PopulateCell(player1Pieces, pawn, i, j, false);
                     }
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        PopulateCell(player2Pieces, pawn, i, j);
+                        PopulateCell(player2Pieces, pawn, i, j, true);
                     }
                     if (j == boardArr.GetLength(0) - 1)
                     {
-                        PopulateCell(player2Pieces, higherOrder[i], i, j);
+                        PopulateCell(player2Pieces, higherOrder[i], i, j, true);
                     }
                 }
             }
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
         return p;
     }
 
-    private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j)
+    private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j, bool isBlack)
     {
         var newPiece = Instantiate(piece);
 
@@ -150,6 +150,11 @@ public class GameManager : MonoBehaviour
             {
                 newPiece.GetComponent<Pawn>().MoveUp = false;
             }
+        }
+
+        if(isBlack)
+        {
+            newPiece.GetComponent<Renderer>().material.color *= 0.5f;
         }
 
         SetPosition(playerList, i, j, newPiece);

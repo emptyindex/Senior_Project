@@ -357,7 +357,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7303f2ebba0e85e488cb885dcf9504b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 963194227}
   player: {fileID: 5624974584527986448, guid: 310b9e9741ba9544bb383816e4b04df6, type: 3}
   ai: {fileID: 6842021588314291327, guid: 685180f412680e644a57b29d2ad24de5, type: 3}
   board: {fileID: 8613167783982941162, guid: 8f4cf91595743f1429703a7a42c585b9, type: 3}
