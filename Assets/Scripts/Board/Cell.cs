@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents each cell or square that comprise the chess board.
+/// </summary>
 public class Cell : MonoBehaviour
 {
     public Material highlightBorder;
@@ -9,9 +12,12 @@ public class Cell : MonoBehaviour
     private Material originalColor;
     private GameObject contains;
 
-    private Renderer renderer;
+    private new Renderer renderer;
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Start is called before the first frame update.
+    /// Sets up the renderer component and gets the original cell color for the highlighting border.
+    /// </summary>
     void Start()
     {
         renderer = GetComponent<Renderer>();
@@ -19,7 +25,11 @@ public class Cell : MonoBehaviour
         originalColor = renderer.material;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame.
+    /// Checks if this cell should be highlighted, if so, change the color to yellow
+    /// otherwise, return the cell to the original color.
+    /// </summary>
     void Update()
     {
         if(IsHighlighted)
@@ -32,16 +42,17 @@ public class Cell : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets and sets the highlighted status of this cell.
+    /// </summary>
     public bool IsHighlighted { get; set; }
 
+    /// <summary>
+    /// Gets and sets the current piece on this cell.
+    /// </summary>
     public GameObject GetCurrentPiece
     {
         get => contains;
         set => contains = value;
-    }
-
-    public bool HasPiece()
-    {
-        return contains != null;
     }
 }

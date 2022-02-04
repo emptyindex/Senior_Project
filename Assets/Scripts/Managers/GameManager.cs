@@ -13,6 +13,10 @@ public enum GameMode
     AIvAI    
 }
 
+/// <summary>
+/// The Game manager simply manages non-player activities. 
+/// It creates the board and manages the turns.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     public GameObject player;
@@ -125,6 +129,14 @@ public class GameManager : MonoBehaviour
         // Tell player one that it's their turn. 
         players[0].GetComponent<BasePlayer>().IsTurn(true);
     }
+
+    /// <summary>
+    /// Gets the position of a cell in the board array and gives
+    /// the coordinates to the game piece.
+    /// </summary>
+    /// <param name="moveCell">The cell whose position needs to be found in the array.</param>
+    /// <param name="piece">The piece that needs to be moved to the cell postion.</param>
+    /// <returns>Returns the coordinates of the cell in the board.</returns>
     public Vector3 GetMovePosition(GameObject moveCell, GameObject piece)
     {
         var newIndexes = Tools.FindIndex(boardArr, moveCell);
@@ -225,6 +237,14 @@ public class GameManager : MonoBehaviour
         SetPosition(playerList, i, j, newPiece);
     }
 
+    /// <summary>
+    /// Sets the position of a piece based on the position in the board array at
+    /// the provided indexes. Used in init.
+    /// </summary>
+    /// <param name="playerList">The player list for whom the piece belongs.</param>
+    /// <param name="i">The x index in the 2D array</param>
+    /// <param name="j">The y index in the 2D array</param>
+    /// <param name="newPiece">The piece that is being positioned.</param>
     private void SetPosition(List<GameObject> playerList, int i, int j, GameObject newPiece)
     {
         playerList.Add(newPiece);
@@ -234,6 +254,14 @@ public class GameManager : MonoBehaviour
         newPiece.transform.position = boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
     }
 
+    /// <summary>
+    /// Creates a new cell object based on the cell prefab. Used in init.
+    /// </summary>
+    /// <param name="cell">The Gameobject prefab to instantiate.</param>
+    /// <param name="startPos">The starting position of the board.</param>
+    /// <param name="i">The x index in the 2D array.</param>
+    /// <param name="j">The y index in the 2D array.</param>
+    /// <returns>Returns the completed cell object in the correct position on the board.</returns>
     private GameObject CreateNewCell(GameObject cell, Vector3 startPos, int i, int j)
     {
         var newCell = Instantiate(cell);

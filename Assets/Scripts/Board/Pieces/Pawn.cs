@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a Pawn piece.
+/// </summary>
 public class Pawn : BasePiece
 {
+    /// <summary>
+    /// Pawns cannot move backwards, depending on their orientation on the board,
+    /// they can move forwards or "backwards" towards the center of the board.
+    /// </summary>
     public bool MoveUp { get; set; } = true;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    /// <summary>
+    /// Highlights the valid moves for this piece.
+    /// </summary>
+    /// <param name="board">The 2D array representing the board.</param>
+    /// <param name="x">The piece's X position on the board.</param>
+    /// <param name="y">The piece's Y position on the board.</param>
+    /// <returns>A list of all valid moves for this piece.</returns>
     public override List<GameObject> Highlight(GameObject[,] board, int x, int y)
     {
         switch (MoveUp)
