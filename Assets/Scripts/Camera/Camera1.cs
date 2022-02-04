@@ -9,18 +9,20 @@ public class Camera1 : MonoBehaviour
     public float minZoomDist;
     public float maxZoomDist;
 
-    
-
-    private Camera cam;
+    private readonly Vector3 snapPosition = new Vector3(-0.3f, 107, -2);
 
     public void awake()
     {
-        cam = Camera.main;
+        SnapToPosition();
     }
-    
+
     void Update() {
         Move();
         
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            SnapToPosition();
+        }
     }
     void Move()
     {
@@ -30,8 +32,14 @@ public class Camera1 : MonoBehaviour
         Vector3 dir = transform.forward * zInput + transform.right * xInput;
 
         transform.position += dir*moveSpeed * Time.deltaTime;
-    } 
-        
+    }
+
+    private void SnapToPosition()
+    {
+        this.transform.position = snapPosition;
+        this.transform.rotation = Quaternion.Euler(90, 0, 0);
+    }
+
     public void FocusOnPosition (Vector3 pos) {
         transform.position = pos;
         
