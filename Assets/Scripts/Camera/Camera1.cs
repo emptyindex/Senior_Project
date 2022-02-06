@@ -11,7 +11,7 @@ public class Camera1 : MonoBehaviour
 
     private readonly Vector3 snapPosition = new Vector3(-0.3f, 107, -2);
 
-    public void awake()
+    public void Awake()
     {
         SnapToPosition();
     }
