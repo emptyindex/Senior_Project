@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerPosition: {x: -0.3, y: 94, z: 2.5}
-  rotation: {x: 0.71325046, y: -5.384848e-10, z: -5.384848e-10, w: 0.70090926}
+  rotation: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
 --- !u!1 &1138500923
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,12 +410,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ea9cd2fb9ab57c49ac78f89d5a6ac23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 5624974584527986448, guid: 310b9e9741ba9544bb383816e4b04df6, type: 3}
+  ai: {fileID: 6842021588314291327, guid: 685180f412680e644a57b29d2ad24de5, type: 3}
   board: {fileID: 8613167783982941162, guid: e5a5f0ea2b5d75644b356c1c98bed972, type: 3}
-  whiteCell: {fileID: 9189313963750730607, guid: 8a24052e375de9643b7d0c1fbe7fb51e, type: 3}
-  blackCell: {fileID: 3318682728836690927, guid: 44a4aea244b5e764d85fd1279cba80a3, type: 3}
-  castle: {fileID: 99231901566364429, guid: 9b95058d406a90d47a9b3801fb4dced0, type: 3}
-  knight: {fileID: 6610024121660726624, guid: a80793e54da94a94f897a3f483436d26, type: 3}
-  rook: {fileID: 4394246814820485673, guid: 679e02199f6a9e24d829bf751a7e98b3, type: 3}
-  queen: {fileID: 8769190385780204174, guid: 89d3f866749bf56429aea593a57baa2d, type: 3}
-  king: {fileID: 2425099257607933997, guid: 324b29dd14a889c46824df8d9179f3dd, type: 3}
-  pawn: {fileID: 1222142455936776488, guid: d21e8fc1299d23f48bbb253632bbad97, type: 3}
+  whiteCell: {fileID: 7920733391726471269, guid: 8a24052e375de9643b7d0c1fbe7fb51e, type: 3}
+  blackCell: {fileID: 2998303320213981060, guid: 44a4aea244b5e764d85fd1279cba80a3, type: 3}
+  castle: {fileID: 2231781461662517875, guid: 4ca5114e80d49f148860ca9e8d1dc101, type: 3}
+  knight: {fileID: 6610024121660726624, guid: dc1385a5d3c1053438f9a1f1376cfc34, type: 3}
+  bishop: {fileID: 99231901566364429, guid: 28f8de00fe65e0441a446a99f8724218, type: 3}
+  queen: {fileID: 8769190385780204174, guid: a15e2d4af71320e4dbaf4b743dd703c4, type: 3}
+  king: {fileID: 2425099257607933997, guid: 06e5450af0f26c649928919a236e5fb2, type: 3}
+  pawn: {fileID: 1222142455936776488, guid: 8e588b66dceb56c448a3bf454bfee07a, type: 3}
