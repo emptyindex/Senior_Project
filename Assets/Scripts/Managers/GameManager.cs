@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject castle, knight, rook, queen, king, pawn;
     public readonly GameObject[] higherOrder = new GameObject[8];
 
-    private readonly GameObject[,] boardArr = new GameObject[8,8];
+    public static GameObject[,] boardArr = new GameObject[8,8];
     
     private readonly ArrayList player1Pieces = new ArrayList();
     private readonly ArrayList player2Pieces = new ArrayList();
