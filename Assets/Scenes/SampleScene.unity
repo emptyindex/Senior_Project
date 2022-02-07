@@ -152,12 +152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b8b567e1ae73f4ebe7c23f516a0159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rook: {fileID: 99231901566364429, guid: a893d20bf603e4746a7e1b3b30451746, type: 3}
-  knight: {fileID: 6610024121660726624, guid: b6ad6f8964683414c973dcb5f123dddb, type: 3}
-  bishop: {fileID: 4394246814820485673, guid: b7f0559526efe3f4caf9f42d9f1c64b6, type: 3}
-  queen: {fileID: 8769190385780204174, guid: ead09d70b5fc09b45960801023f4918d, type: 3}
-  king: {fileID: 2425099257607933997, guid: d4420ef3440f65041b8665de70f04ae8, type: 3}
-  pawn: {fileID: 1222142455936776488, guid: e4364d5efd50d794b914ba60f769e212, type: 3}
+  rook: {fileID: 99231901566364429, guid: 5274488bf7175c341a3325f4383f06de, type: 3}
+  knight: {fileID: 6610024121660726624, guid: 13caf8e3a2701da489c717aed6318294, type: 3}
+  bishop: {fileID: 4394246814820485673, guid: 9642c0ea966ad18478c79161d7ba52da, type: 3}
+  queen: {fileID: 8769190385780204174, guid: 6f0c2ab98f1a7084f8007c50d0b6eff1, type: 3}
+  king: {fileID: 2425099257607933997, guid: 65196f0a46d9e9b4eb54f11bed9e9b9a, type: 3}
+  pawn: {fileID: 1222142455936776488, guid: 8e588b66dceb56c448a3bf454bfee07a, type: 3}
 --- !u!4 &49953338
 Transform:
   m_ObjectHideFlags: 0
