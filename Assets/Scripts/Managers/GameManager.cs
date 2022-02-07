@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     private readonly GameObject[] higherOrder = new GameObject[8];
 
-    private readonly GameObject[,] boardArr = new GameObject[8,8];
+    public static GameObject[,] boardArr = new GameObject[8,8];
 
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();

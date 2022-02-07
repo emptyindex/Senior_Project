@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -90,6 +90,17 @@
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Scripts\AI\KingAI.cs" />
+    <Compile Include="Assets\Scripts\AI\QueenAI.cs" />
+    <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
+    <Compile Include="Assets\Scripts\AI\RookAI.cs" />
+    <Compile Include="Assets\Scripts\AI\AI.cs" />
+    <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
+    <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
