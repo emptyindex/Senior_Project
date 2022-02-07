@@ -4,20 +4,11 @@ using UnityEngine;
 
 public class KnightAI : BaseAI
 {
-    public int pieceNum;
-    public int pieceID;
-    public int currRow;
-    public int currCol;
-    public int bestScore;
-    public int[] bestMove;
-    public bool moveFound;
-    public bool hasFinished;
-
     // Start is called before the first frame update
     void Start()
     {
         //BestMove();
-        hasFinished = false;
+        hasFinished = true;
     }
 
     // Update is called once per frame
@@ -46,7 +37,7 @@ public class KnightAI : BaseAI
         {
             for (int j = 0; j < 8; j++)
             {
-                newBoard[i, j] = AI.Board[i, j];
+                newBoard[i, j] = this.AIManager.Board[i, j];
             }
         }
 
@@ -103,12 +94,8 @@ public class KnightAI : BaseAI
                 }
             }
         }
-        AI.PieceInfo[pieceNum, 0] = bestScore;
-        AI.PieceInfo[pieceNum, 1] = bestMove[0];
-        AI.PieceInfo[pieceNum, 2] = bestMove[1];
-        AI.PieceInfo[pieceNum, 3] = currRow;
-        AI.PieceInfo[pieceNum, 4] = currCol;
-        AI.PieceInfo[pieceNum, 5] = 13;
+
+        this.SetVals(13);
 
         //if (moveFound == false)
         //    print("knight no move");

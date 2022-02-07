@@ -9,9 +9,20 @@ using UnityEngine;
 /// </summary>
 public abstract class BasePlayer : MonoBehaviour
 {
+    public bool canMove = false;
+
+    public bool isGameOver = false;
+
+    public GameManager Manager { get; set; }
+
+    public abstract void SetPieces(List<GameObject> pieces);
+
     /// <summary>
     /// This determines whether it is this player's turn to move.
     /// </summary>
     /// <param name="newVal">The turn status.</param>
-    public abstract void IsTurn(bool newVal);
+    public void IsTurn(bool newVal)
+    {
+        canMove = newVal;
+    }
 }

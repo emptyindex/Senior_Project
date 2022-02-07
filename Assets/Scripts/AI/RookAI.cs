@@ -4,20 +4,13 @@ using UnityEngine;
 
 public class RookAI : BaseAI
 {
-    public int pieceNum;
-    public int pieceID;
-    public int currRow;
-    public int currCol;
-    public int bestScore;
-    public int[] bestMove;
-    public bool moveFound;
-    public bool hasFinished;
-
     // Start is called before the first frame update
     void Start()
     {
+        this.pieceNum = 9;
+
         //BestMove();
-        hasFinished = false;
+        hasFinished = true;
     }
 
     // Update is called once per frame
@@ -46,7 +39,7 @@ public class RookAI : BaseAI
         {
             for (int j = 0; j < 8; j++)
             {
-                newBoard[i, j] = AI.Board[i, j];
+                newBoard[i, j] = this.AIManager.Board[i, j];
             }
         }
 
@@ -100,12 +93,8 @@ public class RookAI : BaseAI
                 }
             }
         }
-        AI.PieceInfo[pieceNum, 0] = bestScore;
-        AI.PieceInfo[pieceNum, 1] = bestMove[0];
-        AI.PieceInfo[pieceNum, 2] = bestMove[1];
-        AI.PieceInfo[pieceNum, 3] = currRow;
-        AI.PieceInfo[pieceNum, 4] = currCol;
-        AI.PieceInfo[pieceNum, 5] = 12;
+
+        this.SetVals(12);
 
         //if (moveFound == false)
         //    print("rook no move");

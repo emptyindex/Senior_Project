@@ -123,56 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &49953336
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 49953338}
-  - component: {fileID: 49953337}
-  m_Layer: 0
-  m_Name: AI Manager (temp)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &49953337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 49953336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58b8b567e1ae73f4ebe7c23f516a0159, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rook: {fileID: 99231901566364429, guid: 5274488bf7175c341a3325f4383f06de, type: 3}
-  knight: {fileID: 6610024121660726624, guid: 13caf8e3a2701da489c717aed6318294, type: 3}
-  bishop: {fileID: 4394246814820485673, guid: 9642c0ea966ad18478c79161d7ba52da, type: 3}
-  queen: {fileID: 8769190385780204174, guid: 6f0c2ab98f1a7084f8007c50d0b6eff1, type: 3}
-  king: {fileID: 2425099257607933997, guid: 65196f0a46d9e9b4eb54f11bed9e9b9a, type: 3}
-  pawn: {fileID: 1222142455936776488, guid: 8e588b66dceb56c448a3bf454bfee07a, type: 3}
---- !u!4 &49953338
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 49953336}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,9 +365,23 @@ MonoBehaviour:
   board: {fileID: 8613167783982941162, guid: e5a5f0ea2b5d75644b356c1c98bed972, type: 3}
   whiteCell: {fileID: 7920733391726471269, guid: 8a24052e375de9643b7d0c1fbe7fb51e, type: 3}
   blackCell: {fileID: 2998303320213981060, guid: 44a4aea244b5e764d85fd1279cba80a3, type: 3}
-  castle: {fileID: 2231781461662517875, guid: 4ca5114e80d49f148860ca9e8d1dc101, type: 3}
-  knight: {fileID: 6610024121660726624, guid: dc1385a5d3c1053438f9a1f1376cfc34, type: 3}
-  bishop: {fileID: 99231901566364429, guid: 28f8de00fe65e0441a446a99f8724218, type: 3}
-  queen: {fileID: 8769190385780204174, guid: a15e2d4af71320e4dbaf4b743dd703c4, type: 3}
-  king: {fileID: 2425099257607933997, guid: 06e5450af0f26c649928919a236e5fb2, type: 3}
-  pawn: {fileID: 1222142455936776488, guid: 8e588b66dceb56c448a3bf454bfee07a, type: 3}
+  humanPieces:
+  - {fileID: 1222142455936776488, guid: 8e588b66dceb56c448a3bf454bfee07a, type: 3}
+  - {fileID: 2231781461662517875, guid: 4ca5114e80d49f148860ca9e8d1dc101, type: 3}
+  - {fileID: 6610024121660726624, guid: dc1385a5d3c1053438f9a1f1376cfc34, type: 3}
+  - {fileID: 99231901566364429, guid: 28f8de00fe65e0441a446a99f8724218, type: 3}
+  - {fileID: 2425099257607933997, guid: 06e5450af0f26c649928919a236e5fb2, type: 3}
+  - {fileID: 8769190385780204174, guid: a15e2d4af71320e4dbaf4b743dd703c4, type: 3}
+  - {fileID: 99231901566364429, guid: 28f8de00fe65e0441a446a99f8724218, type: 3}
+  - {fileID: 6610024121660726624, guid: dc1385a5d3c1053438f9a1f1376cfc34, type: 3}
+  - {fileID: 2231781461662517875, guid: 4ca5114e80d49f148860ca9e8d1dc101, type: 3}
+  aiPieces:
+  - {fileID: 1222142455936776488, guid: 11ef05763a7e3ad47846e3b000480559, type: 3}
+  - {fileID: 99231901566364429, guid: 5274488bf7175c341a3325f4383f06de, type: 3}
+  - {fileID: 6610024121660726624, guid: 13caf8e3a2701da489c717aed6318294, type: 3}
+  - {fileID: 4394246814820485673, guid: 9642c0ea966ad18478c79161d7ba52da, type: 3}
+  - {fileID: 2425099257607933997, guid: 65196f0a46d9e9b4eb54f11bed9e9b9a, type: 3}
+  - {fileID: 8769190385780204174, guid: 6f0c2ab98f1a7084f8007c50d0b6eff1, type: 3}
+  - {fileID: 4394246814820485673, guid: 9642c0ea966ad18478c79161d7ba52da, type: 3}
+  - {fileID: 6610024121660726624, guid: 13caf8e3a2701da489c717aed6318294, type: 3}
+  - {fileID: 99231901566364429, guid: 5274488bf7175c341a3325f4383f06de, type: 3}
