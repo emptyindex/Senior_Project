@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 
 public class Dice : MonoBehaviour
-{
-    
+{   
     Rigidbody rb;
     Vector3 diceVelocity ;
 
