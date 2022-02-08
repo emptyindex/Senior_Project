@@ -5,8 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Represents a Knight piece.
 /// </summary>
-public class Knight : BasePiece
+public class Knight : BasePiece, IPieceBase
 {
+    public int PieceID { get; set; } = 3;
+
     /// <summary>
     /// Highlights the valid moves for this piece.
     /// </summary>

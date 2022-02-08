@@ -5,8 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Represents a Rook piece.
 /// </summary>
-public class Rook : BasePiece
+public class Rook : BasePiece, IPieceBase
 {
+    public int PieceID { get; set; } = 2;
+
     /// <summary>
     /// Highlights the valid moves for this piece.
     /// </summary>

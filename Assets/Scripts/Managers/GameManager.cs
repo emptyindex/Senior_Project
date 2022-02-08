@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 /// <summary>
 /// Public Enum to represent the 3 different types of game modes.
@@ -22,22 +23,25 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
-    public GameObject board;
+    public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
 
-    public GameObject castle, knight, bishop, queen, king, pawn;
+    public GameObject[] humanPieces;
+    public GameObject[] aiPieces;
 
     private GameObject[] players = new GameObject[2];
 
-    private readonly GameObject[] higherOrder = new GameObject[8];
+    private int indexer = 0;
 
     public static GameObject[,] boardArr = new GameObject[8,8];
+
+    public int[,] board = new int[8, 8];
 
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvP;
+    private GameMode currGameMode = GameMode.PvAI;
 
     /// <summary>
     /// Start is called before the first frame update when the script is loaded in.
@@ -49,21 +53,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        Object.Instantiate(board);
+        Instantiate(boardPrefab);
 
-        var renderer = board.GetComponent<Renderer>();
+        var renderer = boardPrefab.GetComponent<Renderer>();
         var startPos = renderer.bounds.min;
-
-        // Populates the higherOrder array with the correct order to place non-pawn pieces.
-        // The array is populated by Instantiating the Prefabs in the scene.
-        higherOrder[0] = GameObject.Instantiate(castle);
-        higherOrder[1] = GameObject.Instantiate(knight);
-        higherOrder[2] = GameObject.Instantiate(bishop);
-        higherOrder[3] = GameObject.Instantiate(queen);
-        higherOrder[4] = GameObject.Instantiate(king);
-        higherOrder[5] = GameObject.Instantiate(bishop);
-        higherOrder[6] = GameObject.Instantiate(knight);
-        higherOrder[7] = GameObject.Instantiate(castle);
 
         // Nested for loop to create the chess board
         for (int i = 0; i < boardArr.GetLength(0); i++)
@@ -87,24 +80,26 @@ public class GameManager : MonoBehaviour
                     // if it's the first row of the board, we need to place a higher order (non-pawn) piece.
                     if (j == 0)
                     {
-                        SetPosition(player1Pieces, i, j, higherOrder[i]);
+                        PopulateCellForGameMode(player1Pieces, i, j, false, true);
                     }
                     // if it's in the second row of the board, we need to place a row of pawns.
                     if (j == 1)
                     {
-                        PopulateCell(player1Pieces, pawn, i, j, false);
+                        PopulateCellForGameMode(player1Pieces, i, j, false);
                     }
                     // if it's the second to last row on the board, we need to place the higher order piecs for the second player.
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        PopulateCell(player2Pieces, pawn, i, j, true);
+                        PopulateCellForGameMode(player2Pieces, i, j, false);
                     }
                     // if it's in the second row of the board, we need to place a row of pawns for the second player.
                     if (j == boardArr.GetLength(0) - 1)
                     {
-                        PopulateCell(player2Pieces, higherOrder[i], i, j, true);
+                        PopulateCellForGameMode(player2Pieces, i, j, false, true);
                     }
                 }
+
+                indexer++;
             }
         }
 
@@ -113,21 +108,61 @@ public class GameManager : MonoBehaviour
         switch (currGameMode)
         {
             case GameMode.PvP:
-                players[0] = CreatePlayer(player1Pieces);
-                players[1] = CreatePlayer(player2Pieces);
+                players[0] = CreatePlayer(player, player1Pieces);
+                players[1] = CreatePlayer(player, player2Pieces);
 
                 break;
             case GameMode.PvAI:
-                players[0] = Object.Instantiate(ai);
-                players[1] = CreatePlayer(player2Pieces);
+                players[0] = CreatePlayer(player, player1Pieces);
+                players[1] = CreatePlayer(ai, player2Pieces);
 
                 break;
             case GameMode.AIvAI:
+                players[0] = CreatePlayer(ai, player1Pieces);
+                players[1] = CreatePlayer(ai, player2Pieces);
+
                 break;
         }
 
         // Tell player one that it's their turn. 
         players[0].GetComponent<BasePlayer>().IsTurn(true);
+    }
+
+    private void PopulateCellForGameMode(List<GameObject> pieces, int i, int j, bool isBlack, bool isHigherOrder = false)
+    {
+        bool isPlayer = true;
+
+        if(currGameMode == GameMode.PvAI && j > 1)
+        {
+            isPlayer = false;
+        }
+
+        int index = 0;
+
+        if(isHigherOrder)
+        {
+            index = i + 1;
+        }
+
+        switch (currGameMode)
+        {
+            case GameMode.PvP:
+                PopulateHumanCell(pieces, Instantiate(humanPieces[index]), i, j, isBlack);
+                break;
+            case GameMode.PvAI:
+                if(isPlayer)
+                {
+                    PopulateHumanCell(pieces, Instantiate(humanPieces[index]), i, j, isBlack);
+                }
+                else
+                {
+                    PopulateCell(pieces, i, j, isBlack, Instantiate(aiPieces[index]));
+                }
+                break;
+            case GameMode.AIvAI:
+                PopulateCell(pieces, i, j, isBlack, Instantiate(aiPieces[index]));
+                break;
+        }
     }
 
     /// <summary>
@@ -145,6 +180,17 @@ public class GameManager : MonoBehaviour
         piece.GetComponent<BasePiece>().positionY = newIndexes[1];
 
         return boardArr[newIndexes[0], newIndexes[1]].transform.position;
+    }
+
+    public Vector3 GetMovePosition(int i, int j)
+    {
+        return boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+    }
+
+    public void UpdateIntBoard(int i, int j, int newi, int newj, int pieceID)
+    {
+        board[i, j] = 0;
+        board[newi, newj] = pieceID;
     }
 
     /// <summary>
@@ -195,12 +241,21 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="pieces">The list of game pieces.</param>
     /// <returns>Returns a completed Human player.</returns>
-    private GameObject CreatePlayer(List<GameObject> pieces)
+    private GameObject CreatePlayer(GameObject playerToCreate, List<GameObject> pieces)
     {
-        var p = Object.Instantiate(player);
+        var p = Instantiate(playerToCreate);
 
-        p.GetComponent<PlayerManager>().SetPieces(pieces.ToArray());
-        p.GetComponent<PlayerManager>().Manager = this;
+        if (p.GetComponent<AI>())
+        {
+            var aiClass = p.GetComponent<AI>();
+
+            aiClass.Board = this.board;
+
+            pieces.ForEach(p => p.GetComponent<BaseAI>().AIManager = aiClass);
+        }
+
+        p.GetComponent<BasePlayer>().SetPieces(pieces);
+        p.GetComponent<BasePlayer>().Manager = this;
 
         return p;
     }
@@ -214,25 +269,40 @@ public class GameManager : MonoBehaviour
     /// <param name="i"></param>
     /// <param name="j"></param>
     /// <param name="isBlack"></param>
-    private void PopulateCell(List<GameObject> playerList, GameObject piece, int i, int j, bool isBlack)
+    private void PopulateHumanCell(List<GameObject> playerList, GameObject newPiece, int i, int j, bool isBlack)
     {
-        var newPiece = Instantiate(piece);
-
         if (newPiece.GetComponent<Pawn>())
         {
-            if(j > 2)
+            if (j > 2)
             {
                 newPiece.GetComponent<Pawn>().MoveUp = false;
             }
         }
 
-        if(isBlack)
+        PopulateCell(playerList, i, j, isBlack, newPiece);
+    }
+
+    private void PopulateCell(List<GameObject> playerList, int i, int j, bool isBlack, GameObject newPiece)
+    {
+        if (isBlack)
         {
             newPiece.GetComponent<Renderer>().material.color *= 0.5f;
         }
 
-        newPiece.GetComponent<BasePiece>().positionX = i;
-        newPiece.GetComponent<BasePiece>().positionY = j;
+        if(newPiece.GetComponent<BaseAI>())
+        {
+            newPiece.GetComponent<BaseAI>().currRow = j;
+            newPiece.GetComponent<BaseAI>().currCol = i;
+
+            newPiece.GetComponent<BaseAI>().pieceNum = indexer + i;
+        }
+        else
+        {
+            newPiece.GetComponent<BasePiece>().positionX = i;
+            newPiece.GetComponent<BasePiece>().positionY = j;
+        }
+
+        board[j, i] = newPiece.GetComponent<IPieceBase>().PieceID;
 
         SetPosition(playerList, i, j, newPiece);
     }

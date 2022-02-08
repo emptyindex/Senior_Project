@@ -5,6 +5,16 @@ using System.Linq;
 
 public class BaseAI : MonoBehaviour
 {
+    public int currRow;
+    public int currCol;
+    public int pieceNum;
+    public int bestScore;
+    public int[] bestMove;
+    public bool moveFound;
+    public bool hasFinished;
+
+    public AI AIManager { get; set; }
+
     //method to find the score of a given board
     //since attacks are not guarenteed the current attack is also passed if a piece is attacking another
     //right now just returns a random value

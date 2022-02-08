@@ -10,15 +10,13 @@ public class PlayerManager : BasePlayer
 {
     private new Camera camera;
 
-    private GameObject[] pieces = new GameObject[16];
+    public GameObject[] pieces = new GameObject[16];
 
     private List<GameObject> highlightedCells = new List<GameObject>();
 
     private Cell previousCell;
 
     private bool hasSelectedAPiece = false;
-
-    public bool canMove = false;
 
     /// <summary>
     /// Start is called before the first frame update.
@@ -38,7 +36,7 @@ public class PlayerManager : BasePlayer
     /// </summary>
     void Update()
     {
-        if (canMove && Input.GetMouseButtonUp(0))
+        if (this.canMove && Input.GetMouseButtonUp(0))
         {
             Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
 
@@ -83,16 +81,6 @@ public class PlayerManager : BasePlayer
     }
 
     /// <summary>
-    /// Overrided method from the base class to change the canMove boolean.
-    /// This determines whether it is this player's turn to move.
-    /// </summary>
-    /// <param name="newVal">The turn status.</param>
-    public override void IsTurn(bool newVal)
-    {
-        canMove = newVal;
-    }
-
-    /// <summary>
     /// Clears and restores the highlighted cells after a piece has been moved.
     /// </summary>
     private void ClearSelected()
@@ -112,7 +100,15 @@ public class PlayerManager : BasePlayer
     /// <param name="obj"></param>
     private void MovePiece(Cell cell, GameObject obj)
     {
+        int currX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
+        int currY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+
         var newPos = Manager.GetMovePosition(cell.gameObject, previousCell.GetCurrentPiece);
+
+        int newX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
+        int newY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+
+        Manager.UpdateIntBoard(currX, currY, newX, newY, previousCell.GetCurrentPiece.GetComponent<IPieceBase>().PieceID);
 
         previousCell.GetCurrentPiece.GetComponent<BasePiece>().Move(newPos);
 
@@ -120,17 +116,8 @@ public class PlayerManager : BasePlayer
         previousCell.GetCurrentPiece = null;
     }
 
-    /// <summary>
-    /// Gets and sets the GameManager instance to inform it of turn status.
-    /// </summary>
-    public GameManager Manager { get; set; }
-
-    /// <summary>
-    /// Sets the player's pieces at the start of the game.
-    /// </summary>
-    /// <param name="setPieces">The pieces that this player can manipulate.</param>
-    public void SetPieces(GameObject[] setPieces)
+    public override void SetPieces(List<GameObject> pieces)
     {
-        pieces = setPieces;
+        this.pieces = pieces.ToArray();
     }
 }

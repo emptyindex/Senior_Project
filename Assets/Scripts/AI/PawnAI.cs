@@ -2,31 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PawnAI : BaseAI
+public class PawnAI : BaseAI, IPieceBase
 {
-    public int pieceNum;
-    public int pieceID;
-    public int currRow;
-    public int currCol;
-    public int bestScore;
-    public int[] bestMove;
-    public bool moveFound;
-    public bool hasFinished;
+    public int PieceID { get; set; } = 11;
 
     // Start is called before the first frame update
     void Start()
     {
         //BestMove();
-        hasFinished = false;
+        this.hasFinished = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hasFinished == false)
+        if (this.hasFinished == false)
         {
             BestMove();
-            hasFinished = true;
+            this.hasFinished = true;
         }
     }
 
@@ -46,7 +39,7 @@ public class PawnAI : BaseAI
         {
             for (int j = 0; j < 8; j++)
             {
-                newBoard[i, j] = AI.Board[i, j];
+                newBoard[i, j] = this.AIManager.Board[i, j];
             }
         }
 
@@ -98,12 +91,5 @@ public class PawnAI : BaseAI
                 }
             }
         }
-        AI.PieceInfo[pieceNum, 0] = bestScore;
-        AI.PieceInfo[pieceNum, 1] = bestMove[0];
-        AI.PieceInfo[pieceNum, 2] = bestMove[1];
-        AI.PieceInfo[pieceNum, 3] = currRow;
-        AI.PieceInfo[pieceNum, 4] = currCol;
-        AI.PieceInfo[pieceNum, 5] = 11;
-
     }
 }

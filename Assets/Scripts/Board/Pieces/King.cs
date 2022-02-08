@@ -5,8 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Represents a King piece.
 /// </summary>
-public class King : BasePiece
+public class King : BasePiece, IPieceBase
 {
+    public int PieceID { get; set; } = 6;
+
     /// <summary>
     /// Highlights the valid moves for this piece.
     /// </summary>
