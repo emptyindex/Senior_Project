@@ -294,14 +294,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.00046382143, y: 0.6993141, z: -0.71481425, w: 0.00047410198}
+  m_LocalRotation: {x: 0.7148144, y: 0, z: 0, w: 0.69931424}
   m_LocalPosition: {x: -0.3, y: 93.5, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 91.25598, y: 180, z: 0.07600403}
+  m_LocalEulerAnglesHint: {x: 91.25598, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 5624974584527986448, guid: 310b9e9741ba9544bb383816e4b04df6, type: 3}
   ai: {fileID: 6842021588314291327, guid: 685180f412680e644a57b29d2ad24de5, type: 3}
-  board: {fileID: 8613167783982941162, guid: e5a5f0ea2b5d75644b356c1c98bed972, type: 3}
+  boardPrefab: {fileID: 8613167783982941162, guid: e5a5f0ea2b5d75644b356c1c98bed972, type: 3}
   whiteCell: {fileID: 7920733391726471269, guid: 8a24052e375de9643b7d0c1fbe7fb51e, type: 3}
   blackCell: {fileID: 2998303320213981060, guid: 44a4aea244b5e764d85fd1279cba80a3, type: 3}
   humanPieces:

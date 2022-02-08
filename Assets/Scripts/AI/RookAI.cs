@@ -2,24 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RookAI : BaseAI
+public class RookAI : BaseAI, IPieceBase
 {
+    public int PieceID { get; set; } = 12;
+
     // Start is called before the first frame update
     void Start()
     {
-        this.pieceNum = 9;
-
         //BestMove();
-        hasFinished = true;
+
+        this.hasFinished = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hasFinished == false)
+        if (this.hasFinished == false)
         {
             BestMove();
-            hasFinished = true;
+            this.hasFinished = true;
         }
     }
 
@@ -93,8 +94,6 @@ public class RookAI : BaseAI
                 }
             }
         }
-
-        this.SetVals(12);
 
         //if (moveFound == false)
         //    print("rook no move");

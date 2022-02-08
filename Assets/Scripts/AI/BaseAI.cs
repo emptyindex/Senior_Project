@@ -8,7 +8,6 @@ public class BaseAI : MonoBehaviour
     public int currRow;
     public int currCol;
     public int pieceNum;
-    public int pieceID;
     public int bestScore;
     public int[] bestMove;
     public bool moveFound;
@@ -23,16 +22,6 @@ public class BaseAI : MonoBehaviour
     {
         int score = Random.Range(1, 1000);
         return score;
-    }
-
-    public void SetVals(int num)
-    {
-        this.AIManager.PieceInfo[pieceNum, 0] = bestScore;
-        this.AIManager.PieceInfo[pieceNum, 1] = bestMove[0];
-        this.AIManager.PieceInfo[pieceNum, 2] = bestMove[1];
-        this.AIManager.PieceInfo[pieceNum, 3] = currRow;
-        this.AIManager.PieceInfo[pieceNum, 4] = currCol;
-        this.AIManager.PieceInfo[pieceNum, 5] = num;
     }
 
     //method that checks if a move is valid and returns the least number of squares the piece has to move to reach the destination

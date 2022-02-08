@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
-    public GameObject board;
+    public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
 
@@ -32,8 +32,11 @@ public class GameManager : MonoBehaviour
 
     private GameObject[] players = new GameObject[2];
 
+    private int indexer = 0;
+
     public static GameObject[,] boardArr = new GameObject[8,8];
-    public int[,] boardState = new int[8, 8];
+
+    public int[,] board = new int[8, 8];
 
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
@@ -50,9 +53,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        Instantiate(board);
+        Instantiate(boardPrefab);
 
-        var renderer = board.GetComponent<Renderer>();
+        var renderer = boardPrefab.GetComponent<Renderer>();
         var startPos = renderer.bounds.min;
 
         // Nested for loop to create the chess board
@@ -95,6 +98,8 @@ public class GameManager : MonoBehaviour
                         PopulateCellForGameMode(player2Pieces, i, j, false, true);
                     }
                 }
+
+                indexer++;
             }
         }
 
@@ -177,6 +182,17 @@ public class GameManager : MonoBehaviour
         return boardArr[newIndexes[0], newIndexes[1]].transform.position;
     }
 
+    public Vector3 GetMovePosition(int i, int j)
+    {
+        return boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+    }
+
+    public void UpdateIntBoard(int i, int j, int newi, int newj, int pieceID)
+    {
+        board[i, j] = 0;
+        board[newi, newj] = pieceID;
+    }
+
     /// <summary>
     /// When a player finishes a move, tell the other player that it's their turn
     /// using the abstract IsTurn method in BasePlayer.
@@ -233,8 +249,7 @@ public class GameManager : MonoBehaviour
         {
             var aiClass = p.GetComponent<AI>();
 
-            aiClass.Board = this.boardState;
-            aiClass.BoardState = boardArr;
+            aiClass.Board = this.board;
 
             pieces.ForEach(p => p.GetComponent<BaseAI>().AIManager = aiClass);
         }
@@ -279,13 +294,15 @@ public class GameManager : MonoBehaviour
             newPiece.GetComponent<BaseAI>().currRow = j;
             newPiece.GetComponent<BaseAI>().currCol = i;
 
-            boardState[i, j] = newPiece.GetComponent<BaseAI>().pieceNum;
+            newPiece.GetComponent<BaseAI>().pieceNum = indexer + i;
         }
         else
         {
             newPiece.GetComponent<BasePiece>().positionX = i;
             newPiece.GetComponent<BasePiece>().positionY = j;
         }
+
+        board[i, j] = newPiece.GetComponent<IPieceBase>().PieceID;
 
         SetPosition(playerList, i, j, newPiece);
     }

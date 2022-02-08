@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BishopAI : BaseAI
+public class BishopAI : BaseAI, IPieceBase
 {
+    public int PieceID { get; set; } = 14;
+
     // Start is called before the first frame update
     void Start()
     {
         //BestMove();
-        hasFinished = true;
+        this.hasFinished = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hasFinished == false)
+        if (this.hasFinished == false)
         {
             BestMove();
-            hasFinished = true;
+            this.hasFinished = true;
         }
     }
 
@@ -91,8 +93,6 @@ public class BishopAI : BaseAI
                 }
             }
         }
-
-        this.SetVals(14);
 
         //if (moveFound == false)
         //    print("bishop no move");

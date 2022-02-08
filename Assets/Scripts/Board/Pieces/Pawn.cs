@@ -5,8 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Represents a Pawn piece.
 /// </summary>
-public class Pawn : BasePiece
+public class Pawn : BasePiece, IPieceBase
 {
+    public int PieceID { get; set; } = 1;
+
     /// <summary>
     /// Pawns cannot move backwards, depending on their orientation on the board,
     /// they can move forwards or "backwards" towards the center of the board.

@@ -5,8 +5,10 @@ using UnityEngine;
 /// <summary>
 /// Represents the Bishop piece.
 /// </summary>
-public class Bishop : BasePiece
+public class Bishop : BasePiece, IPieceBase
 {
+    public int PieceID { get; set; } = 4;
+
     /// <summary>
     /// Highlights the valid moves for this piece.
     /// </summary>

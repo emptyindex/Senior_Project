@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PawnAI : BaseAI
+public class PawnAI : BaseAI, IPieceBase
 {
+    public int PieceID { get; set; } = 11;
+
     // Start is called before the first frame update
     void Start()
     {
         //BestMove();
-        hasFinished = true;
+        this.hasFinished = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (hasFinished == false)
+        if (this.hasFinished == false)
         {
             BestMove();
-            hasFinished = true;
+            this.hasFinished = true;
         }
     }
 
@@ -89,7 +91,5 @@ public class PawnAI : BaseAI
                 }
             }
         }
-
-        this.SetVals(11);
     }
 }

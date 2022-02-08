@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class AI : BasePlayer
 {
@@ -11,25 +12,23 @@ public class AI : BasePlayer
     public int[,] Board;
     [HideInInspector]
     public GameObject[,] BoardState;
-    [HideInInspector]
-    public int[,] PieceInfo;
+    //[HideInInspector]
+    //public int[,] PieceInfo;
     public GameObject[] Pieces;
-    private int rows;
-    private int columns;
 
     public static bool AiTurn;
 
     // Start is called before the first frame update
     void Start()
     {
-        rows = 8;
-        columns = 8;
-        Board = new int[rows, columns];
-        BoardState = new GameObject[rows, columns];
+        //rows = 8;
+        //columns = 8;
+        //Board = new int[rows, columns];
+        //BoardState = new GameObject[rows, columns];
 
         AiTurn = true;
 
-        PieceInfo = new int[16, 6];
+        //PieceInfo = new int[16, 6];
         //Pieces = new GameObject[16];
 
         //initializeBoard();
@@ -145,19 +144,19 @@ public class AI : BasePlayer
     }
 
     //helper method to print the current state of the board to the debug line
-    void showBoard()
-    {
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < columns; j++)
-            {
-                print(Board[i, j]);
-            }
-        }
+    //void showBoard()
+    //{
+    //    for (int i = 0; i < rows; i++)
+    //    {
+    //        for (int j = 0; j < columns; j++)
+    //        {
+    //            print(Board[i, j]);
+    //        }
+    //    }
 
-        //print(BoardState[1, 0].GetComponent<PawnAI>().currCol);
-        //print(BoardState[1, 1].GetComponent<PawnAI>().currCol);
-    }
+    //    //print(BoardState[1, 0].GetComponent<PawnAI>().currCol);
+    //    //print(BoardState[1, 1].GetComponent<PawnAI>().currCol);
+    //}
 
     //coroutine
     IEnumerator AiPick()
@@ -185,59 +184,86 @@ public class AI : BasePlayer
 
                 int bestScore = -99999;
                 int[] moveToMake = new int[2];
-                int pieceThatMoved = 0;
 
-                for (int i = 0; i < 16; i++)
+                BaseAI pieceThatMoved = null;
+
+                foreach(GameObject piece in Pieces)
                 {
-                    if (PieceInfo[i, 0] > bestScore)
+                    if(piece.GetComponent<BaseAI>().bestScore > bestScore)
                     {
-                        bestScore = PieceInfo[i, 0];
-                        moveToMake[0] = PieceInfo[i, 1];
-                        moveToMake[1] = PieceInfo[i, 2];
-                        pieceThatMoved = i;
+                        pieceThatMoved = piece.GetComponent<BaseAI>();
+                        bestScore = pieceThatMoved.bestScore;
+                        moveToMake[0] = pieceThatMoved.bestMove[0];
+                        moveToMake[1] = pieceThatMoved.bestMove[1];
                     }
                 }
 
-                print("piece " + pieceThatMoved + " has moved to: " + moveToMake[0] + ", " + moveToMake[1]);
+                if(pieceThatMoved == null)
+                {
+                    throw new Exception("No piece was found to move.");
+                }
+
+                //for (int i = 0; i < 16; i++)
+                //{
+                //    if (PieceInfo[i, 0] > bestScore)
+                //    {
+                //        bestScore = PieceInfo[i, 0];
+                //        moveToMake[0] = PieceInfo[i, 1];
+                //        moveToMake[1] = PieceInfo[i, 2];
+                //        pieceThatMoved = i;
+                //    }
+                //}             
+
+                //print("piece " + pieceThatMoved + " has moved to: " + moveToMake[0] + ", " + moveToMake[1]);
                 //print(bestScore);
                 //print(moveToMake[0]);
                 //print(moveToMake[1]);
 
-                Pieces[pieceThatMoved].transform.position = new Vector3(35 - 10 * moveToMake[1], .75f, -35 + 10 * moveToMake[0]);
-                Board[PieceInfo[pieceThatMoved, 3], PieceInfo[pieceThatMoved, 4]] = 0;
-                Board[moveToMake[0], moveToMake[1]] = PieceInfo[pieceThatMoved, 5];
+                //Pieces[pieceThatMoved].transform.position = new Vector3(35 - 10 * moveToMake[1], .75f, -35 + 10 * moveToMake[0]);
+
+                pieceThatMoved.gameObject.transform.position = Manager.GetMovePosition(moveToMake[1], moveToMake[0]);
+
+                //Manager.UpdateIntBoard(PieceInfo[pieceThatMoved, 3], PieceInfo[pieceThatMoved, 4], moveToMake[0], moveToMake[1], PieceInfo[pieceThatMoved, 5]);
+
+                //Board[PieceInfo[pieceThatMoved, 3], PieceInfo[pieceThatMoved, 4]] = 0;
+                //Board[moveToMake[0], moveToMake[1]] = PieceInfo[pieceThatMoved, 5];
+
+                pieceThatMoved.currRow = moveToMake[1];
+                pieceThatMoved.currCol = moveToMake[0];
+
+                //Pieces[index].GetComponent<BaseAI>().currRow = moveToMake[0];
 
 
-                if (PieceInfo[pieceThatMoved, 5] == 11)
-                {
-                    Pieces[pieceThatMoved].GetComponent<PawnAI>().currRow = moveToMake[0];
-                    Pieces[pieceThatMoved].GetComponent<PawnAI>().currCol = moveToMake[1];
-                }
-                if (PieceInfo[pieceThatMoved, 5] == 12)
-                {
-                    Pieces[pieceThatMoved].GetComponent<RookAI>().currRow = moveToMake[0];
-                    Pieces[pieceThatMoved].GetComponent<RookAI>().currCol = moveToMake[1];
-                }
-                if (PieceInfo[pieceThatMoved, 5] == 13)
-                {
-                    Pieces[pieceThatMoved].GetComponent<KnightAI>().currRow = moveToMake[0];
-                    Pieces[pieceThatMoved].GetComponent<KnightAI>().currCol = moveToMake[1];
-                }
-                if (PieceInfo[pieceThatMoved, 5] == 14)
-                {
-                    Pieces[pieceThatMoved].GetComponent<BishopAI>().currRow = moveToMake[0];
-                    Pieces[pieceThatMoved].GetComponent<BishopAI>().currCol = moveToMake[1];
-                }
-                if (PieceInfo[pieceThatMoved, 5] == 15)
-                {
-                    Pieces[pieceThatMoved].GetComponent<QueenAI>().currRow = moveToMake[0];
-                    Pieces[pieceThatMoved].GetComponent<QueenAI>().currCol = moveToMake[1];
-                }
-                if (PieceInfo[pieceThatMoved, 5] == 16)
-                {
-                    Pieces[pieceThatMoved].GetComponent<KingAI>().currRow = moveToMake[0];
-                    Pieces[pieceThatMoved].GetComponent<KingAI>().currCol = moveToMake[1];
-                }
+                //if (PieceInfo[pieceThatMoved, 5] == 11)
+                //{
+                //    Pieces[pieceThatMoved].GetComponent<PawnAI>().currRow = moveToMake[0];
+                //    Pieces[pieceThatMoved].GetComponent<PawnAI>().currCol = moveToMake[1];
+                //}
+                //if (PieceInfo[pieceThatMoved, 5] == 12)
+                //{
+                //    Pieces[pieceThatMoved].GetComponent<RookAI>().currRow = moveToMake[0];
+                //    Pieces[pieceThatMoved].GetComponent<RookAI>().currCol = moveToMake[1];
+                //}
+                //if (PieceInfo[pieceThatMoved, 5] == 13)
+                //{
+                //    Pieces[pieceThatMoved].GetComponent<KnightAI>().currRow = moveToMake[0];
+                //    Pieces[pieceThatMoved].GetComponent<KnightAI>().currCol = moveToMake[1];
+                //}
+                //if (PieceInfo[pieceThatMoved, 5] == 14)
+                //{
+                //    Pieces[pieceThatMoved].GetComponent<BishopAI>().currRow = moveToMake[0];
+                //    Pieces[pieceThatMoved].GetComponent<BishopAI>().currCol = moveToMake[1];
+                //}
+                //if (PieceInfo[pieceThatMoved, 5] == 15)
+                //{
+                //    Pieces[pieceThatMoved].GetComponent<QueenAI>().currRow = moveToMake[0];
+                //    Pieces[pieceThatMoved].GetComponent<QueenAI>().currCol = moveToMake[1];
+                //}
+                //if (PieceInfo[pieceThatMoved, 5] == 16)
+                //{
+                //    Pieces[pieceThatMoved].GetComponent<KingAI>().currRow = moveToMake[0];
+                //    Pieces[pieceThatMoved].GetComponent<KingAI>().currCol = moveToMake[1];
+                //}
 
                 IsTurn(false);
                 Manager.ChangeTurn(this.gameObject);
