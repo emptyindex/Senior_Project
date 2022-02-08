@@ -214,7 +214,7 @@ public class AI : BasePlayer
                 //    }
                 //}             
 
-                //print("piece " + pieceThatMoved + " has moved to: " + moveToMake[0] + ", " + moveToMake[1]);
+                print("piece " + pieceThatMoved.GetComponent<IPieceBase>().PieceID + " has moved to: " + moveToMake[0] + ", " + moveToMake[1]);
                 //print(bestScore);
                 //print(moveToMake[0]);
                 //print(moveToMake[1]);
@@ -222,14 +222,15 @@ public class AI : BasePlayer
                 //Pieces[pieceThatMoved].transform.position = new Vector3(35 - 10 * moveToMake[1], .75f, -35 + 10 * moveToMake[0]);
 
                 pieceThatMoved.gameObject.transform.position = Manager.GetMovePosition(moveToMake[1], moveToMake[0]);
+                Manager.UpdateIntBoard(pieceThatMoved.currRow, pieceThatMoved.currCol, moveToMake[0], moveToMake[1], pieceThatMoved.GetComponent<IPieceBase>().PieceID);
 
                 //Manager.UpdateIntBoard(PieceInfo[pieceThatMoved, 3], PieceInfo[pieceThatMoved, 4], moveToMake[0], moveToMake[1], PieceInfo[pieceThatMoved, 5]);
 
                 //Board[PieceInfo[pieceThatMoved, 3], PieceInfo[pieceThatMoved, 4]] = 0;
                 //Board[moveToMake[0], moveToMake[1]] = PieceInfo[pieceThatMoved, 5];
 
-                pieceThatMoved.currRow = moveToMake[1];
-                pieceThatMoved.currCol = moveToMake[0];
+                pieceThatMoved.currRow = moveToMake[0];
+                pieceThatMoved.currCol = moveToMake[1];
 
                 //Pieces[index].GetComponent<BaseAI>().currRow = moveToMake[0];
 

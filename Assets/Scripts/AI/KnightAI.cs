@@ -78,7 +78,7 @@ public class KnightAI : BaseAI, IPieceBase
                     //also knights can only attack adjacent pieces
                     if ((newBoard[x, y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 ||
                         newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6) && 
-                        (x <= currRow + 1) && (y <= currCol + 1))
+                        (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
                     {
                         moveFound = true;
                         currAttack[0] = x;

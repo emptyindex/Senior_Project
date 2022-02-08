@@ -302,7 +302,7 @@ public class GameManager : MonoBehaviour
             newPiece.GetComponent<BasePiece>().positionY = j;
         }
 
-        board[i, j] = newPiece.GetComponent<IPieceBase>().PieceID;
+        board[j, i] = newPiece.GetComponent<IPieceBase>().PieceID;
 
         SetPosition(playerList, i, j, newPiece);
     }

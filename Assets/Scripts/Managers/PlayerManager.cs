@@ -100,7 +100,15 @@ public class PlayerManager : BasePlayer
     /// <param name="obj"></param>
     private void MovePiece(Cell cell, GameObject obj)
     {
+        int currX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
+        int currY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+
         var newPos = Manager.GetMovePosition(cell.gameObject, previousCell.GetCurrentPiece);
+
+        int newX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
+        int newY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+
+        Manager.UpdateIntBoard(currX, currY, newX, newY, previousCell.GetCurrentPiece.GetComponent<IPieceBase>().PieceID);
 
         previousCell.GetCurrentPiece.GetComponent<BasePiece>().Move(newPos);
 
