@@ -16,10 +16,11 @@ public class Camera1 : MonoBehaviour
         SnapToPosition();
     }
 
-    void Update() {
+    void Update() 
+    {
         Move();
-        
-        if(Input.GetKeyUp(KeyCode.Space))
+
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             SnapToPosition();
         }
