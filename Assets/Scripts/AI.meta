@@ -1,14 +1,8 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/AI.meta
-guid: 3223fbacc7332d54691ca14b867e40ea
+guid: 40491f52c00e36d4f9447751c1f346f6
 folderAsset: yes
 DefaultImporter:
-========
-guid: 4422c56c9c7343e4bbb95e4894770dba
-NativeFormatImporter:
->>>>>>>> d8cf35e3be42986ca01c2d7c10c322a0bab34653:Assets/Materials/Knight.mat.meta
   externalObjects: {}
-  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

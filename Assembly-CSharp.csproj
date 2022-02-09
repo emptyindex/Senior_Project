@@ -56,29 +56,32 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\AI\KingAI.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
-    <Compile Include="Assets\Scripts\AI\RookAI.cs" />
-    <Compile Include="Assets\Scripts\Board\Cell.cs" />
-    <Compile Include="Assets\Scripts\Players\BasePlayer.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
-    <Compile Include="Assets\Scripts\Manager\PlayerManager.cs" />
-    <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
-    <Compile Include="Assets\Scripts\AI\QueenAI.cs" />
-    <Compile Include="Assets\Scripts\Tools.cs" />
     <Compile Include="Assets\Scripts\Board\Board.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
-    <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Scripts\Tools.cs" />
+    <Compile Include="Assets\Scripts\Dice\DiceCheckZoneScript.cs" />
     <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
+    <Compile Include="Assets\Scripts\Players\BasePlayer.cs" />
+    <Compile Include="Assets\Scripts\Board\Cell.cs" />
+    <Compile Include="Assets\Scripts\AI\KingAI.cs" />
+    <Compile Include="Assets\Scripts\Manager\PlayerManager.cs" />
+    <Compile Include="Assets\Scripts\AI\QueenAI.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
     <Compile Include="Assets\Scripts\AI\AI.cs" />
+    <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
+    <Compile Include="Assets\Scripts\AI\RookAI.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
+    <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Knight.cs" />
     <Compile Include="Assets\Scripts\Manager\GameManager.cs" />
-    <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
+    <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
     <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
+    <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
+    <Compile Include="Assets\Scripts\Dice\Dice.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Pawn.cs" />
   </ItemGroup>
   <ItemGroup>
