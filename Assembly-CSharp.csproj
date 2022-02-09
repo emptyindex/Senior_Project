@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,29 +53,33 @@
     <UnityVersion>2021.2.8f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\Scripts\AI\KingAI.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
+    <Compile Include="Assets\Scripts\AI\RookAI.cs" />
     <Compile Include="Assets\Scripts\Board\Cell.cs" />
+    <Compile Include="Assets\Scripts\Players\BasePlayer.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
+    <Compile Include="Assets\Scripts\Manager\PlayerManager.cs" />
+    <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
     <Compile Include="Assets\Scripts\AI\QueenAI.cs" />
     <Compile Include="Assets\Scripts\Tools.cs" />
+    <Compile Include="Assets\Scripts\Board\Board.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
     <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
-    <Compile Include="Assets\Scripts\Board\Board.cs" />
-    <Compile Include="Assets\Scripts\AI\RookAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
     <Compile Include="Assets\Scripts\AI\AI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Knight.cs" />
-    <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
-    <Compile Include="Assets\Scripts\Players\BasePlayer.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
+    <Compile Include="Assets\Scripts\Manager\GameManager.cs" />
     <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
+    <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
     <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Pawn.cs" />
-    <Compile Include="Assets\Scripts\Managers\PlayerManager.cs" />
-    <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -343,6 +347,9 @@
     </Reference>
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.8f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
@@ -713,8 +720,14 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.2.8f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualScripting.Flow.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Shared.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
@@ -728,8 +741,20 @@
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualScripting.Core.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.State.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Flow">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
@@ -742,6 +767,12 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.State">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Core">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
