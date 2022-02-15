@@ -26,15 +26,18 @@
 *.a
 *.lib
 
+# meta files 
+*.meta
+
 # Executables
 *.exe
 *.out
 *.app
 
-# Other Extensions
+# Other extensions
 *.bak
 
-# Folders 
+# folders
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -42,4 +45,6 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
+/[Uu]serSettings/
 .vs/
+
