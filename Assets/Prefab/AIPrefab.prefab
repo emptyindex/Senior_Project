@@ -41,9 +41,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 6842021588314291327}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0acdef0ac1589df4592122f37dafaa3f, type: 3}
+  m_Script: {fileID: 11500000, guid: c7870a37b3bc7e24bb49d345d0658562, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canMove: 0
   isGameOver: 0
-  Pieces: []
+  Pieces:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
