@@ -167,19 +167,6 @@ public class AI : BasePlayer
             {
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
 
-                //for (int i = 0; i < 8; i++)
-                //{
-                //    Pieces[i].GetComponent<PawnAI>().hasFinished = false;
-                //}
-                //Pieces[8].GetComponent<RookAI>().hasFinished = false;
-                //Pieces[9].GetComponent<RookAI>().hasFinished = false;
-                //Pieces[10].GetComponent<KnightAI>().hasFinished = false;
-                //Pieces[11].GetComponent<KnightAI>().hasFinished = false;
-                //Pieces[12].GetComponent<BishopAI>().hasFinished = false;
-                //Pieces[13].GetComponent<BishopAI>().hasFinished = false;
-                //Pieces[14].GetComponent<QueenAI>().hasFinished = false;
-                //Pieces[15].GetComponent<KingAI>().hasFinished = false;
-
                 yield return new WaitForSeconds(1);
 
                 int bestScore = -99999;

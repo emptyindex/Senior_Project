@@ -108,13 +108,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2425099257607933997}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71b744f81e3eeec4585f17aa867ec653, type: 3}
+  m_Script: {fileID: 11500000, guid: b25e9f0f3f0a9c74c81f6926e2a0df79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pieceNum: 0
-  pieceID: 0
   currRow: 0
   currCol: 0
+  pieceNum: 0
   bestScore: 0
   bestMove: 
   moveFound: 0
