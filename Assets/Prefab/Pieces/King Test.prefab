@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7482226406555633705}
   - component: {fileID: 9144305242294689829}
   - component: {fileID: 152510994172266778}
-  - component: {fileID: 6951482982602809800}
+  - component: {fileID: 3132690099231329601}
   m_Layer: 0
   m_Name: King Test
   m_TagString: Untagged
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 69423dc35c461094a96a1a0939e6a121, type: 2}
+  - {fileID: 2100000, guid: fc0644a7205e92a4086840c9782e3267, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,7 +99,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &6951482982602809800
+--- !u!114 &3132690099231329601
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2425099257607933997}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 614b47f6dd298b9458d6d1b36fa40ae2, type: 3}
+  m_Script: {fileID: 11500000, guid: 48046e29762673b48af2aef9a005d70a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currRow: 0

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3542832199282443689}
   - component: {fileID: 3601070125822268224}
   - component: {fileID: 6376645739331179944}
-  - component: {fileID: 7726905436384137970}
+  - component: {fileID: 2701177736184890427}
   m_Layer: 0
   m_Name: Pawn Test
   m_TagString: Untagged
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1ecefb45bc02cac40bad6fb8e5b54cf2, type: 2}
+  - {fileID: 2100000, guid: 9c6f8daac7774c94b8c37585243edf22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,7 +99,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &7726905436384137970
+--- !u!114 &2701177736184890427
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1222142455936776488}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ddd88704efb2c4587fb26fdbdd205b, type: 3}
+  m_Script: {fileID: 11500000, guid: 68648dc1997e2884e9231d6b081a1da3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currRow: 0
