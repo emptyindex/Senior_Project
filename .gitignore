@@ -26,9 +26,6 @@
 *.a
 *.lib
 
-# meta files 
-*.meta
-
 # Executables
 *.exe
 *.out
