@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ public class PlayerManager : BasePlayer
     private Cell previousCell;
 
     private bool hasSelectedAPiece = false;
+
+    private GameObject selectedPiece = null;
 
     /// <summary>
     /// Start is called before the first frame update.
@@ -52,32 +55,75 @@ public class PlayerManager : BasePlayer
                         previousCell = cell;
                         hasSelectedAPiece = true;
 
+                        selectedPiece = previousCell.GetCurrentPiece;
+
                         highlightedCells = Manager.SetSelectedPiece(hit, cell);
-                    }
+                    }            
                     else
                     {
-                        ClearSelected();
+                        if(selectedPiece.GetComponent<IRoyalty>() == null || !selectedPiece.GetComponent<IRoyalty>().HasMoved)
+                        {
+                            ClearSelected();
 
-                        previousCell = cell;
-                        hasSelectedAPiece = true;
+                            previousCell = cell;
+                            hasSelectedAPiece = true;
 
-                        highlightedCells = Manager.SetSelectedPiece(hit, cell);
+                            selectedPiece = previousCell.GetCurrentPiece;
+
+                            highlightedCells = Manager.SetSelectedPiece(hit, cell);
+                        }
+                        else
+                        {
+                            ChangeTurn();
+                        }
                     }
                 }              
                 else if(!cell.GetCurrentPiece && hasSelectedAPiece)
                 {
                     if (highlightedCells.Contains(obj))
                     {
-                        MovePiece(cell, obj);
+                        var royalty = selectedPiece.GetComponent<IRoyalty>();
 
-                        IsTurn(false);
-                        Manager.ChangeTurn(this.gameObject);
+                        if(royalty != null)
+                        {
+                            var indexes = Tools.FindIndex(GameManager.boardArr, hit.transform.gameObject);
 
-                        ClearSelected();
+                            if (royalty.CanMoveAgain(indexes))
+                            {
+                                MovePiece(cell);
+
+                                royalty.UpdateMovementNum(indexes);
+                                royalty.ResetPos(indexes);
+
+                                ClearCells();
+                                highlightedCells = Manager.SetSelectedPiece(hit, cell);
+
+                                if(!highlightedCells.Any())
+                                {
+                                    royalty.ResetMovementNum();
+                                    ChangeTurn();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MovePiece(cell);
+                            ChangeTurn();
+                        }
                     }
                 } 
             }
         }
+    }
+
+    private void ChangeTurn()
+    {
+        selectedPiece = null;
+
+        IsTurn(false);
+        Manager.ChangeTurn(this.gameObject);
+
+        ClearSelected();
     }
 
     /// <summary>
@@ -89,6 +135,11 @@ public class PlayerManager : BasePlayer
 
         hasSelectedAPiece = false;
 
+        ClearCells();
+    }
+
+    private void ClearCells()
+    {
         highlightedCells.ForEach(c => c.GetComponent<Cell>().IsHighlighted = false);
         highlightedCells.Clear();
     }
@@ -98,21 +149,28 @@ public class PlayerManager : BasePlayer
     /// </summary>
     /// <param name="cell"></param>
     /// <param name="obj"></param>
-    private void MovePiece(Cell cell, GameObject obj)
+    private void MovePiece(Cell cell)
     {
-        int currX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
-        int currY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+        var currPiece = selectedPiece;
 
-        var newPos = Manager.GetMovePosition(cell.gameObject, previousCell.GetCurrentPiece);
+        int currX = currPiece.GetComponent<BasePiece>().positionY;
+        int currY = currPiece.GetComponent<BasePiece>().positionX;
 
-        int newX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
-        int newY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+        var newPos = Manager.GetMovePosition(cell.gameObject, selectedPiece);
 
-        Manager.UpdateIntBoard(currX, currY, newX, newY, previousCell.GetCurrentPiece.GetComponent<IPieceBase>().PieceID);
+        int newX = currPiece.GetComponent<BasePiece>().positionY;
+        int newY = currPiece.GetComponent<BasePiece>().positionX;
 
-        previousCell.GetCurrentPiece.GetComponent<BasePiece>().Move(newPos);
+        Manager.UpdateIntBoard(currX, currY, newX, newY, currPiece.GetComponent<IPieceBase>().PieceID);
 
-        cell.GetCurrentPiece = previousCell.GetCurrentPiece;
+        currPiece.GetComponent<BasePiece>().Move(newPos);
+
+        if(currPiece.GetComponent<Pawn>())
+        {
+            currPiece.GetComponent<Pawn>().UpdateMoved();
+        }
+
+        cell.GetCurrentPiece = currPiece;
         previousCell.GetCurrentPiece = null;
     }
 

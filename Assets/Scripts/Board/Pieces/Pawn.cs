@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class Pawn : BasePiece, IPieceBase
 {
+    public bool HasMoved { get; set; } = false;
+
     public int PieceID { get; set; } = 1;
 
     /// <summary>
@@ -14,6 +16,15 @@ public class Pawn : BasePiece, IPieceBase
     /// they can move forwards or "backwards" towards the center of the board.
     /// </summary>
     public bool MoveUp { get; set; } = true;
+
+    public void UpdateMoved()
+    {
+        if (!HasMoved)
+        {
+            HasMoved = true;
+            this.MovementNum = 2;
+        }
+    }
 
     /// <summary>
     /// Highlights the valid moves for this piece.
@@ -27,9 +38,14 @@ public class Pawn : BasePiece, IPieceBase
         switch (MoveUp)
         {
             case true:
-                return base.HighlightCells(board, x, y, 1, true, true, false, false, true, false, false, false);
+                return base.HighlightCells(board, x, y, this.MovementNum, true, true, false, false, true, false, false, false);
             case false:
-                return base.HighlightCells(board, x, y, 1, false, false, true, true, false, true, false, false);
+                return base.HighlightCells(board, x, y, this.MovementNum, false, false, true, true, false, true, false, false);
         }
+    }
+
+    private void Start()
+    {
+        this.MovementNum = 1;
     }
 }

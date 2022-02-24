@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\Board\Cell.cs" />
     <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
     <Compile Include="Assets\Scripts\Dice\Dice.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\IRoyalty.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
     <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Knight.cs" />

@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvAI;
+    private GameMode currGameMode = GameMode.PvP;
 
     /// <summary>
     /// Start is called before the first frame update when the script is loaded in.
@@ -278,6 +278,11 @@ public class GameManager : MonoBehaviour
                 newPiece.GetComponent<Pawn>().MoveUp = false;
             }
         }
+
+        if(newPiece.GetComponent<IRoyalty>() != null)
+        {
+            newPiece.GetComponent<IRoyalty>().ResetPos(new int[2] { i, j });
+        } 
 
         PopulateCell(playerList, i, j, isBlack, newPiece);
     }
