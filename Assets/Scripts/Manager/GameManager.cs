@@ -207,9 +207,11 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 players[1].GetComponent<BasePlayer>().IsTurn(true);
+                Debug.Log("Player 2's turn.");
                 break;
             case 1:
                 players[0].GetComponent<BasePlayer>().IsTurn(true);
+                Debug.Log("Player 1's turn.");
                 break;
         }
     }
@@ -282,7 +284,7 @@ public class GameManager : MonoBehaviour
         if(newPiece.GetComponent<IRoyalty>() != null)
         {
             newPiece.GetComponent<IRoyalty>().ResetPos(new int[2] { i, j });
-        } 
+        }
 
         PopulateCell(playerList, i, j, isBlack, newPiece);
     }

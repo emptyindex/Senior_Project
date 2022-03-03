@@ -253,6 +253,7 @@ public class AI : BasePlayer
                 //    Pieces[pieceThatMoved].GetComponent<KingAI>().currCol = moveToMake[1];
                 //}
 
+                // TO DO: 
                 IsTurn(false);
                 Manager.ChangeTurn(this.gameObject);
 

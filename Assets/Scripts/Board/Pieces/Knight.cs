@@ -52,6 +52,7 @@ public class Knight : BasePiece, IPieceBase, IRoyalty
 
     private void Start()
     {
+        base.Start();
         this.MovementNum = 4;
     }
 

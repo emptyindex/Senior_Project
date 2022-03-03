@@ -57,6 +57,7 @@ public class King : BasePiece, IPieceBase, IRoyalty
 
     private void Start()
     {
+        base.Start();
         this.MovementNum = 3;
     }
 }
