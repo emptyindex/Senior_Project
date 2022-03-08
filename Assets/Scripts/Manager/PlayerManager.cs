@@ -44,9 +44,9 @@ public class PlayerManager : BasePlayer
         Manager.ChangeTurn(this.gameObject);
     }
 
-    public List<GameObject> GetOtherCommanders(GameObject currCommander)
+    public List<GameObject> GetBishopCommanders()
     {
-        return corpsCommanders.Where(c => !c.Equals(currCommander)).ToList();
+        return corpsCommanders.Where(c => c.GetComponent<Bishop>()).ToList();
     }
 
     private void Start()
@@ -138,8 +138,8 @@ public class PlayerManager : BasePlayer
             piecesLeft = piecesLeft.Except(commander.GetComponent<CommanderController>().controlledPieces).ToList();
         }
 
-        var king = corpsCommanders.Where(c => c.GetComponent<King>() != null).FirstOrDefault();
-        king.GetComponent<CommanderController>().controlledPieces = piecesLeft;
+        var king = corpsCommanders.Where(c => c.GetComponent<KingCorpsCommander>() != null).FirstOrDefault().GetComponent<KingCorpsCommander>();
+        king.SetStartingPieces(piecesLeft);
     }
 
     private bool CanAdd(bool isLeftSide, GameObject pieceToCheck, int posX, int posY)

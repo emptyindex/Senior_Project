@@ -7,30 +7,32 @@ public enum MoveToMake
     Delegate, 
     MoveSelf,
     MoveOther,
+    RecallDelegate,
     None
 }
 
 public class CommanderController : MonoBehaviour, ICorpsCommander
 {
+    public string canvasName;
+
     [HideInInspector]
     public List<GameObject> controlledPieces = new List<GameObject>();
     [HideInInspector]
     public PlayerManager player;
 
-    private new Camera camera;
+    protected new Camera camera;
 
-    private GameObject selectedPiece = null;
+    protected GameObject selectedPiece = null;
     private Cell previousCell = null;
 
     private List<GameObject> highlightedCells = new List<GameObject>();
 
     private GameManager manager;
 
-    private bool isMoving = false;
-
-    private bool isDelegating = false;
+    protected bool isMoving = false;
 
     private bool commandAuthorityTaken = false;
+    private bool isFirstMove = true;
 
     public bool HasTakenCommand { get; set; } = false;
     public GameObject MenuCanvas { get; set; }
@@ -39,12 +41,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     public event CommandEndedEvent OnCommandEnded;
 
     public MoveToMake CurrentMove { get; set; }
-
-    public void SetToDelegate()
-    {
-        CurrentMove = MoveToMake.Delegate;
-        HideMenuAndToolTip();
-    }
 
     public void SetToMoveSelf()
     {
@@ -58,26 +54,26 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         HideMenuAndToolTip();
     }
 
-    private void HideMenuAndToolTip()
+    protected void HideMenuAndToolTip()
     {
         MenuCanvas.SetActive(false);
         TooltipManager.Hide();
     }
 
-    private void Start()
+    protected void Start()
     {
         camera = Camera.main;
 
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        this.MenuCanvas = gameObject.transform.Find("Canvas").gameObject;
+        this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
 
         this.MenuCanvas.SetActive(false);
 
         this.CurrentMove = MoveToMake.None;
     }
 
-    private void Update()
+    protected void Update()
     {
         if(commandAuthorityTaken)
         {
@@ -94,16 +90,10 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 MenuCanvas.SetActive(true);
             }
 
-            if(CurrentMove != MoveToMake.None && !isMoving && !isDelegating)
+            if(CurrentMove != MoveToMake.None && !isMoving)
             {
                 switch (CurrentMove)
                 {
-                    case MoveToMake.Delegate:
-                        // select piece to delegate
-                        HighlightAllExceptCommander();
-                        SelectPiece(false);
-
-                        break;
                     case MoveToMake.MoveSelf:
                         var basePiece = gameObject.GetComponent<BasePiece>();
                         selectedPiece = gameObject;
@@ -111,8 +101,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                         isMoving = true;
                         break;
                     case MoveToMake.MoveOther:
-                        HighlightAllExceptCommander();
-                        SelectPiece(true);
+                        HighlightAllExceptCommander(controlledPieces);
+                        isMoving = SelectPiece(true, controlledPieces);
                         break;
                 }
             }
@@ -121,42 +111,16 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
             {
                 MovePiece();
             }
-
-            if(isDelegating && selectedPiece)
-            {
-                DelegateToOther();
-            }
         }
     }
 
-    private void DelegateToOther()
+    protected void HighlightAllExceptCommander(List<GameObject> listToHighlight)
     {
-        var others = player.GetOtherCommanders(gameObject);
-        others.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
-
-        if(Input.GetMouseButtonUp(0))
-        {
-            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
-
-            var cell = hit.transform.gameObject.GetComponent<Cell>();
-
-            // if we clicked on a cell populated with one of this corps commander's controlled pieces
-            if (cell && cell.GetCurrentPiece && others.Contains(cell.GetCurrentPiece)) 
-            { 
-                cell.GetCurrentPiece.GetComponent<CommanderController>().controlledPieces.Add(selectedPiece);
-                //others.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false); TODO: add back in later (add yield to announce commander done)
-                ResetMove();
-            }
-        }
-    }
-
-    private void HighlightAllExceptCommander()
-    {
-        controlledPieces.ForEach(p => p.GetComponent<BasePiece>().spotLight.enabled = true);
+        listToHighlight.ForEach(p => p.GetComponent<BasePiece>().spotLight.enabled = true);
         gameObject.GetComponent<BasePiece>().spotLight.enabled = false;
     }
 
-    private void SelectPiece(bool toMove)
+    protected bool SelectPiece(bool toMove, List<GameObject> piecesToCheck)
     {
         if(Input.GetMouseButtonUp(0))
         {
@@ -165,7 +129,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
             var cell = hit.transform.gameObject.GetComponent<Cell>();
 
             // if we clicked on a cell populated with one of this corps commander's controlled pieces
-            if(cell && cell.GetCurrentPiece && controlledPieces.Contains(cell.GetCurrentPiece))
+            if(cell && cell.GetCurrentPiece && piecesToCheck.Contains(cell.GetCurrentPiece))
             {
                 if(!selectedPiece)
                 {
@@ -175,22 +139,20 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                     if(toMove)
                     {
                         highlightedCells = manager.SetSelectedPiece(hit, cell);
-
-                        isMoving = true;
-                    }
-                    else
-                    {
-                        isDelegating = true;
                     }
 
-                    controlledPieces.ForEach(p =>
+                    piecesToCheck.ForEach(p =>
                     {
                         if (!p.Equals(selectedPiece))
                             p.GetComponent<BasePiece>().spotLight.enabled = false;
                     });
+
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 
     private void MovePiece()
@@ -201,9 +163,15 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
             var cell = hit.transform.gameObject.GetComponent<Cell>();
 
-            if(cell && selectedPiece && highlightedCells.Contains(cell.gameObject))
+            if (cell && selectedPiece && highlightedCells.Contains(cell.gameObject))
             {
                 var royalty = selectedPiece.GetComponent<IRoyalty>();
+                var basePiece = selectedPiece.GetComponent<BasePiece>();
+
+                int startPosX = basePiece.positionX;
+                int startPosY = basePiece.positionY;
+                int endPosX;
+                int endPosY;
 
                 if (royalty != null)
                 {
@@ -211,7 +179,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
                     if (royalty.CanMoveAgain(indexes))
                     {
-                        selectedPiece.GetComponent<BasePiece>().MovePiece(cell, manager);
+                        basePiece.MovePiece(cell, manager);
                         previousCell.GetCurrentPiece = null;
 
                         royalty.UpdateMovementNum(indexes);
@@ -223,7 +191,10 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                         if (!highlightedCells.Any())
                         {
                             royalty.ResetMovementNum();
-                            ResetMove();
+                            endPosX = basePiece.positionX;
+                            endPosY = basePiece.positionY;
+
+                            EndMovement(startPosX, startPosY, endPosX, endPosY);
                         }
                     }
                 }
@@ -231,13 +202,34 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 {
                     selectedPiece.GetComponent<BasePiece>().MovePiece(cell, manager);
                     previousCell.GetCurrentPiece = null;
-                    ResetMove();
+
+                    endPosX = basePiece.positionX;
+                    endPosY = basePiece.positionY;
+
+                    EndMovement(startPosX, startPosY, endPosX, endPosY);
                 }
             }
         }
     }
 
-    private void ResetMove()
+    private void EndMovement(int startPosX, int startPosY, int endPosX, int endPosY)
+    {
+        if (CurrentMove == MoveToMake.MoveSelf && HasMovedOneSpot(startPosX, startPosY, endPosX, endPosY) && isFirstMove)
+        {
+            ResetMoveWithOutEnd();
+        }
+        else
+        {
+            ResetMove();
+        }
+    }
+
+    private bool HasMovedOneSpot(int sX, int sY, int eX, int eY)
+    {
+        return Mathf.Abs(sX - eX) <= 1 && Mathf.Abs(sY - eY) <= 1;
+    }
+
+    private void ResetMoveWithOutEnd()
     {
         ClearCells();
 
@@ -245,9 +237,17 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         selectedPiece = null;
 
         isMoving = false;
-        commandAuthorityTaken = true;
+        isFirstMove = false;
 
         CurrentMove = MoveToMake.None;
+    }
+
+    protected void ResetMove()
+    {
+        ResetMoveWithOutEnd();
+
+        commandAuthorityTaken = true;
+        isFirstMove = true;
     }
 
 
