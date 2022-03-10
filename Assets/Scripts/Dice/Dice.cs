@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class Dice : MonoBehaviour
 {
     
-    Rigidbody rb;
-    Vector3 diceVelocity ;
+    public static Rigidbody rb;
+    public static Vector3 diceVelocity ;
 
     // Start is called before the first frame update
     void Start()
@@ -33,14 +33,6 @@ public class Dice : MonoBehaviour
 
         }
         
-        if(diceVelocity.x == 0f && diceVelocity.y == 0f && diceVelocity.z == 0f)
-        {
-           Collider [] hitColliders = Physics.OverlapSphere(Vector3.right, 0.005f);
-           foreach (var collider in hitColliders)
-           {
-               print("Hit Collidors"+collider.gameObject.name);
-           }
-            
-        }
+        
     }
 }

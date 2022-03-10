@@ -14,7 +14,7 @@ public class DiceCheckZoneScript : MonoBehaviour
     }
 
     void FixedUpdate (){
-        //diceVelocity = Dice.diceVelocity;
+         diceVelocity = Dice.diceVelocity;
     }
 
     // Update is called once per frame
@@ -23,7 +23,7 @@ public class DiceCheckZoneScript : MonoBehaviour
         
     }
 
-   /* void OnTriggerStay(Collider col){
+    void OnTriggerStay(Collider col){
         if(diceVelocity.x == 0f && diceVelocity.y == 0f && diceVelocity.z == 0f)
         {
             switch (col.gameObject.name){
@@ -43,11 +43,11 @@ public class DiceCheckZoneScript : MonoBehaviour
                     DiceNumberTextScript.diceNumber = 2;
                     break;
                 case "Side6":
-                    DiceNumberTextScript.diceNumber = 5;
+                    DiceNumberTextScript.diceNumber = 1;
                     break;
 
             }
 
         }
-    }*/
+    }
 }

@@ -8,8 +8,7 @@ public class DiceNumberTextScript : MonoBehaviour
 {
     public TextMeshProUGUI text;
     public static int diceNumber;
-    public static string diceText;
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +18,7 @@ public class DiceNumberTextScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         text.text = diceNumber.ToString();
     }
 }
