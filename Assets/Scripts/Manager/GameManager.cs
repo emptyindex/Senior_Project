@@ -43,6 +43,11 @@ public class GameManager : MonoBehaviour
 
     private GameMode currGameMode = GameMode.PvP;
 
+    public BasePlayer[] GetBasePlayers()
+    {
+        return new BasePlayer[2] { players[0].GetComponent<BasePlayer>(), players[2].GetComponent<BasePlayer>() };
+    }
+
     /// <summary>
     /// Start is called before the first frame update when the script is loaded in.
     /// Instantiates the chess board and populates the squares with pieces.

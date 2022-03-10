@@ -10,6 +10,7 @@ using UnityEngine;
 public class PlayerManager : BasePlayer
 {
     public GameObject[] pieces = new GameObject[16];
+
     private List<GameObject> corpsCommanders = new List<GameObject>();
 
     private List<GameObject> usedCommanders = new List<GameObject>();
@@ -112,6 +113,11 @@ public class PlayerManager : BasePlayer
                     }
                 }
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            InvokeAttackRoll();
         }
     }
 
