@@ -5,10 +5,8 @@ using UnityEngine;
 /// <summary>
 /// Represents a Rook piece.
 /// </summary>
-public class Rook : BasePiece, IPieceBase
+public class Rook : BasePiece
 {
-    public int PieceID { get; set; } = 2;
-
     /// <summary>
     /// Highlights the valid moves for this piece.
     /// </summary>
@@ -21,9 +19,9 @@ public class Rook : BasePiece, IPieceBase
         return base.HighlightCells(board, x, y, this.MovementNum);
     }
 
-    private void Start()
+    private new void Awake()
     {
-        base.Start();
         this.MovementNum = 2;
+        this.PieceID = 2;
     }
 }

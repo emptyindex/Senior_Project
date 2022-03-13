@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
 
     public BasePlayer[] GetBasePlayers()
     {
-        return new BasePlayer[2] { players[0].GetComponent<BasePlayer>(), players[2].GetComponent<BasePlayer>() };
+        return new BasePlayer[2] { players[0].GetComponent<BasePlayer>(), players[1].GetComponent<BasePlayer>() };
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     /// and Two AI players for AIvAI.
     /// After creating the players, it assigns the appropriate collection of pieces to each.
     /// </summary>
-    void Start()
+    void Awake()
     {
         Instantiate(boardPrefab);
 
@@ -107,6 +107,11 @@ public class GameManager : MonoBehaviour
                 indexer++;
             }
         }
+
+        player2Pieces.ForEach(p => p.GetComponent<IPieceBase>().PieceID += 20);
+
+        UpdateIntBoard(player1Pieces);
+        UpdateIntBoard(player2Pieces);
 
         // depending on the chosen game mode, instantiate the correct players and assign the 
         // set of pieces to them.
@@ -181,8 +186,8 @@ public class GameManager : MonoBehaviour
     {
         var newIndexes = Tools.FindIndex(boardArr, moveCell);
 
-        piece.GetComponent<BasePiece>().positionX = newIndexes[0];
-        piece.GetComponent<BasePiece>().positionY = newIndexes[1];
+        piece.GetComponent<BasePiece>().CurrRowPos = newIndexes[0];
+        piece.GetComponent<BasePiece>().CurrColPos = newIndexes[1];
 
         return boardArr[newIndexes[0], newIndexes[1]].transform.position;
     }
@@ -190,6 +195,11 @@ public class GameManager : MonoBehaviour
     public Vector3 GetMovePosition(int i, int j)
     {
         return boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+    }
+
+    private void UpdateIntBoard(List<GameObject> pieces)
+    {
+        pieces.ForEach(p => { board[p.GetComponent<IPieceBase>().CurrRowPos, p.GetComponent<IPieceBase>().CurrColPos] = p.GetComponent<IPieceBase>().PieceID; });
     }
 
     public void UpdateIntBoard(int i, int j, int newi, int newj, int pieceID)
@@ -291,6 +301,8 @@ public class GameManager : MonoBehaviour
             newPiece.GetComponent<IRoyalty>().ResetPos(new int[2] { i, j });
         }
 
+        //var temp = newPiece.GetComponent<IPieceBase>().PieceID;
+
         PopulateCell(playerList, i, j, isBlack, newPiece);
     }
 
@@ -301,20 +313,8 @@ public class GameManager : MonoBehaviour
             newPiece.GetComponent<Renderer>().material.color *= 0.5f;
         }
 
-        if(newPiece.GetComponent<BaseAI>())
-        {
-            newPiece.GetComponent<BaseAI>().currRow = j;
-            newPiece.GetComponent<BaseAI>().currCol = i;
-
-            newPiece.GetComponent<BaseAI>().pieceNum = indexer + i;
-        }
-        else
-        {
-            newPiece.GetComponent<BasePiece>().positionX = i;
-            newPiece.GetComponent<BasePiece>().positionY = j;
-        }
-
-        board[j, i] = newPiece.GetComponent<IPieceBase>().PieceID;
+        newPiece.GetComponent<IPieceBase>().CurrColPos = j;
+        newPiece.GetComponent<IPieceBase>().CurrRowPos = i;
 
         SetPosition(playerList, i, j, newPiece);
     }

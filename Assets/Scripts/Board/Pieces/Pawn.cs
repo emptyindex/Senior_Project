@@ -5,11 +5,9 @@ using UnityEngine;
 /// <summary>
 /// Represents a Pawn piece.
 /// </summary>
-public class Pawn : BasePiece, IPieceBase
+public class Pawn : BasePiece
 {
     public bool HasMoved { get; set; } = false;
-
-    public int PieceID { get; set; } = 1;
 
     /// <summary>
     /// Pawns cannot move backwards, depending on their orientation on the board,
@@ -44,9 +42,9 @@ public class Pawn : BasePiece, IPieceBase
         }
     }
 
-    private void Start()
+    private void Awake()
     {
-        base.Start();
         this.MovementNum = 1;
+        this.PieceID = 1;
     }
 }

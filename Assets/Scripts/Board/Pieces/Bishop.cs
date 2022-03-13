@@ -5,10 +5,8 @@ using UnityEngine;
 /// <summary>
 /// Represents the Bishop piece.
 /// </summary>
-public class Bishop : BasePiece, IPieceBase
+public class Bishop : BasePiece
 {
-    public int PieceID { get; set; } = 4;
-
     /// <summary>
     /// Highlights the valid moves for this piece.
     /// </summary>
@@ -21,9 +19,9 @@ public class Bishop : BasePiece, IPieceBase
         return base.HighlightCells(board, x, y, this.MovementNum);
     }
 
-    private void Start()
+    private void Awake()
     {
-        base.Start();
         this.MovementNum = 2;
+        this.PieceID = 4;
     }
 }

@@ -6,9 +6,8 @@ using UnityEngine;
 /// <summary>
 /// Represents a Queen piece.
 /// </summary>
-public class Queen : BasePiece, IPieceBase, IRoyalty
+public class Queen : BasePiece, IRoyalty
 {
-    public int PieceID { get; set; } = 5;
     public int[] InitialStartPos { get; private set; } = new int[2];
 
     public bool HasMoved { get; private set; } = false;
@@ -55,9 +54,9 @@ public class Queen : BasePiece, IPieceBase, IRoyalty
         return new int[2] { Mathf.Abs(newPos[0] - InitialStartPos[0]), Mathf.Abs(newPos[1] - InitialStartPos[1]) }.Max();
     }
 
-    private void Start()
+    private void Awake()
     {
-        base.Start();
         this.MovementNum = 3;
+        this.PieceID = 5;
     }
 }

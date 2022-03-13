@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QueenAI : BaseAI, IPieceBase
+public class QueenAI : BaseAI
 {
-    public int PieceID { get; set; } = 15;
-
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 15;
+
         //BestMove();
         this.hasFinished = false;
     }
@@ -47,19 +47,19 @@ public class QueenAI : BaseAI, IPieceBase
         int column_limit = 7;
 
         //search possible moves
-        for (int x = Mathf.Max(0, currRow - 3); x <= Mathf.Min(currRow + 3, row_limit); x++)
+        for (int x = Mathf.Max(0, CurrRowPos - 3); x <= Mathf.Min(CurrRowPos + 3, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 3); y <= Mathf.Min(currCol + 3, column_limit); y++)
+            for (int y = Mathf.Max(0, CurrColPos - 3); y <= Mathf.Min(CurrColPos + 3, column_limit); y++)
             {
-                if (x != currRow || y != currCol)
+                if (x != CurrRowPos || y != CurrColPos)
                 {
                     //check if move to spot is valid given movespeed of piece
-                    int moves = isMoveValid(newBoard, currRow, currCol, x, y);
+                    int moves = isMoveValid(newBoard, CurrRowPos, CurrColPos, x, y);
                     if (moves <= 3)
                     {
                         moveFound = true;
                         newBoard[x, y] = 15;
-                        newBoard[currRow, currCol] = 0;
+                        newBoard[CurrRowPos, CurrColPos] = 0;
                         currAttack[0] = -1;
                         currAttack[1] = -1;
                         currScore = HeuristicScore(newBoard, currAttack);
@@ -70,13 +70,13 @@ public class QueenAI : BaseAI, IPieceBase
                             bestMove[1] = y;
                         }
                         newBoard[x, y] = 0;
-                        newBoard[currRow, currCol] = 15;
+                        newBoard[CurrRowPos, CurrColPos] = 15;
                     }
 
                     //check possible attacks
                     if ((newBoard[x, y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 ||
                         newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6) &&
-                        (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
+                        (x <= CurrRowPos + 1) && (y <= CurrColPos + 1) && (x >= CurrRowPos - 1) && (y >= CurrColPos - 1))
                     {
                         moveFound = true;
                         currAttack[0] = x;

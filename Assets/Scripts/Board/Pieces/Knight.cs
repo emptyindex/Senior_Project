@@ -6,9 +6,8 @@ using UnityEngine;
 /// <summary>
 /// Represents a Knight piece.
 /// </summary>
-public class Knight : BasePiece, IPieceBase, IRoyalty
+public class Knight : BasePiece, IRoyalty
 {
-    public int PieceID { get; set; } = 3;
     public int[] InitialStartPos { get; private set; } = new int[2];
 
     public bool HasMoved { get; private set; } = false;
@@ -50,10 +49,10 @@ public class Knight : BasePiece, IPieceBase, IRoyalty
         InitialStartPos = newPos;
     }
 
-    private void Start()
+    private void Awake()
     {
-        base.Start();
         this.MovementNum = 4;
+        this.PieceID = 3;
     }
 
     public int GetNumMoved(int[] newPos)

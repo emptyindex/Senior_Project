@@ -128,8 +128,8 @@ public class PlayerManager : BasePlayer
 
         foreach (var commander in bishops)
         {
-            var posX = commander.GetComponent<BasePiece>().positionX;
-            var posY = commander.GetComponent<BasePiece>().positionY;
+            var posX = commander.GetComponent<BasePiece>().CurrRowPos;
+            var posY = commander.GetComponent<BasePiece>().CurrColPos;
 
             bool isLeftSide = true;
 
@@ -150,8 +150,8 @@ public class PlayerManager : BasePlayer
 
     private bool CanAdd(bool isLeftSide, GameObject pieceToCheck, int posX, int posY)
     {
-        var newX = pieceToCheck.GetComponent<BasePiece>().positionX;
-        var newY = pieceToCheck.GetComponent<BasePiece>().positionY;
+        var newX = pieceToCheck.GetComponent<BasePiece>().CurrRowPos;
+        var newY = pieceToCheck.GetComponent<BasePiece>().CurrColPos;
 
         bool boolRange;
 
