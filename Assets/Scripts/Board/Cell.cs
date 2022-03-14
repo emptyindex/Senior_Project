@@ -8,6 +8,7 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     public Material highlightBorder;
+    public Material highlightAttackBorder;
 
     private Material originalColor;
     private GameObject contains;
@@ -36,6 +37,10 @@ public class Cell : MonoBehaviour
         {
             renderer.material = highlightBorder;
         }
+        else if (IsAttackHighlighted)
+        {
+            renderer.material = highlightAttackBorder;
+        }
         else
         {
             renderer.material = originalColor;
@@ -46,6 +51,7 @@ public class Cell : MonoBehaviour
     /// Gets and sets the highlighted status of this cell.
     /// </summary>
     public bool IsHighlighted { get; set; }
+    public bool IsAttackHighlighted { get; set; }
 
     /// <summary>
     /// Gets and sets the current piece on this cell.

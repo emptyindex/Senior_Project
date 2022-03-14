@@ -30,7 +30,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4556116638360960355}
   m_Father: {fileID: 0}
@@ -55,7 +54,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -113,6 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightBorder: {fileID: 2100000, guid: a5a5150b3b0a97d498432bc4fbe268e3, type: 2}
+  highlightAttackBorder: {fileID: 2100000, guid: 350856bce68524848a45fdc8d3123b0f, type: 2}
 --- !u!1 &7969898767012464569
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,7 +141,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 0.9, y: 1, z: 0.9}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4299218954488876289}
   m_RootOrder: 0
@@ -166,7 +164,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1

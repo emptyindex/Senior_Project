@@ -60,7 +60,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="x">The current piece's X position on the board.</param>
     /// <param name="y">The current piece's Y position on the board.</param>
     /// <returns></returns>
-    public abstract List<GameObject> Highlight(GameObject[,] board, int x, int y);
+    public abstract (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y);
 
     /// <summary>
     /// This method gets the all possible positions a piece can move - both forwards and backwards.
@@ -85,7 +85,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="left">Whether the piece can move left.</param>
     /// <param name="right">Whether the piece can move right.</param>
     /// <returns></returns>
-    public List<GameObject> HighlightCells(GameObject[,] board,
+    public (List<GameObject>, List<GameObject>) HighlightCells(GameObject[,] board,
         int x, int y,
         int maxTimes,
         bool diaRight = true,
@@ -113,9 +113,9 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             // get diagonal down left
             if (diaLeft)
             {
-                diaLeft = !IsPopulated(board, x - timesMoved, moveY);
+                diaLeft = IsValid(board, x - timesMoved, moveY);
 
-                GetMove(board, x - timesMoved, moveY, inRange, diaLeft);
+                checkGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved);
             }
 
             moveX = x + timesMoved;
@@ -123,25 +123,25 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             // move right
             if (right)
             {
-                right = !IsPopulated(board, moveX, y);
+                right = IsValid(board, moveX, y);
 
-                GetMove(board, moveX, y, inRange, right);
+                checkGetMove(board, right, inRange, inRangeToAttack, y, moveX);
             }
 
             // move forward
             if(up)
             {
-                up = !IsPopulated(board, x, moveY);
+                up = IsValid(board, x, moveY);
 
-                GetMove(board, x, moveY, inRange, up);
+                checkGetMove(board, up, inRange, inRangeToAttack, moveY, x);
             }
 
             // move diagonal down right
             if(diaRight)
             {
-                diaRight = !IsPopulated(board, moveX, moveY);
+                diaRight = IsValid(board, moveX, moveY);
 
-                GetMove(board, moveX, moveY, inRange, diaRight);
+                checkGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX);
             }
 
             moveY = y - timesMoved;
@@ -149,17 +149,17 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             // move diagonal up right
             if(diaRightUp)
             {
-                diaRightUp = !IsPopulated(board, moveX, moveY);
+                diaRightUp = IsValid(board, moveX, moveY);
 
-                GetMove(board, moveX, moveY, inRange, diaRightUp);
+                checkGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX);
             }
 
             // move backwards
             if(down)
             {
-                down = !IsPopulated(board, x, moveY);
+                down = IsValid(board, x, moveY);
 
-                GetMove(board, x, moveY, inRange, down);
+                checkGetMove(board, down, inRange, inRangeToAttack, moveY, x);
             }
 
             moveX = x - timesMoved;
@@ -167,9 +167,9 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             // move left
             if(left)
             {
-                left = !IsPopulated(board, moveX, y);
+                left = IsValid(board, moveX, y);
 
-                GetMove(board, moveX, y, inRange, left);
+                checkGetMove(board, left, inRange, inRangeToAttack, y, moveX);
             }
 
             // move diagonal up left
@@ -177,20 +177,24 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             {
                 diaLeftUp = IsValid(board, moveX, moveY);
 
-                if (diaLeftUp && IsPopulated(board, moveX, moveY))
-                {
-                    GetMove(board, moveX, moveY, inRangeToAttack, HasEnemyPiece(board, moveX, moveY));
-                }
-                else
-                {
-                    GetMove(board, moveX, moveY, inRange, diaLeftUp);
-                }
+                checkGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX);
             }
-
             timesMoved++;
         }
 
-        return inRange;
+        return (inRange, inRangeToAttack);
+    }
+
+    private void checkGetMove(GameObject[,] board, bool isValid, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX)
+    {
+        if (isValid && IsPopulated(board, moveX, moveY))
+        {
+            GetMove(board, moveX, moveY, inRangeToAttack, HasEnemyPiece(board, moveX, moveY), true);
+        }
+        else
+        {
+            GetMove(board, moveX, moveY, inRange, isValid, false);
+        }
     }
 
     /// <summary>
@@ -251,12 +255,19 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="offset">The y position that we want to check.</param>
     /// <param name="inRange">The list of valid cells/moves.</param>
     /// <param name="canMove">The boolean to indicate whether a piece can move in the direction being checked.</param>
-    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool checkAttack)
+    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool isValid, bool checkAttack)
     {
-        if (!inRange.Contains(board[coord, offset]) && checkAttack)
+        if (!inRange.Contains(board[coord, offset]) && isValid)
         {
             inRange.Add(board[coord, offset]);
-            board[coord, offset].GetComponent<Cell>().IsHighlighted = true;
+            if (checkAttack)
+            {
+                board[coord, offset].GetComponent<Cell>().IsAttackHighlighted = true;
+            }
+            else
+            {
+                board[coord, offset].GetComponent<Cell>().IsHighlighted = true;
+            }
         }
     }
 

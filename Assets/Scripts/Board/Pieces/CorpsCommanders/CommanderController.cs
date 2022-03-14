@@ -26,7 +26,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     protected GameObject selectedPiece = null;
     private Cell previousCell = null;
 
-    private List<GameObject> highlightedCells = new List<GameObject>();
+    public List<GameObject> highlightedCells = new List<GameObject>();
+    public List<GameObject> attackCells = new List<GameObject>();
 
     private GameManager manager;
 
@@ -98,7 +99,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                     case MoveToMake.MoveSelf:
                         var basePiece = gameObject.GetComponent<BasePiece>();
                         selectedPiece = gameObject;
-                        highlightedCells = basePiece.Highlight(GameManager.boardArr, basePiece.CurrRowPos, basePiece.CurrColPos);
+                        (highlightedCells, attackCells) = basePiece.Highlight(GameManager.boardArr, basePiece.CurrRowPos, basePiece.CurrColPos);
                         isMoving = true;
                         break;
                     case MoveToMake.MoveOther:
@@ -139,7 +140,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
                     if(toMove)
                     {
-                        highlightedCells = manager.SetSelectedPiece(hit, cell);
+                        (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
                     }
 
                     piecesToCheck.ForEach(p =>
@@ -188,7 +189,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                         royalty.ResetPos(indexes);
 
                         ClearCells();
-                        highlightedCells = manager.SetSelectedPiece(hit, cell);
+                        (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
 
                         if (!highlightedCells.Any())
                         {

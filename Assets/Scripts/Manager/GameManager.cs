@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour
     /// <param name="hit">The RaycastHit that represents the location the player has clicked.</param>
     /// <param name="cell">The Cell object to get the current piece that needs to be moved.</param>
     /// <returns>Returns all the highlighted cells where a piece can move.</returns>
-    public List<GameObject> SetSelectedPiece(RaycastHit hit, Cell cell)
+    public (List<GameObject>, List<GameObject>) SetSelectedPiece(RaycastHit hit, Cell cell)
     {
         var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
 
