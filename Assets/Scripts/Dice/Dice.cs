@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 
 public class Dice : MonoBehaviour
-{
-    
-    public static Rigidbody rb;
-    public static Vector3 diceVelocity ;
+
+{   
+    Rigidbody rb;
+    Vector3 diceVelocity ;
 
     // Start is called before the first frame update
     void Start()

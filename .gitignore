@@ -31,7 +31,16 @@
 *.out
 *.app
 
-# file 
-obj/
+# Other extensions
+*.bak
+
+# folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
 .vs/
-Temp/
+

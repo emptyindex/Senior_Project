@@ -6,9 +6,11 @@ using TMPro;
 
 public class DiceNumberTextScript : MonoBehaviour
 {
-    public TextMeshProUGUI text;
     public static int diceNumber;
-    
+  
+
+    private TextMeshProUGUI text;
+
     // Start is called before the first frame update
     void Start()
     {
