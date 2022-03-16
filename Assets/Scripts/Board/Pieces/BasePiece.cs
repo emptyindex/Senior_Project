@@ -44,11 +44,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
 
         Move(newPos);
 
-        if (gameObject.GetComponent<Pawn>())
-        {
-            gameObject.GetComponent<Pawn>().UpdateMoved();
-        }
-
         cell.GetCurrentPiece = gameObject;
     }
 
@@ -87,7 +82,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <returns></returns>
     public (List<GameObject>, List<GameObject>) HighlightCells(GameObject[,] board,
         int x, int y,
-        int maxTimes,
         bool diaRight = true,
         bool diaLeft = true,
         bool diaRightUp = true,
@@ -100,6 +94,8 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         List<GameObject> inRange = new List<GameObject>();
         List<GameObject> inRangeToAttack = new List<GameObject>();
 
+        var maxTimes = this.MovementNum;
+
         int timesMoved = 1;
         maxTimes++;
 
@@ -111,90 +107,63 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             moveY = y + timesMoved;
 
             // get diagonal down left
-            if (diaLeft)
-            {
-                diaLeft = IsValid(board, x - timesMoved, moveY);
-
-                checkGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved);
-            }
+            diaLeft = CheckGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved);
 
             moveX = x + timesMoved;
 
             // move right
-            if (right)
-            {
-                right = IsValid(board, moveX, y);
-
-                checkGetMove(board, right, inRange, inRangeToAttack, y, moveX);
-            }
+            right = CheckGetMove(board, right, inRange, inRangeToAttack, y, moveX);
 
             // move forward
-            if(up)
-            {
-                up = IsValid(board, x, moveY);
-
-                checkGetMove(board, up, inRange, inRangeToAttack, moveY, x);
-            }
+            up = CheckGetMove(board, up, inRange, inRangeToAttack, moveY, x);
 
             // move diagonal down right
-            if(diaRight)
-            {
-                diaRight = IsValid(board, moveX, moveY);
-
-                checkGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX);
-            }
+            diaRight = CheckGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX);
 
             moveY = y - timesMoved;
 
             // move diagonal up right
-            if(diaRightUp)
-            {
-                diaRightUp = IsValid(board, moveX, moveY);
-
-                checkGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX);
-            }
+            diaRightUp = CheckGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX);
 
             // move backwards
-            if(down)
-            {
-                down = IsValid(board, x, moveY);
-
-                checkGetMove(board, down, inRange, inRangeToAttack, moveY, x);
-            }
+            down = CheckGetMove(board, down, inRange, inRangeToAttack, moveY, x);
 
             moveX = x - timesMoved;
 
             // move left
-            if(left)
-            {
-                left = IsValid(board, moveX, y);
-
-                checkGetMove(board, left, inRange, inRangeToAttack, y, moveX);
-            }
+            left = CheckGetMove(board, left, inRange, inRangeToAttack, y, moveX);
 
             // move diagonal up left
-            if(diaLeftUp)
-            {
-                diaLeftUp = IsValid(board, moveX, moveY);
+            diaLeftUp = CheckGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX);
 
-                checkGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX);
-            }
             timesMoved++;
         }
 
         return (inRange, inRangeToAttack);
     }
 
-    private void checkGetMove(GameObject[,] board, bool isValid, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX)
+    private bool CheckGetMove(GameObject[,] board, bool canContinueDirection, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX)
     {
-        if (isValid && IsPopulated(board, moveX, moveY))
+        if (canContinueDirection && IsValid(board, moveX, moveY))
         {
-            GetMove(board, moveX, moveY, inRangeToAttack, HasEnemyPiece(board, moveX, moveY), true);
+            if (IsPopulated(board, moveX, moveY))
+            {
+                if(HasEnemyPiece(board, moveX, moveY))
+                {
+                    GetMove(board, moveX, moveY, inRangeToAttack, true);
+
+                    return false;
+                }
+            }
+            else
+            {
+                GetMove(board, moveX, moveY, inRange, false);
+
+                return true;
+            }
         }
-        else
-        {
-            GetMove(board, moveX, moveY, inRange, isValid, false);
-        }
+
+        return false;
     }
 
     /// <summary>
@@ -255,11 +224,12 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="offset">The y position that we want to check.</param>
     /// <param name="inRange">The list of valid cells/moves.</param>
     /// <param name="canMove">The boolean to indicate whether a piece can move in the direction being checked.</param>
-    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool isValid, bool checkAttack)
+    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool checkAttack)
     {
-        if (!inRange.Contains(board[coord, offset]) && isValid)
+        if (!inRange.Contains(board[coord, offset]))
         {
             inRange.Add(board[coord, offset]);
+
             if (checkAttack)
             {
                 board[coord, offset].GetComponent<Cell>().IsAttackHighlighted = true;

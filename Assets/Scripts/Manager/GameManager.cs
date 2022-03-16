@@ -244,11 +244,7 @@ public class GameManager : MonoBehaviour
         var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
 
         // highlight available slots
-        var highlightedCells = cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
-
-        Debug.Log("I have a piece");
-
-        return highlightedCells;
+        return cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
     }
 
     /// <summary>

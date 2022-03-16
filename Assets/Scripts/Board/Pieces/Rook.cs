@@ -16,10 +16,10 @@ public class Rook : BasePiece
     /// <returns>A list of all valid moves for this piece.</returns>
     public override (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y)
     {
-        return base.HighlightCells(board, x, y, this.MovementNum);
+        return base.HighlightCells(board, x, y);
     }
 
-    private new void Awake()
+    private void Awake()
     {
         this.MovementNum = 2;
         this.PieceID = 2;

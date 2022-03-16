@@ -10,6 +10,8 @@ public class Cell : MonoBehaviour
     public Material highlightBorder;
     public Material highlightAttackBorder;
 
+    public bool containsPiece;
+
     private Material originalColor;
     private GameObject contains;
 
@@ -45,6 +47,8 @@ public class Cell : MonoBehaviour
         {
             renderer.material = originalColor;
         }
+
+        containsPiece = GetCurrentPiece != null;
     }
 
     /// <summary>

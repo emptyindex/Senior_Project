@@ -28,7 +28,7 @@ public class Knight : BasePiece, IRoyalty
     /// <returns>A list of all valid moves for this piece.</returns>
     public override (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y)
     {
-        return base.HighlightCells(board, x, y, this.MovementNum);
+        return base.HighlightCells(board, x, y);
     }
 
     public void UpdateMovementNum(int[] newPos)
