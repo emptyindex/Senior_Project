@@ -7,10 +7,53 @@ using UnityEngine;
 /// </summary>
 public abstract class BasePiece : MonoBehaviour
 {
+    public int MovementNum { get; set; }
+
+    public Light spotLight;
+
     [HideInInspector]
     public int positionX;
     [HideInInspector]
     public int positionY;
+
+    public void Start()
+    {
+        spotLight.enabled = false;
+    }
+
+    public int[] GetNumberMoves(int x, int y)
+    {
+        return new int[] { Mathf.Abs(x - positionX), Mathf.Abs(y - positionY) };
+    }
+
+
+    /// <summary>
+    /// Moves the piece to the new cell location.
+    /// </summary>
+    /// <param name="cell"></param>
+    /// <param name="obj"></param>
+    public void MovePiece(Cell cell, GameManager manager)
+    {
+        int currX = positionY;
+        int currY = positionX;
+
+        var newPos = manager.GetMovePosition(cell.gameObject, gameObject);
+
+        int newX = positionY;
+        int newY = positionX;
+
+        manager.UpdateIntBoard(currX, currY, newX, newY, gameObject.GetComponent<IPieceBase>().PieceID);
+
+        Move(newPos);
+
+        if (gameObject.GetComponent<Pawn>())
+        {
+            gameObject.GetComponent<Pawn>().UpdateMoved();
+        }
+
+        cell.GetCurrentPiece = gameObject;
+    }
+
 
     /// <summary>
     /// The abstract method that GameManager calls to highlight the available cells on the board.
@@ -148,7 +191,7 @@ public abstract class BasePiece : MonoBehaviour
     /// Changes the transform of the gameobject that this script is attached to.
     /// </summary>
     /// <param name="position">The new position to move.</param>
-    public void Move(Vector3 position)
+    private void Move(Vector3 position)
     {
         gameObject.transform.position = position + new Vector3(0, 0.02f, 0);
     }

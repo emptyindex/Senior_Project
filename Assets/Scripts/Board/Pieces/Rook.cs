@@ -18,6 +18,12 @@ public class Rook : BasePiece, IPieceBase
     /// <returns>A list of all valid moves for this piece.</returns>
     public override List<GameObject> Highlight(GameObject[,] board, int x, int y)
     {
-        return base.HighlightCells(board, x, y, 2);
+        return base.HighlightCells(board, x, y, this.MovementNum);
+    }
+
+    private void Start()
+    {
+        base.Start();
+        this.MovementNum = 2;
     }
 }

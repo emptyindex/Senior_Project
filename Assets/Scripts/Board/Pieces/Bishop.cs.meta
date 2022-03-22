@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/Dice/DiceNumberTextScript.cs.meta
-guid: c3a61a13a0ff36a458e3e3bf03cb5d3c
-========
-guid: e4a0c188ed0a8cf42b2ab33ef9cabfc7
->>>>>>>> d6d1d5fb85ec0146d11970f696d876cbcb65d772:Assets/Scripts/Board/Pieces/Bishop.cs.meta
+guid: 9f2ee81147fd91d44bd0670764d334aa
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

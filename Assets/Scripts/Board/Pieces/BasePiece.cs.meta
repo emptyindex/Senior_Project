@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/Dice/DiceCheckZoneScript.cs.meta
-guid: d56486896290c104dace7110ee63bd09
-========
-guid: 1668730d3c91b9d4cba5952bac031b49
->>>>>>>> d6d1d5fb85ec0146d11970f696d876cbcb65d772:Assets/Scripts/Board/Pieces/BasePiece.cs.meta
+guid: 936c1693a7ca0724b84d43ceb72d3def
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
