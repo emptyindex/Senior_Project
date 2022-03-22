@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
      <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
      <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
+     <Compile Include="Assets\Free Low Poly Chess Set\Example\Scripts\CameraRotate.cs" />
      <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
      <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
      <Compile Include="Assets\Scripts\Dice\Dice.cs" />
@@ -78,6 +79,7 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+     <None Include="Assets\Free Low Poly Chess Set\README.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />

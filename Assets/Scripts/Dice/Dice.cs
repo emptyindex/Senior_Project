@@ -8,7 +8,7 @@ public class Dice : MonoBehaviour
 
 {   
     Rigidbody rb;
-    Vector3 diceVelocity ;
+    public static Vector3 diceVelocity ;
 
     // Start is called before the first frame update
     void Start()
