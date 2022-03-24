@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -9,23 +10,15 @@ public abstract class BasePiece : MonoBehaviour
 {
     public int MovementNum { get; set; }
 
-    public Light spotLight;
-
     [HideInInspector]
     public int positionX;
     [HideInInspector]
     public int positionY;
 
-    public void Start()
-    {
-        spotLight.enabled = false;
-    }
-
     public int[] GetNumberMoves(int x, int y)
     {
         return new int[] { Mathf.Abs(x - positionX), Mathf.Abs(y - positionY) };
     }
-
 
     /// <summary>
     /// Moves the piece to the new cell location.

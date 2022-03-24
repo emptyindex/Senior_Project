@@ -46,7 +46,6 @@ public class Pawn : BasePiece, IPieceBase
 
     private void Start()
     {
-        base.Start();
         this.MovementNum = 1;
     }
 }

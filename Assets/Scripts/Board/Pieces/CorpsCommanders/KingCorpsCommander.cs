@@ -86,7 +86,7 @@ public class KingCorpsCommander : CommanderController
     private void DelegateToOther()
     {
         var bishops = player.GetBishopCommanders();
-        bishops.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        bishops.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(true));
 
         if (Input.GetMouseButtonUp(0))
         {

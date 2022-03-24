@@ -116,8 +116,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     protected void HighlightAllExceptCommander(List<GameObject> listToHighlight)
     {
-        listToHighlight.ForEach(p => p.GetComponent<BasePiece>().spotLight.enabled = true);
-        gameObject.GetComponent<BasePiece>().spotLight.enabled = false;
+        listToHighlight.ForEach(p => p.GetComponent<PieceColorManager>().SetHighlight(true));
+        gameObject.GetComponent<PieceColorManager>().SetHighlight(false);
     }
 
     protected bool SelectPiece(bool toMove, List<GameObject> piecesToCheck)
@@ -129,14 +129,14 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
             var cell = hit.transform.gameObject.GetComponent<Cell>();
 
             // if we clicked on a cell populated with one of this corps commander's controlled pieces
-            if(cell && cell.GetCurrentPiece && piecesToCheck.Contains(cell.GetCurrentPiece))
+            if (cell && cell.GetCurrentPiece && piecesToCheck.Contains(cell.GetCurrentPiece))
             {
-                if(!selectedPiece)
+                if (!selectedPiece)
                 {
                     previousCell = cell;
                     selectedPiece = cell.GetCurrentPiece;
 
-                    if(toMove)
+                    if (toMove)
                     {
                         highlightedCells = manager.SetSelectedPiece(hit, cell);
                     }
@@ -144,7 +144,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                     piecesToCheck.ForEach(p =>
                     {
                         if (!p.Equals(selectedPiece))
-                            p.GetComponent<BasePiece>().spotLight.enabled = false;
+                            p.GetComponent<PieceColorManager>().SetHighlight(false);
                     });
 
                     return true;
@@ -233,7 +233,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     {
         ClearCells();
 
-        selectedPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+        selectedPiece.GetComponent<PieceColorManager>().SetHighlight(false);
         selectedPiece = null;
 
         isMoving = false;

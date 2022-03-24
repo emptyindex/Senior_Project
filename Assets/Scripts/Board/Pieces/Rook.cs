@@ -23,7 +23,6 @@ public class Rook : BasePiece, IPieceBase
 
     private void Start()
     {
-        base.Start();
         this.MovementNum = 2;
     }
 }

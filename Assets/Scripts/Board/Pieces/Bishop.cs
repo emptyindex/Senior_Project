@@ -23,7 +23,6 @@ public class Bishop : BasePiece, IPieceBase
 
     private void Start()
     {
-        base.Start();
         this.MovementNum = 2;
     }
 }

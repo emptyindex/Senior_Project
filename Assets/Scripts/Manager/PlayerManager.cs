@@ -33,7 +33,8 @@ public class PlayerManager : BasePlayer
     {
         canMove = false;
 
-        corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+        //corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+        corpsCommanders.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(false));
 
         usedCommanders.Clear();
         movesTaken = 0;
@@ -93,7 +94,7 @@ public class PlayerManager : BasePlayer
                 {
                     Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
 
-                    if(hit.transform)
+                    if (hit.transform)
                     {
                         var cell = hit.transform.gameObject.GetComponent<Cell>();
 
@@ -106,7 +107,7 @@ public class PlayerManager : BasePlayer
                             corpsCommanders.ForEach(c =>
                             {
                                 if (!c.Equals(selectedPiece))
-                                    c.GetComponent<BasePiece>().spotLight.enabled = false;
+                                    c.GetComponent<PieceColorManager>().SetHighlight(false);
                             });
                         }
                     }
@@ -176,6 +177,7 @@ public class PlayerManager : BasePlayer
     {
         var toHighlight = corpsCommanders.Except(usedCommanders).ToList();
 
-        toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        //toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        toHighlight.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(true));
     }
 }

@@ -90,12 +90,12 @@ public class GameManager : MonoBehaviour
                     // if it's the second to last row on the board, we need to place the higher order piecs for the second player.
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        PopulateCellForGameMode(player2Pieces, i, j, false);
+                        PopulateCellForGameMode(player2Pieces, i, j, true);
                     }
                     // if it's in the second row of the board, we need to place a row of pawns for the second player.
                     if (j == boardArr.GetLength(0) - 1)
                     {
-                        PopulateCellForGameMode(player2Pieces, i, j, false, true);
+                        PopulateCellForGameMode(player2Pieces, i, j, true, true);
                     }
                 }
 
@@ -291,12 +291,9 @@ public class GameManager : MonoBehaviour
 
     private void PopulateCell(List<GameObject> playerList, int i, int j, bool isBlack, GameObject newPiece)
     {
-        if (isBlack)
-        {
-            newPiece.GetComponent<Renderer>().material.color *= 0.5f;
-        }
+        newPiece.GetComponent<PieceColorManager>().SetMaterialAndRotation(isBlack);
 
-        if(newPiece.GetComponent<BaseAI>())
+        if (newPiece.GetComponent<BaseAI>())
         {
             newPiece.GetComponent<BaseAI>().currRow = j;
             newPiece.GetComponent<BaseAI>().currCol = i;
