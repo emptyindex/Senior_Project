@@ -295,6 +295,19 @@ public class GameManager : MonoBehaviour
             newPiece.GetComponent<BaseAI>().currCol = i;
 
             newPiece.GetComponent<BaseAI>().pieceNum = indexer + i;
+
+            if ((j == 6 && i == 7) || (j == 6 && i == 6) || (j == 6 && i == 5) || (j == 7 && i == 6) || (j == 7 && i == 5))
+            {
+                AI.BishopLPieces.Add(newPiece);
+            }
+            if ((j == 6 && i == 0) || (j == 6 && i == 1) || (j == 6 && i == 2) || (j == 7 && i == 1) || (j == 7 && i == 2))
+            {
+                AI.BishopRPieces.Add(newPiece);
+            }
+            if ((j == 6 && i == 3) || (j == 6 && i == 4) || (j == 7 && i == 0) || (j == 7 && i == 7) || (j == 7 && i == 3) || (j == 7 && i == 4))
+            {
+                AI.KingPieces.Add(newPiece);
+            }
         }
         else
         {
