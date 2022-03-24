@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RookAI : BaseAI, IPieceBase
+public class RookAI : BaseAI
 {
-    public int PieceID { get; set; } = 12;
-
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 12;
         //BestMove();
 
         this.hasFinished = false;
@@ -48,19 +47,19 @@ public class RookAI : BaseAI, IPieceBase
         int column_limit = 7;
 
         //search possible moves
-        for (int x = Mathf.Max(0, currRow - 2); x <= Mathf.Min(currRow + 2, row_limit); x++)
+        for (int x = Mathf.Max(0, CurrRowPos - 2); x <= Mathf.Min(CurrRowPos + 2, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 2); y <= Mathf.Min(currCol + 2, column_limit); y++)
+            for (int y = Mathf.Max(0, CurrColPos - 2); y <= Mathf.Min(CurrColPos + 2, column_limit); y++)
             {
-                if (x != currRow || y != currCol)
+                if (x != CurrRowPos || y != CurrColPos)
                 {
                     //check if move to spot is valid given movespeed of piece
-                    int moves = isMoveValid(newBoard, currRow, currCol, x, y);
+                    int moves = isMoveValid(newBoard, CurrRowPos, CurrColPos, x, y);
                     if (moves <= 2)
                     {
                         moveFound = true;
                         newBoard[x, y] = 12;
-                        newBoard[currRow, currCol] = 0;
+                        newBoard[CurrRowPos, CurrColPos] = 0;
                         currAttack[0] = -1;
                         currAttack[1] = -1;
                         currScore = HeuristicScore(newBoard, currAttack);
@@ -71,7 +70,7 @@ public class RookAI : BaseAI, IPieceBase
                             bestMove[1] = y;
                         }
                         newBoard[x, y] = 0;
-                        newBoard[currRow, currCol] = 12;
+                        newBoard[CurrRowPos, CurrColPos] = 12;
                     }
 
                     //check possible attacks

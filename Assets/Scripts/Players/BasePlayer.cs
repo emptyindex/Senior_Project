@@ -13,6 +13,9 @@ public abstract class BasePlayer : MonoBehaviour
 
     public bool isGameOver = false;
 
+    public delegate void AttackRollNeededEvent();
+    public event AttackRollNeededEvent AttackRollNeeded;
+
     public GameManager Manager { get; set; }
 
     public abstract void SetPieces(List<GameObject> pieces);
@@ -24,5 +27,10 @@ public abstract class BasePlayer : MonoBehaviour
     public void IsTurn(bool newVal)
     {
         canMove = newVal;
+    }
+
+    protected void InvokeAttackRoll()
+    {
+        AttackRollNeeded.Invoke();
     }
 }
