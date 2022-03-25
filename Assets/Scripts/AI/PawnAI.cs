@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PawnAI : BaseAI, IPieceBase
+public class PawnAI : BaseAI
 {
-    public int PieceID { get; set; } = 11;
-
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 11;
         //BestMove();
         this.hasFinished = false;
     }
@@ -46,11 +45,11 @@ public class PawnAI : BaseAI, IPieceBase
         int row_limit = 7;
         int column_limit = 7;
 
-        for (int x = Mathf.Max(0, currRow - 1); x <= Mathf.Min(currRow + 1, row_limit); x++)
+        for (int x = Mathf.Max(0, CurrRowPos - 1); x <= Mathf.Min(CurrRowPos + 1, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 1); y <= Mathf.Min(currCol + 1, column_limit); y++)
+            for (int y = Mathf.Max(0, CurrColPos - 1); y <= Mathf.Min(CurrColPos + 1, column_limit); y++)
             {
-                if (x != currRow || y != currCol)
+                if (x != CurrRowPos || y != CurrColPos)
                 {
                     //print(x + " " + y);
 
@@ -59,7 +58,7 @@ public class PawnAI : BaseAI, IPieceBase
                     {
                         moveFound = true;
                         newBoard[x, y] = 11;
-                        newBoard[currRow, currCol] = 0;
+                        newBoard[CurrRowPos, CurrColPos] = 0;
                         currAttack[0] = -1;
                         currAttack[1] = -1;
                         currScore = HeuristicScore(newBoard, currAttack);
@@ -70,12 +69,12 @@ public class PawnAI : BaseAI, IPieceBase
                             bestMove[1] = y;
                         }
                         newBoard[x, y] = 0;
-                        newBoard[currRow, currCol] = 11;
+                        newBoard[CurrRowPos, CurrColPos] = 11;
                     }
 
                     //move is into enemy space
                     if ((newBoard[x,y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 || 
-                        newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6) && x > currRow)
+                        newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6) && x > CurrRowPos)
                     {
                         moveFound = true;
                         currAttack[0] = x;
