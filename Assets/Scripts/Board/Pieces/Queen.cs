@@ -59,4 +59,70 @@ public class Queen : BasePiece, IRoyalty
         this.MovementNum = 3;
         this.PieceID = 5;
     }
+
+    public override bool IsAttackSuccessful(int PieceToAttack, int roll)
+    {
+        if (PieceToAttack > 20)
+        {
+            PieceToAttack -= 20;
+        }
+        switch (PieceToAttack)
+        {
+            case 6:
+                if (roll >= 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 5:
+                if (roll >= 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 3:
+                if (roll >= 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 4:
+                if (roll >= 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 2:
+                if (roll >= 5)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 1:
+                if (roll >= 2)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
+        return false;
+    }
 }

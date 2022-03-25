@@ -114,11 +114,6 @@ public class PlayerManager : BasePlayer
                 }
             }
         }
-
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            InvokeAttackRoll();
-        }
     }
 
     private void AssignCorpsPieces()

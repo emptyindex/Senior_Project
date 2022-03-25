@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -15,6 +16,7 @@ public enum MoveToMake
 
 public class CommanderController : MonoBehaviour, ICorpsCommander
 {
+
     public string canvasName;
 
     //[HideInInspector]
@@ -27,6 +29,12 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     protected GameObject selectedPiece = null;
 
     private Cell previousCell = null;
+
+
+    private static GameObject testPiece;
+
+    private static Cell testCell;
+
 
     public List<GameObject> highlightedCells = new List<GameObject>();
     public List<GameObject> attackCells = new List<GameObject>();
@@ -70,11 +78,20 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        manager.dice.OnDiceEnded += checkAttackSuccessful;
+
         this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
 
         this.MenuCanvas.SetActive(false);
 
         this.CurrentMove = MoveToMake.None;
+    }
+
+    private void checkAttackSuccessful()
+    {
+        bool Test = testPiece.GetComponent<IPieceBase>().IsAttackSuccessful(testCell.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);
+
+        print(Test);
     }
 
     protected void Update()
@@ -182,7 +199,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
             Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
 
             var cell = hit.transform.gameObject.GetComponent<Cell>();
-            if (cell && selectedPiece && highlightedCells.Contains(cell.gameObject))
+            //highlightedCells.Contains(cell.gameObject)
+            if (cell && selectedPiece)
             {
                 var royalty = selectedPiece.GetComponent<IRoyalty>();
                 var basePiece = selectedPiece.GetComponent<BasePiece>();
@@ -192,52 +210,64 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
                 int endPosX;
                 int endPosY;
-                if (royalty != null)
+
+                if (highlightedCells.Contains(cell.gameObject))
                 {
-                    var indexes = Tools.FindIndex(GameManager.boardArr, hit.transform.gameObject);
-
-                    if (royalty.CanMoveAgain(indexes))
+                    if (royalty != null)
                     {
-                        previousCell = GameManager.boardArr[basePiece.CurrRowPos, basePiece.CurrColPos].GetComponent<Cell>();
+                        var indexes = Tools.FindIndex(GameManager.boardArr, hit.transform.gameObject);
 
-                        basePiece.MovePiece(cell, manager);
+                        if (royalty.CanMoveAgain(indexes))
+                        {
+                            previousCell = GameManager.boardArr[basePiece.CurrRowPos, basePiece.CurrColPos].GetComponent<Cell>();
+
+                            basePiece.MovePiece(cell, manager);
+                            previousCell.GetCurrentPiece = null;
+
+                            royalty.UpdateMovementNum(indexes);
+                            royalty.ResetPos(indexes);
+
+                            ClearCells();
+                            (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
+
+                            endPosX = basePiece.CurrRowPos;
+                            endPosY = basePiece.CurrColPos;
+
+                            if (!highlightedCells.Any())
+                            {
+                                royalty.ResetMovementNum();
+
+                                EndMovement(startPosX, startPosY, endPosX, endPosY);
+
+                                return;
+                            }
+
+                            if (selectedPiece.GetComponent<King>() && isFirstMove)
+                            {
+                                EndMovement(startPosX, startPosY, endPosX, endPosY);
+
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        selectedPiece.GetComponent<BasePiece>().MovePiece(cell, manager);
                         previousCell.GetCurrentPiece = null;
-
-                        royalty.UpdateMovementNum(indexes);
-                        royalty.ResetPos(indexes);
-
-                        ClearCells();
-                        (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
 
                         endPosX = basePiece.CurrRowPos;
                         endPosY = basePiece.CurrColPos;
 
-                        if (!highlightedCells.Any())
-                        {
-                            royalty.ResetMovementNum();
-
-                            EndMovement(startPosX, startPosY, endPosX, endPosY);
-
-                            return;
-                        }
-
-                        if (selectedPiece.GetComponent<King>() && isFirstMove)
-                        {
-                            EndMovement(startPosX, startPosY, endPosX, endPosY);
-
-                            return;
-                        }
+                        EndMovement(startPosX, startPosY, endPosX, endPosY);
                     }
                 }
-                else
+                if (attackCells.Contains(cell.gameObject))
                 {
-                    selectedPiece.GetComponent<BasePiece>().MovePiece(cell, manager);
-                    previousCell.GetCurrentPiece = null;
+                    isMoving = false;
+                    testCell = cell;
+                    testPiece = selectedPiece;
 
-                    endPosX = basePiece.CurrRowPos;
-                    endPosY = basePiece.CurrColPos;
-
-                    EndMovement(startPosX, startPosY, endPosX, endPosY);
+                    gameObject.GetComponent<AttackManager>().InvokeAttackRoll();
                 }
             }
         }

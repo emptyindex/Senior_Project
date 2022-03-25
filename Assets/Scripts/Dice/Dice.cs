@@ -9,31 +9,38 @@ public class Dice : MonoBehaviour
     public GameManager manager;
     private BasePlayer[] players;
 
+    private float time = 0.0f;
+    private bool isStarted = false;
+
     Rigidbody rb;
-    Vector3 startPos;
+    //Vector3 startPos;
 
     //Vector3 diceVelocity ;
+
+    public delegate void DiceFinishedEvent();
+    public event DiceFinishedEvent OnDiceEnded;
+    private bool hasFinished = true;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody> ();
 
-        startPos = transform.position;
+        //startPos = transform.position;
 
-        players = manager.GetBasePlayers();
+        /*players = manager.GetBasePlayers();
 
         foreach(var p in players)
         {
             p.AttackRollNeeded += Roll;
-        }
+        }*/
     }
 
     // Update is called once per frame
     void Update()
     {
         //diceVelocity = rb.velocity;
-        
+
         //if(diceVelocity.x == 0f && diceVelocity.y == 0f && diceVelocity.z == 0f)
         //{
         //   Collider [] hitColliders = Physics.OverlapSphere(Vector3.right, 0.005f);
@@ -42,19 +49,36 @@ public class Dice : MonoBehaviour
         //       print("Hit Collidors"+collider.gameObject.name);
         //   }      
         //}
+        if (isStarted)
+        {
+            time = time + Time.deltaTime;
+            if (rb.velocity.magnitude == 0 && !hasFinished && time > 3f)
+            {
+                OnDiceEnded.Invoke();
+                hasFinished = true;
+                isStarted = false;
+                time = 0f;
+            }
+
+        }
     }
 
-    private void Roll()
+    public void Roll()
     {
         DiceNumberTextScript.diceNumber = 0;
 
-        float dirX = Random.Range(0, 500);
-        float dirY = Random.Range(0, 500);
-        float dirZ = Random.Range(0, 500);
+        float dirX = Random.Range(-700, 700);
+        float dirY = Random.Range(-700, 700);
+        float dirZ = Random.Range(-700, 700);
 
-        transform.SetPositionAndRotation(startPos, Quaternion.identity);
+        isStarted = true;
+        hasFinished = false;
 
-        rb.AddForce(transform.up * 500);
+        transform.SetPositionAndRotation(transform.position, transform.rotation);
+
+        rb.AddForce(transform.up * 1100);
         rb.AddTorque(dirX, dirY, dirZ);
+
+        
     }
 }

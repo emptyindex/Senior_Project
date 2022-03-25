@@ -9,4 +9,6 @@ public interface IPieceBase
     public int CurrColPos { get; set; }
 
     public int PieceID { get; set; }
+
+    public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
 }

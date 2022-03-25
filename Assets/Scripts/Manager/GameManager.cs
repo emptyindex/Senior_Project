@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
+    public Dice dice;
+
     public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
@@ -307,6 +309,10 @@ public class GameManager : MonoBehaviour
         if (isBlack)
         {
             newPiece.GetComponent<Renderer>().material.color *= 0.5f;
+        }
+        if (newPiece.GetComponent<AttackManager>())
+        {
+            newPiece.GetComponent<AttackManager>().AttackRollNeeded += dice.Roll;
         }
 
         newPiece.GetComponent<IPieceBase>().CurrColPos = j;
