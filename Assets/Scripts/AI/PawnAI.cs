@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
 {
-    public int PieceID { get; set; } = 11;
-
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 11;
         //BestMove();
         this.hasFinished = false;
     }

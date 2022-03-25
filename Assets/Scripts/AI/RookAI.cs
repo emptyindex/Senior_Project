@@ -12,6 +12,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 12;
         //BestMove();
 
         this.hasFinished = false;
@@ -156,9 +157,9 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
         //attacks can be up to 2 spaces away and do not need to be in a straight line
         for (int x = Mathf.Max(0, currRow - 2); x <= Mathf.Min(currRow + 2, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 2); y <= Mathf.Min(currCol + 2, column_limit); y++)
+            for (int y = Mathf.Max(0, CurrColPos - 2); y <= Mathf.Min(CurrColPos + 2, column_limit); y++)
             {
-                if (x != currRow || y != currCol)
+                if (x != CurrRowPos || y != CurrColPos)
                 {
 
                     //check possible attacks

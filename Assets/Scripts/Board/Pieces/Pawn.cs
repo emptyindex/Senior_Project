@@ -5,10 +5,8 @@ using UnityEngine;
 /// <summary>
 /// Represents a Pawn piece.
 /// </summary>
-public class Pawn : BasePiece, IPieceBase
+public class Pawn : BasePiece
 {
-    public int PieceID { get; set; } = 1;
-
     /// <summary>
     /// Pawns cannot move backwards, depending on their orientation on the board,
     /// they can move forwards or "backwards" towards the center of the board.
@@ -22,14 +20,20 @@ public class Pawn : BasePiece, IPieceBase
     /// <param name="x">The piece's X position on the board.</param>
     /// <param name="y">The piece's Y position on the board.</param>
     /// <returns>A list of all valid moves for this piece.</returns>
-    public override List<GameObject> Highlight(GameObject[,] board, int x, int y)
+    public override (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y)
     {
         switch (MoveUp)
         {
             case true:
-                return base.HighlightCells(board, x, y, 1, true, true, false, false, true, false, false, false);
+                return base.HighlightCells(board, x, y, true, true, false, false, true, false, false, false);
             case false:
-                return base.HighlightCells(board, x, y, 1, false, false, true, true, false, true, false, false);
+                return base.HighlightCells(board, x, y, false, false, true, true, false, true, false, false);
         }
+    }
+
+    private void Awake()
+    {
+        this.MovementNum = 1;
+        this.PieceID = 1;
     }
 }

@@ -128,6 +128,7 @@ public class AI : BasePlayer
                 print("piece " + bestPieceThree.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[2][0] + ", " + bestAction[2][1] + " and has protection of: " + bestPieceThree.GetComponent<BaseAI>().protectionLevel);
                 print(bestScore);
 
+                // TO DO: 
                 IsTurn(false);
                 Manager.ChangeTurn(this.gameObject);
 

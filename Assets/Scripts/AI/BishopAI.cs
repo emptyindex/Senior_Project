@@ -12,6 +12,8 @@ public class BishopAI : BaseAI, IPieceBase, IProtectionBoard
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 14;
+
         //BestMove();
         this.hasFinished = false;
     }
@@ -149,15 +151,15 @@ public class BishopAI : BaseAI, IPieceBase, IProtectionBoard
         //search possible attacks
         for (int x = Mathf.Max(0, currRow - 2); x <= Mathf.Min(currRow + 2, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 2); y <= Mathf.Min(currCol + 2, column_limit); y++)
+            for (int y = Mathf.Max(0, CurrColPos - 2); y <= Mathf.Min(CurrColPos + 2, column_limit); y++)
             {
-                if (x != currRow || y != currCol)
+                if (x != CurrRowPos || y != CurrColPos)
                 {
                     //check possible attacks
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
                         (newBoard[x, y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 ||
                         newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6) &&
-                        (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
+                        (x <= CurrRowPos + 1) && (y <= CurrColPos + 1) && (x >= CurrRowPos - 1) && (y >= CurrColPos - 1))
                     {
                         moveFound = true;
                         validAction = new int[] { 14, currRow, currCol, x, y };

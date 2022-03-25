@@ -12,6 +12,8 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
     // Start is called before the first frame update
     void Start()
     {
+        this.PieceID = 13;
+
         //BestMove();
         this.hasFinished = false;
     }
@@ -55,19 +57,19 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
         int column_limit = 7;
 
         //search possible moves
-        for (int x = Mathf.Max(0, currRow - 4); x <= Mathf.Min(currRow + 4, row_limit); x++)
+        for (int x = Mathf.Max(0, CurrRowPos - 4); x <= Mathf.Min(CurrRowPos + 4, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 4); y <= Mathf.Min(currCol + 4, column_limit); y++)
+            for (int y = Mathf.Max(0, CurrColPos - 4); y <= Mathf.Min(CurrColPos + 4, column_limit); y++)
             {
-                if (x != currRow || y != currCol)
+                if (x != CurrRowPos || y != CurrColPos)
                 {
                     //check if move to spot is valid given movespeed of piece
-                    int moves = isMoveValid(newBoard, currRow, currCol, x, y);
+                    int moves = isMoveValid(newBoard, CurrRowPos, CurrColPos, x, y);
                     if (moves <= 4)
                     {
                         moveFound = true;
                         newBoard[x, y] = 13;
-                        newBoard[currRow, currCol] = 0;
+                        newBoard[CurrRowPos, CurrColPos] = 0;
                         currAttack[0] = -1;
                         currAttack[1] = -1;
                         currScore = HeuristicScore(newBoard, currAttack);
@@ -78,7 +80,7 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
                             bestMove[1] = y;
                         }
                         newBoard[x, y] = 0;
-                        newBoard[currRow, currCol] = 13;
+                        newBoard[CurrRowPos, CurrColPos] = 13;
                     }
 
                     //check possible attacks

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class BaseAI : MonoBehaviour
+public class BaseAI : MonoBehaviour, IPieceBase
 {
-    public int currRow;
-    public int currCol;
-    public int pieceNum;
     public int bestScore;
     public int[] bestMove;
     public bool moveFound;
@@ -18,6 +15,9 @@ public class BaseAI : MonoBehaviour
     public int dangerLevel;
 
     public AI AIManager { get; set; }
+    public int CurrRowPos { get; set; }
+    public int CurrColPos { get; set; }
+    public int PieceID { get; set; }
 
     //method to find the score of a given board
     //since attacks are not guarenteed the current attack is also passed if a piece is attacking another

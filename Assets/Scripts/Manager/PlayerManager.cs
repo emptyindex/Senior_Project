@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +9,62 @@ using UnityEngine;
 /// </summary>
 public class PlayerManager : BasePlayer
 {
-    private new Camera camera;
-
     public GameObject[] pieces = new GameObject[16];
 
-    private List<GameObject> highlightedCells = new List<GameObject>();
+    private List<GameObject> corpsCommanders = new List<GameObject>();
 
-    private Cell previousCell;
+    private List<GameObject> usedCommanders = new List<GameObject>();
 
-    private bool hasSelectedAPiece = false;
+    private Camera camera;
 
-    /// <summary>
-    /// Start is called before the first frame update.
-    /// </summary>
-    void Start()
+    private GameObject selectedPiece = null;
+
+    private int movesTaken = 0;
+    private readonly int maxMovesPerTurn = 3;
+
+    private readonly string endTurnButtonName = "EndTurnButton";
+    private GameObject endTurnButton;
+
+    public override void SetPieces(List<GameObject> pieces)
     {
-        camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        this.pieces = pieces.ToArray();
+    }
+
+    public void EndTurn()
+    {
+        canMove = false;
+
+        corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+
+        usedCommanders.Clear();
+        movesTaken = 0;
+
+        endTurnButton.SetActive(false);
+
+        IsTurn(false);
+        Manager.ChangeTurn(this.gameObject);
+    }
+
+    public List<GameObject> GetBishopCommanders()
+    {
+        return corpsCommanders.Where(c => c.GetComponent<Bishop>()).ToList();
+    }
+
+    private void Start()
+    {
+        if(gameObject.transform.GetChild(0).GetComponent<Canvas>())
+        {
+            endTurnButton = gameObject.transform.GetChild(0).Find(endTurnButtonName).gameObject;
+            endTurnButton.SetActive(false);
+        }
+
+        camera = Camera.main;
+        corpsCommanders = pieces.Where(p => p.GetComponent<CommanderController>() != null).ToList();
+
+        this.AssignCorpsPieces();
+
+        corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().OnCommandEnded += UpdateMoves);
+        corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().player = this);
     }
 
     /// <summary>
@@ -36,88 +77,111 @@ public class PlayerManager : BasePlayer
     /// </summary>
     void Update()
     {
-        if (this.canMove && Input.GetMouseButtonUp(0))
+        if(movesTaken >= maxMovesPerTurn)
         {
-            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+            canMove = false;
+        }
 
-            var cell = hit.transform.gameObject.GetComponent<Cell>();
-            var obj = hit.transform.gameObject;
+        if(canMove)
+        {
+            endTurnButton.SetActive(true);
 
-            if (cell)
+            if (!selectedPiece)
             {
-                if (cell.GetCurrentPiece && pieces.Contains(cell.GetCurrentPiece))
+                HighlightCorpsCommanders();
+
+                if (Input.GetMouseButtonUp(0))
                 {
-                    if (!hasSelectedAPiece)
+                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+
+                    if(hit.transform)
                     {
-                        previousCell = cell;
-                        hasSelectedAPiece = true;
+                        var cell = hit.transform.gameObject.GetComponent<Cell>();
 
-                        highlightedCells = Manager.SetSelectedPiece(hit, cell);
+                        // if you clicked on a cell with one of the corps commanders. Also checks that the corps commander has not already taken its turn
+                        if (cell && cell.GetCurrentPiece && corpsCommanders.Contains(cell.GetCurrentPiece) && !usedCommanders.Contains(cell.GetCurrentPiece))
+                        {
+                            selectedPiece = cell.GetCurrentPiece;
+
+                            selectedPiece.GetComponent<CommanderController>().HasTakenCommand = true;
+                            corpsCommanders.ForEach(c =>
+                            {
+                                if (!c.Equals(selectedPiece))
+                                    c.GetComponent<BasePiece>().spotLight.enabled = false;
+                            });
+                        }
                     }
-                    else
-                    {
-                        ClearSelected();
-
-                        previousCell = cell;
-                        hasSelectedAPiece = true;
-
-                        highlightedCells = Manager.SetSelectedPiece(hit, cell);
-                    }
-                }              
-                else if(!cell.GetCurrentPiece && hasSelectedAPiece)
-                {
-                    if (highlightedCells.Contains(obj))
-                    {
-                        MovePiece(cell, obj);
-
-                        IsTurn(false);
-                        Manager.ChangeTurn(this.gameObject);
-
-                        ClearSelected();
-                    }
-                } 
+                }
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            InvokeAttackRoll();
         }
     }
 
-    /// <summary>
-    /// Clears and restores the highlighted cells after a piece has been moved.
-    /// </summary>
-    private void ClearSelected()
+    private void AssignCorpsPieces()
     {
-        previousCell = null;
+        var bishops = corpsCommanders.Where(c => c.GetComponent<Bishop>() != null);
+        var piecesLeft = pieces.ToList();
 
-        hasSelectedAPiece = false;
+        foreach (var commander in bishops)
+        {
+            var posX = commander.GetComponent<BasePiece>().CurrRowPos;
+            var posY = commander.GetComponent<BasePiece>().CurrColPos;
 
-        highlightedCells.ForEach(c => c.GetComponent<Cell>().IsHighlighted = false);
-        highlightedCells.Clear();
+            bool isLeftSide = true;
+
+            if (posX > 3)
+            {
+                isLeftSide = false;
+            }
+
+            commander.GetComponent<CommanderController>().controlledPieces = pieces.Where(p => CanAdd(isLeftSide, p, posX, posY)
+                && p.GetComponent<Rook>() == null).ToList();
+
+            piecesLeft = piecesLeft.Except(commander.GetComponent<CommanderController>().controlledPieces).ToList();
+        }
+
+        var king = corpsCommanders.Where(c => c.GetComponent<KingCorpsCommander>() != null).FirstOrDefault().GetComponent<KingCorpsCommander>();
+        king.SetStartingPieces(piecesLeft);
     }
 
-    /// <summary>
-    /// Moves the piece to the new cell location.
-    /// </summary>
-    /// <param name="cell"></param>
-    /// <param name="obj"></param>
-    private void MovePiece(Cell cell, GameObject obj)
+    private bool CanAdd(bool isLeftSide, GameObject pieceToCheck, int posX, int posY)
     {
-        int currX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
-        int currY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+        var newX = pieceToCheck.GetComponent<BasePiece>().CurrRowPos;
+        var newY = pieceToCheck.GetComponent<BasePiece>().CurrColPos;
 
-        var newPos = Manager.GetMovePosition(cell.gameObject, previousCell.GetCurrentPiece);
+        bool boolRange;
 
-        int newX = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionY;
-        int newY = previousCell.GetCurrentPiece.GetComponent<BasePiece>().positionX;
+        if(isLeftSide)
+        {
+            boolRange = newX <= posX;
+        }
+        else
+        {
+            boolRange = newX >= posX;
+        }
 
-        Manager.UpdateIntBoard(currX, currY, newX, newY, previousCell.GetCurrentPiece.GetComponent<IPieceBase>().PieceID);
-
-        previousCell.GetCurrentPiece.GetComponent<BasePiece>().Move(newPos);
-
-        cell.GetCurrentPiece = previousCell.GetCurrentPiece;
-        previousCell.GetCurrentPiece = null;
+        return boolRange 
+            && Mathf.Abs(posX - newX) <= 2
+            && Mathf.Abs(newY - posY) <= 1;
     }
 
-    public override void SetPieces(List<GameObject> pieces)
+    private void UpdateMoves()
     {
-        this.pieces = pieces.ToArray();
+        movesTaken++;
+        usedCommanders.Add(selectedPiece);
+        selectedPiece = null;
+
+        Debug.Log("moves taken: " + movesTaken);
+    }
+
+    private void HighlightCorpsCommanders()
+    {
+        var toHighlight = corpsCommanders.Except(usedCommanders).ToList();
+
+        toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
     }
 }
