@@ -4,13 +4,5 @@ using UnityEngine;
 
 public interface IProtectionBoard
 {
-    public void updateProtectionMap(int row, int col, int[,] board)
-    {
-
-    }
-
-    public void revertProtectionMap()
-    {
-
-    }
+    public void UpdateProtectionMap(int row, int col, int[,] board);
 }

@@ -107,7 +107,7 @@ public class KingAI : BaseAI, IPieceBase, IProtectionBoard
         //print("King protection level: " + protectionLevel);
     }
 
-    public void updateProtectionMap(int row, int col, int[,] board)
+    public void UpdateProtectionMap(int row, int col, int[,] board)
     {
         int row_limit = 7;
         int column_limit = 7;
@@ -143,5 +143,10 @@ public class KingAI : BaseAI, IPieceBase, IProtectionBoard
             }
         }
         AI.protectionBoard += protectionLevel;
+    }
+
+    public void revertProtectionMap()
+    {
+        throw new System.NotImplementedException();
     }
 }

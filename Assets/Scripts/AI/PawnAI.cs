@@ -64,7 +64,7 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
         }
 
 
-        updateProtectionMap(currRow, currCol, AIManager.Board);
+        UpdateProtectionMap(currRow, currCol, AIManager.Board);
 
         AI.protectionBoard += protectionLevel;
         //print("Pawn protection level: " + protectionLevel);
@@ -76,7 +76,7 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
         //}
     }
 
-    public void updateProtectionMap(int row, int col, int[,] board)
+    public void UpdateProtectionMap(int row, int col, int[,] board)
     {
         int row_limit = 7;
         int column_limit = 7;

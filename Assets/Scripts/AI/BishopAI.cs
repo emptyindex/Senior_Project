@@ -217,7 +217,7 @@ public class BishopAI : BaseAI, IPieceBase, IProtectionBoard
             return 1;
     }
 
-    public void updateProtectionMap(int row, int col, int[,] board)
+    public void UpdateProtectionMap(int row, int col, int[,] board)
     {
         int row_limit = 7;
         int column_limit = 7;
