@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class QueenAI : BaseAI, IPieceBase, IProtectionBoard
 {
+    private void Awake()
+    {
+        this.PieceID = 5;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        this.PieceID = 15;
+        //this.PieceID = 15;
 
         //BestMove();
         this.hasFinished = false;
@@ -29,6 +34,9 @@ public class QueenAI : BaseAI, IPieceBase, IProtectionBoard
 
     public void setValidActions()
     {
+        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currRow = this.GetComponent<IPieceBase>().CurrColPos;
+
         int[,] newBoard = new int[8, 8];
         for (int i = 0; i < 8; i++)
         {

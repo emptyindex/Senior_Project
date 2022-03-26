@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
 {
+    private void Awake()
+    {
+        this.PieceID = 1;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        this.PieceID = 11;
+        //this.PieceID = 11;
         //BestMove();
         this.hasFinished = false;
     }
@@ -28,6 +33,9 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
 
     public void setValidActions()
     {
+        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currRow = this.GetComponent<IPieceBase>().CurrColPos;
+
         int[,] newBoard = new int[8, 8];
         for (int i = 0; i < 8; i++)
         {

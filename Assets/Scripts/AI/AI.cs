@@ -60,23 +60,35 @@ public class AI : BasePlayer
         {
             if (this.canMove)
             {
-                /*
+                
                 print("Left Bishop Corp:");
                 foreach (GameObject thing in BishopLPieces)
                 {
-                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<BaseAI>().currRow + ", " + thing.GetComponent<BaseAI>().currCol);
+                    int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
+                    int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
+                    thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
+                    thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
+                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
                 }
                 print("Right Bishop Corp:");
                 foreach (GameObject thing in BishopRPieces)
                 {
-                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<BaseAI>().currRow + ", " + thing.GetComponent<BaseAI>().currCol);
+                    int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
+                    int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
+                    thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
+                    thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
+                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
                 }
                 print("King Corp:");
                 foreach (GameObject thing in KingPieces)
                 {
-                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<BaseAI>().currRow + ", " + thing.GetComponent<BaseAI>().currCol);
+                    int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
+                    int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
+                    thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
+                    thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
+                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
                 }
-                */
+                
                 protectionBoard = 0;
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
 
@@ -99,29 +111,29 @@ public class AI : BasePlayer
                         }
                     }
                 }           
-                print("yo");
+                print("yo debug");
 
 
                 bestPieceOne.gameObject.transform.position = Manager.GetMovePosition(bestAction[0][1], bestAction[0][0]);
                 bestPieceTwo.gameObject.transform.position = Manager.GetMovePosition(bestAction[1][1], bestAction[1][0]);
                 bestPieceThree.gameObject.transform.position = Manager.GetMovePosition(bestAction[2][1], bestAction[2][0]);
 
-                Manager.UpdateIntBoard(bestPieceOne.GetComponent<BaseAI>().currRow, bestPieceOne.GetComponent<BaseAI>().currCol, bestAction[0][0], bestAction[0][1], bestPieceOne.GetComponent<IPieceBase>().PieceID);
-                Manager.UpdateIntBoard(bestPieceTwo.GetComponent<BaseAI>().currRow, bestPieceTwo.GetComponent<BaseAI>().currCol, bestAction[1][0], bestAction[1][1], bestPieceTwo.GetComponent<IPieceBase>().PieceID);
-                Manager.UpdateIntBoard(bestPieceThree.GetComponent<BaseAI>().currRow, bestPieceThree.GetComponent<BaseAI>().currCol, bestAction[2][0], bestAction[2][1], bestPieceThree.GetComponent<IPieceBase>().PieceID);
+                Manager.UpdateIntBoard(bestPieceOne.GetComponent<IPieceBase>().CurrRowPos, bestPieceOne.GetComponent<IPieceBase>().CurrColPos, bestAction[0][0], bestAction[0][1], bestPieceOne.GetComponent<IPieceBase>().PieceID);
+                Manager.UpdateIntBoard(bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos, bestPieceTwo.GetComponent<IPieceBase>().CurrColPos, bestAction[1][0], bestAction[1][1], bestPieceTwo.GetComponent<IPieceBase>().PieceID);
+                Manager.UpdateIntBoard(bestPieceThree.GetComponent<IPieceBase>().CurrRowPos, bestPieceThree.GetComponent<IPieceBase>().CurrColPos, bestAction[2][0], bestAction[2][1], bestPieceThree.GetComponent<IPieceBase>().PieceID);
 
                 bestPieceOne.GetComponent<IProtectionBoard>().updateProtectionMap(bestAction[0][0], bestAction[0][1], Board);
                 bestPieceTwo.GetComponent<IProtectionBoard>().updateProtectionMap(bestAction[1][0], bestAction[1][1], Board);
                 bestPieceThree.GetComponent<IProtectionBoard>().updateProtectionMap(bestAction[2][0], bestAction[2][1], Board);
 
-                bestPieceOne.GetComponent<BaseAI>().currRow = bestAction[0][0];
-                bestPieceOne.GetComponent<BaseAI>().currCol = bestAction[0][1];
+                bestPieceOne.GetComponent<IPieceBase>().CurrRowPos = bestAction[0][0];
+                bestPieceOne.GetComponent<IPieceBase>().CurrColPos = bestAction[0][1];
 
-                bestPieceTwo.GetComponent<BaseAI>().currRow = bestAction[1][0];
-                bestPieceTwo.GetComponent<BaseAI>().currCol = bestAction[1][1];
+                bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos = bestAction[1][0];
+                bestPieceTwo.GetComponent<IPieceBase>().CurrColPos = bestAction[1][1];
 
-                bestPieceThree.GetComponent<BaseAI>().currRow = bestAction[2][0];
-                bestPieceThree.GetComponent<BaseAI>().currCol = bestAction[2][1];
+                bestPieceThree.GetComponent<IPieceBase>().CurrRowPos = bestAction[2][0];
+                bestPieceThree.GetComponent<IPieceBase>().CurrColPos = bestAction[2][1];
 
                 print("piece " + bestPieceOne.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[0][0] + ", " + bestAction[0][1] + " and has protection of: " + bestPieceOne.GetComponent<BaseAI>().protectionLevel);
                 print("piece " + bestPieceTwo.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[1][0] + ", " + bestAction[1][1] + " and has protection of: " + bestPieceTwo.GetComponent<BaseAI>().protectionLevel);
@@ -158,21 +170,21 @@ public class AI : BasePlayer
                         int[] actionTwo = new int[2];
                         int[] actionThree = new int[2];
 
-                        Manager.UpdateIntBoard(pieceOne.GetComponent<BaseAI>().currRow, pieceOne.GetComponent<BaseAI>().currCol, pieceOne.GetComponent<BaseAI>().validActions[x][3], 
+                        Manager.UpdateIntBoard(pieceOne.GetComponent<IPieceBase>().CurrRowPos, pieceOne.GetComponent<IPieceBase>().CurrColPos, pieceOne.GetComponent<BaseAI>().validActions[x][3], 
                                                pieceOne.GetComponent<BaseAI>().validActions[x][4], pieceOne.GetComponent<IPieceBase>().PieceID);
 
                         actionOne[0] = pieceOne.GetComponent<BaseAI>().validActions[x][3];
                         actionOne[1] = pieceOne.GetComponent<BaseAI>().validActions[x][4];
 
 
-                        Manager.UpdateIntBoard(pieceTwo.GetComponent<BaseAI>().currRow, pieceTwo.GetComponent<BaseAI>().currCol, pieceTwo.GetComponent<BaseAI>().validActions[y][3], 
+                        Manager.UpdateIntBoard(pieceTwo.GetComponent<IPieceBase>().CurrRowPos, pieceTwo.GetComponent<IPieceBase>().CurrColPos, pieceTwo.GetComponent<BaseAI>().validActions[y][3], 
                                                pieceTwo.GetComponent<BaseAI>().validActions[y][4], pieceTwo.GetComponent<IPieceBase>().PieceID);
 
                         actionTwo[0] = pieceTwo.GetComponent<BaseAI>().validActions[y][3];
                         actionTwo[1] = pieceTwo.GetComponent<BaseAI>().validActions[y][4];
 
 
-                        Manager.UpdateIntBoard(pieceThree.GetComponent<BaseAI>().currRow, pieceThree.GetComponent<BaseAI>().currCol, pieceThree.GetComponent<BaseAI>().validActions[z][3], 
+                        Manager.UpdateIntBoard(pieceThree.GetComponent<IPieceBase>().CurrRowPos, pieceThree.GetComponent<IPieceBase>().CurrColPos, pieceThree.GetComponent<BaseAI>().validActions[z][3], 
                                                pieceThree.GetComponent<BaseAI>().validActions[z][4], pieceThree.GetComponent<IPieceBase>().PieceID);
 
                         actionThree[0] = pieceThree.GetComponent<BaseAI>().validActions[z][3];
@@ -196,16 +208,16 @@ public class AI : BasePlayer
                         }
 
                         Board[pieceOne.GetComponent<BaseAI>().validActions[x][3], pieceOne.GetComponent<BaseAI>().validActions[x][4]] = 0;
-                        Board[pieceOne.GetComponent<BaseAI>().currRow, pieceOne.GetComponent<BaseAI>().currCol] = pieceOne.GetComponent<IPieceBase>().PieceID;
-                        pieceOne.GetComponent<IProtectionBoard>().updateProtectionMap(pieceOne.GetComponent<BaseAI>().currRow, pieceOne.GetComponent<BaseAI>().currCol, Board);
+                        Board[pieceOne.GetComponent<IPieceBase>().CurrRowPos, pieceOne.GetComponent<IPieceBase>().CurrColPos] = pieceOne.GetComponent<IPieceBase>().PieceID;
+                        pieceOne.GetComponent<IProtectionBoard>().updateProtectionMap(pieceOne.GetComponent<IPieceBase>().CurrRowPos, pieceOne.GetComponent<IPieceBase>().CurrColPos, Board);
 
                         Board[pieceTwo.GetComponent<BaseAI>().validActions[y][3], pieceTwo.GetComponent<BaseAI>().validActions[y][4]] = 0;
-                        Board[pieceTwo.GetComponent<BaseAI>().currRow, pieceTwo.GetComponent<BaseAI>().currCol] = pieceTwo.GetComponent<IPieceBase>().PieceID;
-                        pieceTwo.GetComponent<IProtectionBoard>().updateProtectionMap(pieceTwo.GetComponent<BaseAI>().currRow, pieceTwo.GetComponent<BaseAI>().currCol, Board);
+                        Board[pieceTwo.GetComponent<IPieceBase>().CurrRowPos, pieceTwo.GetComponent<IPieceBase>().CurrColPos] = pieceTwo.GetComponent<IPieceBase>().PieceID;
+                        pieceTwo.GetComponent<IProtectionBoard>().updateProtectionMap(pieceTwo.GetComponent<IPieceBase>().CurrRowPos, pieceTwo.GetComponent<IPieceBase>().CurrColPos, Board);
 
                         Board[pieceThree.GetComponent<BaseAI>().validActions[z][3], pieceThree.GetComponent<BaseAI>().validActions[z][4]] = 0;
-                        Board[pieceThree.GetComponent<BaseAI>().currRow, pieceThree.GetComponent<BaseAI>().currCol] = pieceThree.GetComponent<IPieceBase>().PieceID;
-                        pieceThree.GetComponent<IProtectionBoard>().updateProtectionMap(pieceThree.GetComponent<BaseAI>().currRow, pieceThree.GetComponent<BaseAI>().currCol, Board);
+                        Board[pieceThree.GetComponent<IPieceBase>().CurrRowPos, pieceThree.GetComponent<IPieceBase>().CurrColPos] = pieceThree.GetComponent<IPieceBase>().PieceID;
+                        pieceThree.GetComponent<IProtectionBoard>().updateProtectionMap(pieceThree.GetComponent<IPieceBase>().CurrRowPos, pieceThree.GetComponent<IPieceBase>().CurrColPos, Board);
 
                     }
                 }

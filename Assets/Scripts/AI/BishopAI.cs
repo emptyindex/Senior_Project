@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class BishopAI : BaseAI, IPieceBase, IProtectionBoard
 {
-    public int PieceID { get; set; } = 14;
+    //public int PieceID { get; set; } = 14;
 
     int currScore;
     int[] currAttack = new int[2];
 
+    private void Awake()
+    {
+        this.PieceID = 4;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        this.PieceID = 14;
+        //this.PieceID = 14;
 
         //BestMove();
         this.hasFinished = false;
@@ -34,6 +39,9 @@ public class BishopAI : BaseAI, IPieceBase, IProtectionBoard
 
     public void setValidActions()
     {
+        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currRow = this.GetComponent<IPieceBase>().CurrColPos;
+
         int[,] newBoard = new int[8, 8];
         for (int i = 0; i < 8; i++)
         {
@@ -193,6 +201,9 @@ public class BishopAI : BaseAI, IPieceBase, IProtectionBoard
 
     int CheckActions(int x, int y, int move, int[,] newBoard)
     {
+        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currRow = this.GetComponent<IPieceBase>().CurrColPos;
+
         //check moves
         if (x < 8 && y < 8 && x > -1 && y > -1 && newBoard[x, y] == 0)
         {

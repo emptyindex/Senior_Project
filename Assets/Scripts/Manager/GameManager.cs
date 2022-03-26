@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvP;
+    private GameMode currGameMode = GameMode.PvAI;
 
     public BasePlayer[] GetBasePlayers()
     {
@@ -199,7 +199,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateIntBoard(List<GameObject> pieces)
     {
-        pieces.ForEach(p => { board[p.GetComponent<IPieceBase>().CurrRowPos, p.GetComponent<IPieceBase>().CurrColPos] = p.GetComponent<IPieceBase>().PieceID; });
+        pieces.ForEach(p => { board[p.GetComponent<IPieceBase>().CurrColPos, p.GetComponent<IPieceBase>().CurrRowPos] = p.GetComponent<IPieceBase>().PieceID; });
     }
 
     public void UpdateIntBoard(int i, int j, int newi, int newj, int pieceID)
