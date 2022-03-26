@@ -33,7 +33,7 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
 
     public void setValidActions()
     {
-        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         int[,] newBoard = new int[8, 8];
@@ -48,7 +48,7 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
         int[] validAction = new int [5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { 11, currRow, currCol, currRow, currCol };
+        validAction = new int[] { 21, currRow, currCol, currRow, currCol };
         validActions.Add(validAction);
 
         for (int i = -1; i <= 1; i++)
@@ -57,7 +57,7 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
             newBoard[currRow - 1, currCol + i] == 3 || newBoard[currRow - 1, currCol + i] == 4 || newBoard[currRow - 1, currCol + i] == 5 ||
             newBoard[currRow - 1, currCol + i] == 6))
             {
-                validAction = new int[] { 11, currRow, currCol, currRow - 1, currCol + i };
+                validAction = new int[] { 21, currRow, currCol, currRow - 1, currCol + i };
                 validActions.Add(validAction);
                 //print("found action");
             }
@@ -67,13 +67,15 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
         UpdateProtectionMap(currRow, currCol, AIManager.Board);
 
         AI.protectionBoard += protectionLevel;
+        /*
         //print("Pawn protection level: " + protectionLevel);
-        //int coun = 0;
-        //for (int x = 0; x < validActions.Count; x++)
-        //{
-        //    print("pawn move " + coun + ": " + validActions[x][3] + ", " + validActions[x][4]);
-        //    coun++;
-        //}
+        int coun = 0;
+        for (int x = 0; x < validActions.Count; x++)
+        {
+            print("pawn move " + coun + ": " + validActions[x][3] + ", " + validActions[x][4]);
+            coun++;
+        }
+        */
     }
 
     public void UpdateProtectionMap(int row, int col, int[,] board)
@@ -92,19 +94,19 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
                 {
                     //check protection by bishop, queen, and king since they all have the same attack range
                     if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 13 || board[x, y] == 14 || board[x, y] == 15 || board[x, y] == 16))
+                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 11)
+                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
-                    if (board[x, y] == 12)
+                    if (board[x, y] == 22)
                     {
                         protectionLevel += 1;
                     }

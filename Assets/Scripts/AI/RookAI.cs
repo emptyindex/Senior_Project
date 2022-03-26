@@ -44,7 +44,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
 
     public void setValidActions()
     {
-        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         int[,] newBoard = new int[8, 8];
@@ -206,13 +206,13 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
 
     int CheckActions(int x, int y, int move, int[,] newBoard)
     {
-        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         //check moves
         if (x < 8 && y < 8 && x > -1 && y > -1 && newBoard[x, y] == 0)
         {
-            int[] validAction = new int[] { 12, currRow, currCol, x, y };
+            int[] validAction = new int[] { 22, currRow, currCol, x, y };
             validActions.Add(validAction);
         }
 
@@ -238,19 +238,19 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                 {
                     //check protection by bishop, queen, and king since they all have the same attack range
                     if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 13 || board[x, y] == 14 || board[x, y] == 15 || board[x, y] == 16))
+                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 11)
+                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
-                    if (board[x, y] == 12)
+                    if (board[x, y] == 22)
                     {
                         protectionLevel += 1;
                     }

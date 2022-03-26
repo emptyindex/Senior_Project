@@ -60,7 +60,7 @@ public class AI : BasePlayer
         {
             if (this.canMove)
             {
-                
+                /*
                 print("Left Bishop Corp:");
                 foreach (GameObject thing in BishopLPieces)
                 {
@@ -79,16 +79,16 @@ public class AI : BasePlayer
                     //thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
                     print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
                 }
-                print("King Corp:");
-                foreach (GameObject thing in KingPieces)
-                {
+                //print("King Corp:");
+                //foreach (GameObject thing in KingPieces)
+                //{
                     //int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
                     //int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
                     //thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
                     //thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
-                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
-                }
-                
+                    //print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
+                //}
+                */
                 protectionBoard = 0;
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
 
@@ -99,8 +99,10 @@ public class AI : BasePlayer
                 bestScore = -99999;
                 int[] moveToMake = new int[2];
 
-                BaseAI pieceThatMoved = null;
+                //BaseAI pieceThatMoved = null;
 
+                //loops through all the pieces in each corp commander so we can score their moves together
+                //moves with highest score will be stored
                 foreach (GameObject x in BishopLPieces)
                 {
                     foreach (GameObject y in BishopRPieces)
@@ -111,34 +113,36 @@ public class AI : BasePlayer
                         }
                     }
                 }           
-                print("yo debug");
 
-
+                //move pieces to best found move
                 bestPieceOne.gameObject.transform.position = Manager.GetMovePosition(bestAction[0][1], bestAction[0][0]);
                 bestPieceTwo.gameObject.transform.position = Manager.GetMovePosition(bestAction[1][1], bestAction[1][0]);
                 bestPieceThree.gameObject.transform.position = Manager.GetMovePosition(bestAction[2][1], bestAction[2][0]);
 
-                Manager.UpdateIntBoard(bestPieceOne.GetComponent<IPieceBase>().CurrRowPos, bestPieceOne.GetComponent<IPieceBase>().CurrColPos, bestAction[0][0], bestAction[0][1], bestPieceOne.GetComponent<IPieceBase>().PieceID);
-                Manager.UpdateIntBoard(bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos, bestPieceTwo.GetComponent<IPieceBase>().CurrColPos, bestAction[1][0], bestAction[1][1], bestPieceTwo.GetComponent<IPieceBase>().PieceID);
-                Manager.UpdateIntBoard(bestPieceThree.GetComponent<IPieceBase>().CurrRowPos, bestPieceThree.GetComponent<IPieceBase>().CurrColPos, bestAction[2][0], bestAction[2][1], bestPieceThree.GetComponent<IPieceBase>().PieceID);
+                //update the integer board
+                Manager.UpdateIntBoard(bestPieceOne.GetComponent<IPieceBase>().CurrColPos, bestPieceOne.GetComponent<IPieceBase>().CurrRowPos, bestAction[0][0], bestAction[0][1], bestPieceOne.GetComponent<IPieceBase>().PieceID);
+                Manager.UpdateIntBoard(bestPieceTwo.GetComponent<IPieceBase>().CurrColPos, bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos, bestAction[1][0], bestAction[1][1], bestPieceTwo.GetComponent<IPieceBase>().PieceID);
+                Manager.UpdateIntBoard(bestPieceThree.GetComponent<IPieceBase>().CurrColPos, bestPieceThree.GetComponent<IPieceBase>().CurrRowPos, bestAction[2][0], bestAction[2][1], bestPieceThree.GetComponent<IPieceBase>().PieceID);
 
+                //update the protection map
                 bestPieceOne.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[0][0], bestAction[0][1], Board);
                 bestPieceTwo.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[1][0], bestAction[1][1], Board);
                 bestPieceThree.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[2][0], bestAction[2][1], Board);
 
-                bestPieceOne.GetComponent<IPieceBase>().CurrRowPos = bestAction[0][0];
-                bestPieceOne.GetComponent<IPieceBase>().CurrColPos = bestAction[0][1];
+                //update the moved pieces current row and column
+                bestPieceOne.GetComponent<IPieceBase>().CurrColPos = bestAction[0][0];
+                bestPieceOne.GetComponent<IPieceBase>().CurrRowPos = bestAction[0][1];
 
-                bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos = bestAction[1][0];
-                bestPieceTwo.GetComponent<IPieceBase>().CurrColPos = bestAction[1][1];
+                bestPieceTwo.GetComponent<IPieceBase>().CurrColPos = bestAction[1][0];
+                bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos = bestAction[1][1];
 
-                bestPieceThree.GetComponent<IPieceBase>().CurrRowPos = bestAction[2][0];
-                bestPieceThree.GetComponent<IPieceBase>().CurrColPos = bestAction[2][1];
+                bestPieceThree.GetComponent<IPieceBase>().CurrColPos = bestAction[2][0];
+                bestPieceThree.GetComponent<IPieceBase>().CurrRowPos = bestAction[2][1];
 
+                //print to the consol the piece that moved and where it moved
                 print("piece " + bestPieceOne.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[0][0] + ", " + bestAction[0][1] + " and has protection of: " + bestPieceOne.GetComponent<BaseAI>().protectionLevel);
                 print("piece " + bestPieceTwo.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[1][0] + ", " + bestAction[1][1] + " and has protection of: " + bestPieceTwo.GetComponent<BaseAI>().protectionLevel);
                 print("piece " + bestPieceThree.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[2][0] + ", " + bestAction[2][1] + " and has protection of: " + bestPieceThree.GetComponent<BaseAI>().protectionLevel);
-                print(bestScore);
 
                 // TO DO: 
                 IsTurn(false);
@@ -152,6 +156,8 @@ public class AI : BasePlayer
         }
     }
 
+    //this method takes in 3 pieces (1 from each corp commander)
+    //it will then loop through the valid actions that each piece can make and score it on a heuristic
     public void checkCombinations(GameObject pieceOne, GameObject pieceTwo, GameObject pieceThree)
     {
         for (int x = 0; x < pieceOne.GetComponent<BaseAI>().validActions.Count; x++)
@@ -166,14 +172,17 @@ public class AI : BasePlayer
                         ((pieceOne.GetComponent<BaseAI>().validActions[x][3] != pieceThree.GetComponent<BaseAI>().validActions[z][3]) && (pieceOne.GetComponent<BaseAI>().validActions[x][4] != pieceThree.GetComponent<BaseAI>().validActions[z][4])) ||
                         ((pieceTwo.GetComponent<BaseAI>().validActions[y][3] != pieceThree.GetComponent<BaseAI>().validActions[z][3]) && (pieceTwo.GetComponent<BaseAI>().validActions[y][4] != pieceThree.GetComponent<BaseAI>().validActions[z][4])))
                     {
+                        //temporary arrays to store actions
                         int[] actionOne = new int[2];
                         int[] actionTwo = new int[2];
                         int[] actionThree = new int[2];
 
+                        //move each piece and store the action in the temp arrays
                         MovePieceCheck(pieceOne, x, actionOne);
                         MovePieceCheck(pieceTwo, y, actionTwo);
                         MovePieceCheck(pieceThree, z, actionThree);
 
+                        //update protection of pieces
                         UpdateProtectionMap(pieceOne, x);
                         UpdateProtectionMap(pieceTwo, y);
                         UpdateProtectionMap(pieceThree, z);
@@ -191,6 +200,7 @@ public class AI : BasePlayer
                             bestAction[2] = actionThree;
                         }
 
+                        //revert piece movement for all pieces
                         MovePieceBack(pieceOne, x);
                         MovePieceBack(pieceTwo, y);
                         MovePieceBack(pieceThree, z);
@@ -200,30 +210,33 @@ public class AI : BasePlayer
         }
     }
 
-    private void MovePieceBack(GameObject pieceOne, int x)
+    //method that reverts a pieces movement back to its original position
+    private void MovePieceBack(GameObject piece, int x)
     {
-        Board[pieceOne.GetComponent<BaseAI>().validActions[x][3], pieceOne.GetComponent<BaseAI>().validActions[x][4]] = 0;
-        Board[pieceOne.GetComponent<IPieceBase>().CurrRowPos, pieceOne.GetComponent<IPieceBase>().CurrColPos] = pieceOne.GetComponent<IPieceBase>().PieceID;
-        pieceOne.GetComponent<IProtectionBoard>().UpdateProtectionMap(pieceOne.GetComponent<IPieceBase>().CurrRowPos, pieceOne.GetComponent<IPieceBase>().CurrColPos, Board);
+        Board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] = 0;
+        Board[piece.GetComponent<IPieceBase>().CurrColPos, piece.GetComponent<IPieceBase>().CurrRowPos] = piece.GetComponent<IPieceBase>().PieceID;
+        piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(piece.GetComponent<IPieceBase>().CurrColPos, piece.GetComponent<IPieceBase>().CurrRowPos, Board);
     }
 
-    private void UpdateProtectionMap(GameObject pieceOne, int x)
+    //method to update protection
+    //used for the heuristic
+    private void UpdateProtectionMap(GameObject piece, int x)
     {
-        pieceOne.GetComponent<IProtectionBoard>().UpdateProtectionMap(pieceOne.GetComponent<BaseAI>().validActions[x][3], pieceOne.GetComponent<BaseAI>().validActions[x][4], Board);
+        piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4], Board);
     }
 
-    private void MovePieceCheck(GameObject pieceTwo, int y, int[] actionTwo)
+    //method that moves a piece to a new position and stores the action
+    private void MovePieceCheck(GameObject piece, int x, int[] action)
     {
-        Manager.UpdateIntBoard(pieceTwo.GetComponent<IPieceBase>().CurrRowPos, pieceTwo.GetComponent<IPieceBase>().CurrColPos, pieceTwo.GetComponent<BaseAI>().validActions[y][3],
-                               pieceTwo.GetComponent<BaseAI>().validActions[y][4], pieceTwo.GetComponent<IPieceBase>().PieceID);
+        Manager.UpdateIntBoard(piece.GetComponent<IPieceBase>().CurrColPos, piece.GetComponent<IPieceBase>().CurrRowPos, piece.GetComponent<BaseAI>().validActions[x][3],
+                               piece.GetComponent<BaseAI>().validActions[x][4], piece.GetComponent<IPieceBase>().PieceID);
 
-        actionTwo[0] = pieceTwo.GetComponent<BaseAI>().validActions[y][3];
-        actionTwo[1] = pieceTwo.GetComponent<BaseAI>().validActions[y][4];
+        action[0] = piece.GetComponent<BaseAI>().validActions[x][3];
+        action[1] = piece.GetComponent<BaseAI>().validActions[x][4];
     }
 
     //method to find the score of a given board
-    //since attacks are not guarenteed the current attack is also passed if a piece is attacking another
-    //right now just returns a random value
+    //right now it only cares for how protected the board pieces are
     public int HeuristicScore(int[,] theBoard, int protection)
     {
         int score = protection;

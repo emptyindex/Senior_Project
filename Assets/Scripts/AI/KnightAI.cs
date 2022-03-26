@@ -39,7 +39,7 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
 
     public void setValidActions()
     {
-        int currCol = this.GetComponent<IPieceBase>().CurrColPos;
+        int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         int[,] newBoard = new int[8, 8];
@@ -57,13 +57,13 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { 13, currRow, currCol, currRow, currCol };
+        validAction = new int[] { 23, currRow, currCol, currRow, currCol };
         validActions.Add(validAction);
 
         //search possible actions
-        for (int x = Mathf.Max(0, currRow - 4); x <= Mathf.Min(currRow + 4, row_limit); x++)
+        for (int x = Mathf.Max(0, currRow - 2); x <= Mathf.Min(currRow + 2, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 4); y <= Mathf.Min(currCol + 4, column_limit); y++)
+            for (int y = Mathf.Max(0, currCol - 2); y <= Mathf.Min(currCol + 2, column_limit); y++)
             {
                 if (x != currRow || y != currCol)
                 {
@@ -73,7 +73,7 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
                     if (moves <= 4 && newBoard[x, y] == 0)
                     {
                         moveFound = true;
-                        validAction = new int[] { 13, currRow, currCol, x, y };
+                        validAction = new int[] { 23, currRow, currCol, x, y };
                         validActions.Add(validAction);
                     }
 
@@ -83,25 +83,25 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
                         newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
                     {
                         moveFound = true;
-                        validAction = new int[] { 13, currRow, currCol, x, y };
+                        validAction = new int[] { 23, currRow, currCol, x, y };
                         validActions.Add(validAction);
                     }
 
                     //check protection by bishop, queen, and king since they all have the same attack range
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
-                        (newBoard[x, y] == 13 || newBoard[x, y] == 14 || newBoard[x, y] == 15 || newBoard[x, y] == 16))
+                        (newBoard[x, y] == 23 || newBoard[x, y] == 24 || newBoard[x, y] == 25 || newBoard[x, y] == 26))
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
-                    if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 11)
+                    if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 21)
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
-                    if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 12)
+                    if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 22)
                     {
                         protectionLevel += 1;
                     }
@@ -128,19 +128,19 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
                 {
                     //check protection by bishop, queen, and king since they all have the same attack range
                     if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 13 || board[x, y] == 14 || board[x, y] == 15 || board[x, y] == 16))
+                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 11)
+                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
-                    if (board[x, y] == 12)
+                    if (board[x, y] == 22)
                     {
                         protectionLevel += 1;
                     }
