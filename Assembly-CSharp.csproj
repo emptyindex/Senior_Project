@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\Tools.cs" />
+    <Compile Include="Assets\Scripts\AI\IProtectionBoard.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceCheckZoneScript.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip.cs" />
     <Compile Include="Assets\Scripts\AI\QueenAI.cs" />

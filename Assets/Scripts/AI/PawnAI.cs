@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PawnAI : BaseAI
+public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
 {
+    private void Awake()
+    {
+        this.PieceID = 1;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        this.PieceID = 11;
+        //this.PieceID = 11;
         //BestMove();
         this.hasFinished = false;
     }
@@ -17,21 +22,19 @@ public class PawnAI : BaseAI
     {
         if (this.hasFinished == false)
         {
-            BestMove();
+            //BestMove();
+            validActions.Clear();
+            protectionLevel = 0;
+
+            setValidActions();
             this.hasFinished = true;
         }
     }
 
-    //method that loops through all possible moves a piece can make and scores them
-    void BestMove()
+    public void setValidActions()
     {
-        bestScore = -999999999;
-        //int nextRow = 0;
-        //int nextCol = 0;
-
-        int currScore;
-        int[] currAttack = new int[2];
-        bestMove = new int[2];
+        int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
+        int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         int[,] newBoard = new int[8, 8];
         for (int i = 0; i < 8; i++)
@@ -42,53 +45,74 @@ public class PawnAI : BaseAI
             }
         }
 
+        int[] validAction = new int [5];
+
+        //add "no move" to the valid actions
+        validAction = new int[] { 21, currRow, currCol, currRow, currCol };
+        validActions.Add(validAction);
+
+        for (int i = -1; i <= 1; i++)
+        {
+            if (currRow - 1 > -1 && currCol + i < 8 && currCol + i > -1 && (newBoard[currRow - 1, currCol + i] == 0 || newBoard[currRow - 1, currCol + i] == 1 || newBoard[currRow - 1, currCol + i] == 2 ||
+            newBoard[currRow - 1, currCol + i] == 3 || newBoard[currRow - 1, currCol + i] == 4 || newBoard[currRow - 1, currCol + i] == 5 ||
+            newBoard[currRow - 1, currCol + i] == 6))
+            {
+                validAction = new int[] { 21, currRow, currCol, currRow - 1, currCol + i };
+                validActions.Add(validAction);
+                //print("found action");
+            }
+        }
+
+
+        UpdateProtectionMap(currRow, currCol, AIManager.Board);
+
+        AI.protectionBoard += protectionLevel;
+        /*
+        //print("Pawn protection level: " + protectionLevel);
+        int coun = 0;
+        for (int x = 0; x < validActions.Count; x++)
+        {
+            print("pawn move " + coun + ": " + validActions[x][3] + ", " + validActions[x][4]);
+            coun++;
+        }
+        */
+    }
+
+    public void UpdateProtectionMap(int row, int col, int[,] board)
+    {
         int row_limit = 7;
         int column_limit = 7;
 
-        for (int x = Mathf.Max(0, CurrRowPos - 1); x <= Mathf.Min(CurrRowPos + 1, row_limit); x++)
-        {
-            for (int y = Mathf.Max(0, CurrColPos - 1); y <= Mathf.Min(CurrColPos + 1, column_limit); y++)
-            {
-                if (x != CurrRowPos || y != CurrColPos)
-                {
-                    //print(x + " " + y);
+        AI.protectionBoard -= protectionLevel;
+        protectionLevel = 0;
 
-                    //move is into an empty space
-                    if (newBoard[x, y] == 0)
+        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
+        {
+            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
+            {
+                if (board[x, y] != 0 && x != row || y != col)
+                {
+                    //check protection by bishop, queen, and king since they all have the same attack range
+                    if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
+                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
                     {
-                        moveFound = true;
-                        newBoard[x, y] = 11;
-                        newBoard[CurrRowPos, CurrColPos] = 0;
-                        currAttack[0] = -1;
-                        currAttack[1] = -1;
-                        currScore = HeuristicScore(newBoard, currAttack);
-                        if (currScore > bestScore)
-                        {
-                            bestScore = currScore;
-                            bestMove[0] = x;
-                            bestMove[1] = y;
-                        }
-                        newBoard[x, y] = 0;
-                        newBoard[CurrRowPos, CurrColPos] = 11;
+                        protectionLevel += 1;
                     }
 
-                    //move is into enemy space
-                    if ((newBoard[x,y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 || 
-                        newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6) && x > CurrRowPos)
+                    //check protection by pawn since they can only protect from behind
+                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
                     {
-                        moveFound = true;
-                        currAttack[0] = x;
-                        currAttack[1] = y;
-                        currScore = HeuristicScore(newBoard, currAttack);
-                        if (currScore > bestScore)
-                        {
-                            bestScore = currScore;
-                            bestMove[0] = x;
-                            bestMove[1] = y;
-                        }
+                        protectionLevel += 1;
+                    }
+
+                    //check protection by rook since they have a range of 2
+                    if (board[x, y] == 22)
+                    {
+                        protectionLevel += 1;
                     }
                 }
             }
         }
+        AI.protectionBoard += protectionLevel;
     }
 }
