@@ -15,12 +15,12 @@ public class PieceColorManager : MonoBehaviour
 
         if (isBlack)
         {
-            material = materials.FirstOrDefault(m => m.name.Contains("Dark", System.StringComparison.CurrentCultureIgnoreCase));
+            material = materials.FirstOrDefault(m => m.name.Contains("Dark"));
             this.gameObject.transform.rotation = new Quaternion(0, -180, 0, 0);
         }
         else
         {
-            material = materials.FirstOrDefault(m => m.name.Contains("Light", System.StringComparison.CurrentCultureIgnoreCase));
+            material = materials.FirstOrDefault(m => m.name.Contains("Light"));
         }
 
         previousMaterial = material;
@@ -34,7 +34,7 @@ public class PieceColorManager : MonoBehaviour
 
         if (enabled)
         {
-            mat = materials.FirstOrDefault(m => m.name.Contains("Highlight", System.StringComparison.CurrentCultureIgnoreCase));
+            mat = materials.FirstOrDefault(m => m.name.Contains("Highlight"));
         }
 
         this.gameObject.GetComponent<Renderer>().material = mat;
