@@ -16,7 +16,6 @@ public enum MoveToMake
 
 public class CommanderController : MonoBehaviour, ICorpsCommander
 {
-
     public string canvasName;
 
     //[HideInInspector]
@@ -31,9 +30,9 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     private Cell previousCell = null;
 
 
-    private static GameObject testPiece;
+    private static GameObject attackingPiece;
 
-    private static Cell testCell;
+    private static Cell cellToAttack;
 
 
     public List<GameObject> highlightedCells = new List<GameObject>();
@@ -42,6 +41,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     private GameManager manager;
 
     protected bool isMoving = false;
+    private bool isAttacking = false;
 
     private bool commandAuthorityTaken = false;
     private bool isFirstMove = true;
@@ -78,7 +78,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        manager.dice.OnDiceEnded += checkAttackSuccessful;
+        manager.dice.OnDiceEnded += CheckAttackSuccessful;
 
         this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
 
@@ -87,11 +87,36 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         this.CurrentMove = MoveToMake.None;
     }
 
-    private void checkAttackSuccessful()
+    private void CheckAttackSuccessful()
     {
-        bool Test = testPiece.GetComponent<IPieceBase>().IsAttackSuccessful(testCell.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);
+        if(attackingPiece != null && cellToAttack != null) 
+        {
+            bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);
 
-        print(Test);
+            print(result);
+
+            if (result)
+            {
+                FinishAttack();
+            }
+            else
+            {
+                cellToAttack.GetComponent<Cell>().IsAttackHighlighted = false;
+                attackingPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+
+                this.ResetMove();
+            }
+        }
+    }
+
+    private void FinishAttack()
+    {
+        // Do attack
+
+        cellToAttack.GetComponent<Cell>().IsAttackHighlighted = false;
+        attackingPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+
+        this.ResetMove();
     }
 
     protected void Update()
@@ -111,7 +136,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 MenuCanvas.SetActive(true);
             }
 
-            if(CurrentMove != MoveToMake.None && !isMoving)
+            if(CurrentMove != MoveToMake.None && !isMoving && !isAttacking)
             {
                 switch (CurrentMove)
                 {
@@ -133,7 +158,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 MovePiece();
             }
 
-            if(Input.GetKeyUp(KeyCode.C) && isMoving)
+            if(Input.GetKeyUp(KeyCode.C) && (isMoving || isAttacking))
             {
                 if(selectedPiece.GetComponent<IRoyalty>() != null && selectedPiece.GetComponent<IRoyalty>().HasMoved)
                 {
@@ -264,8 +289,13 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 if (attackCells.Contains(cell.gameObject))
                 {
                     isMoving = false;
-                    testCell = cell;
-                    testPiece = selectedPiece;
+                    isAttacking = true;
+
+                    cellToAttack = cell;
+                    attackingPiece = selectedPiece;
+
+                    this.ClearCells();
+                    cellToAttack.GetComponent<Cell>().IsAttackHighlighted = true;
 
                     gameObject.GetComponent<AttackManager>().InvokeAttackRoll();
                 }
@@ -304,6 +334,16 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         {
             selectedPiece.GetComponent<BasePiece>().spotLight.enabled = false;
             selectedPiece = null;
+        }
+
+        if(attackingPiece)
+        {
+            attackingPiece = null;
+        }
+
+        if(cellToAttack)
+        {
+            cellToAttack = null;
         }
 
         isMoving = false;
