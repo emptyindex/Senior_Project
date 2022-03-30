@@ -13,7 +13,7 @@ public enum MoveToMake
 
 public class CommanderController : MonoBehaviour, ICorpsCommander
 {
-    public string canvasName;
+    public Canvas canvas;
 
     [HideInInspector]
     public List<GameObject> controlledPieces = new List<GameObject>();
@@ -66,7 +66,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
+        this.MenuCanvas = canvas.gameObject;
 
         this.MenuCanvas.SetActive(false);
 
