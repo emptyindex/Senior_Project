@@ -20,7 +20,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     //[HideInInspector]
     public List<GameObject> controlledPieces = new List<GameObject>();
-    [HideInInspector]
+    //[HideInInspector]
     public PlayerManager player;
 
     protected new Camera camera;
@@ -29,9 +29,9 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     private Cell previousCell = null;
 
+    private AttackManager attackManager;
 
     private static GameObject attackingPiece;
-
     private static Cell cellToAttack;
 
     private GameObject deadPile;
@@ -42,7 +42,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     private GameManager manager;
 
     protected bool isMoving = false;
-    private bool isAttacking = false;
+    public bool isAttacking = false;
 
     private bool commandAuthorityTaken = false;
     private bool isFirstMove = true;
@@ -77,8 +77,11 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     {
         camera = Camera.main;
 
+        this.attackManager = this.gameObject.GetComponent<AttackManager>();
+
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        attackManager.AttackRollNeeded += manager.dice.Roll;
         manager.dice.OnDiceEnded += CheckAttackSuccessful;
 
         this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
@@ -92,7 +95,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     private void CheckAttackSuccessful()
     {
-        if(attackingPiece != null && cellToAttack != null) 
+        if(controlledPieces.Contains(attackingPiece) && attackingPiece != null && cellToAttack != null) 
         {
             bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);
 
@@ -114,11 +117,14 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     private void FinishAttack()
     {
+        var attackedPiece = cellToAttack.GetCurrentPiece;
+
         // Do attack
-        cellToAttack.GetCurrentPiece.transform.SetParent(deadPile.transform, false);
-        cellToAttack.GetCurrentPiece.transform.position = Vector3.zero;
+        attackedPiece.transform.SetParent(deadPile.transform, false);
+        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, 2, 0);
 
         // Tell other player they lost a piece
+        manager.RemoveKilledPieceFromPlayer(player.gameObject, attackedPiece);
 
         // Move attacking piece
         attackingPiece.GetComponent<BasePiece>().MovePiece(cellToAttack, manager);
@@ -141,7 +147,9 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         if(HasTakenCommand)
         {
-            if(!MenuCanvas.activeSelf && CurrentMove == MoveToMake.None)
+            Debug.Log($"The current move on: {this.gameObject.name} is {CurrentMove}");
+
+            if(CurrentMove == MoveToMake.None)
             {
                 MenuCanvas.SetActive(true);
             }
@@ -168,7 +176,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 MovePiece();
             }
 
-            if(Input.GetKeyUp(KeyCode.C) && (isMoving || isAttacking))
+            if(Input.GetKeyUp(KeyCode.C) && isMoving)
             {
                 if(selectedPiece.GetComponent<IRoyalty>() != null && selectedPiece.GetComponent<IRoyalty>().HasMoved)
                 {
@@ -357,6 +365,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         }
 
         isMoving = false;
+        isAttacking = false;
 
         CurrentMove = MoveToMake.None;
     }

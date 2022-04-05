@@ -121,7 +121,9 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
+                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
+                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:
@@ -233,6 +235,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
+    {
+        int index = players.FindIndex(player).FirstOrDefault();
+
+        switch (index)
+        {
+            case 0:
+                players[1].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+            case 1:
+                players[0].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+        }
+    }
+
     /// <summary>
     /// Helper method for highlighting the available moves when a player has selected a piece to move.
     /// This method is exlusively used for Human players.
@@ -309,10 +326,6 @@ public class GameManager : MonoBehaviour
         if (isBlack)
         {
             newPiece.GetComponent<Renderer>().material.color *= 0.5f;
-        }
-        if (newPiece.GetComponent<AttackManager>())
-        {
-            newPiece.GetComponent<AttackManager>().AttackRollNeeded += dice.Roll;
         }
 
         newPiece.GetComponent<IPieceBase>().CurrColPos = j;

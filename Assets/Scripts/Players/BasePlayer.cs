@@ -19,6 +19,7 @@ public abstract class BasePlayer : MonoBehaviour
     public GameManager Manager { get; set; }
 
     public abstract void SetPieces(List<GameObject> pieces);
+    public abstract void RemovePiece(GameObject pieceToRemove);
 
     /// <summary>
     /// This determines whether it is this player's turn to move.

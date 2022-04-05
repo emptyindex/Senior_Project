@@ -30,6 +30,26 @@ public class PlayerManager : BasePlayer
         this.pieces = pieces.ToArray();
     }
 
+    public override void RemovePiece(GameObject pieceToRemove)
+    {
+        int index = pieces.FindIndex(pieceToRemove).FirstOrDefault();
+
+        var commander = corpsCommanders.Where(c => c.GetComponent<CommanderController>().controlledPieces.Contains(pieceToRemove)).FirstOrDefault();
+        if (commander != null)
+        {
+            commander.GetComponent<CommanderController>().controlledPieces.Remove(pieceToRemove);
+        }
+        else
+        {
+            throw new ArgumentException($"{pieceToRemove} is not controlled by any of this player's commanders.");
+        }
+
+        var tempList = new List<GameObject>(pieces);
+        tempList.RemoveAt(index);
+
+        pieces = tempList.ToArray();
+    }
+
     public void EndTurn()
     {
         canMove = false;
@@ -62,6 +82,8 @@ public class PlayerManager : BasePlayer
         corpsCommanders = pieces.Where(p => p.GetComponent<CommanderController>() != null).ToList();
 
         this.AssignCorpsPieces();
+
+        Debug.Log(gameObject.name);
 
         corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().OnCommandEnded += UpdateMoves);
         corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().player = this);
