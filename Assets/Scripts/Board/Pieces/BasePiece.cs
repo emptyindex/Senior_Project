@@ -12,6 +12,10 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
 
+    public List<int[]> validActions = new List<int[]>();
+    public int protectionLevel;
+    public int dangerLevel;
+
     public Light spotLight;
 
     public void Start()

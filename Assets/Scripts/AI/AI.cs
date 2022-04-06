@@ -24,6 +24,12 @@ public class AI : BasePlayer
     public static List<GameObject> BishopLPieces = new List<GameObject>();
     public static List<GameObject> BishopRPieces = new List<GameObject>();
     public static List<GameObject> KingPieces = new List<GameObject>();
+    public List<int[][]> AiMoveList;
+
+    public static List<GameObject> PlayerBishopLPieces = new List<GameObject>();
+    public static List<GameObject> PlayerBishopRPieces = new List<GameObject>();
+    public static List<GameObject> PlayerKingPieces = new List<GameObject>();
+    public List<int[,]> PlayerMoveList;
 
     public static bool AiTurn;
 
@@ -34,6 +40,8 @@ public class AI : BasePlayer
     void Start()
     {
         AiTurn = true;
+
+        AiMoveList = new List<int[][]>();
 
         StartCoroutine("AiPick");
     }
@@ -60,39 +68,43 @@ public class AI : BasePlayer
         {
             if (this.canMove)
             {
-                /*
+                PlayerMoveFinder.findPlayerMoves = true;
+
                 print("Left Bishop Corp:");
-                foreach (GameObject thing in BishopLPieces)
+                foreach (GameObject thing in PlayerBishopLPieces)
                 {
                 //    int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
                 //    int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
                 //    thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
                 //    thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
-                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
+                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrColPos + ", " + thing.GetComponent<IPieceBase>().CurrRowPos);
                 }
                 print("Right Bishop Corp:");
-                foreach (GameObject thing in BishopRPieces)
+                foreach (GameObject thing in PlayerBishopRPieces)
                 {
                     //int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
                     //int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
                     //thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
                     //thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
-                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
+                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrColPos + ", " + thing.GetComponent<IPieceBase>().CurrRowPos);
                 }
-                //print("King Corp:");
-                //foreach (GameObject thing in KingPieces)
-                //{
+                print("King Corp:");
+                foreach (GameObject thing in PlayerKingPieces)
+                {
                     //int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
                     //int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
                     //thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
                     //thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
-                    //print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrRowPos + ", " + thing.GetComponent<IPieceBase>().CurrColPos);
-                //}
-                */
+                    print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrColPos + ", " + thing.GetComponent<IPieceBase>().CurrRowPos);
+                }
+                
+
                 protectionBoard = 0;
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
 
-                yield return new WaitForSeconds(1);
+                //PlayerMoveFinder.findPlayerMoves = true;
+
+                yield return new WaitForSeconds(.5f);
 
                 //print(protectionBoard);
 
@@ -109,6 +121,7 @@ public class AI : BasePlayer
                     {
                         foreach (GameObject z in KingPieces)
                         {
+                            createMoveList(x, y, z, true);
                             checkCombinations(x, y, z);
                         }
                     }
@@ -243,8 +256,133 @@ public class AI : BasePlayer
         return score;
     }
 
+    public int HeuristicScore(int[,] theBoard)
+    {
+        int score = protectionBoard;
+        return score;
+    }
+
     public override void SetPieces(List<GameObject> pieces)
     {
         this.Pieces = pieces.ToArray();
+    }
+
+    private void createMoveList(GameObject pieceOne, GameObject pieceTwo, GameObject pieceThree, bool isPlayer)
+    {
+        foreach (int[] x in pieceOne.GetComponent<BaseAI>().validActions)
+        {
+            foreach (int[] y in pieceTwo.GetComponent<BaseAI>().validActions)
+            {
+                foreach (int[] z in pieceThree.GetComponent<BaseAI>().validActions)
+                {
+
+                    int[][] moveToAdd = new int[3][];
+                    moveToAdd[0] = x;
+                    moveToAdd[1] = y;
+                    moveToAdd[2] = z;
+
+                    AiMoveList.Add(moveToAdd);
+                }
+            }
+        }
+    }
+
+
+    int minimax(int[,] board, int depth, bool isMax)
+    {
+        //score the board state
+        int score = HeuristicScore(board);
+
+        // If Maximizer has won the game return his/her
+        // evaluated score
+        if (score >= 10000)
+            return score;
+
+        // If Minimizer has won the game return his/her
+        // evaluated score
+        if (score <= -10000)
+            return score;
+
+        if (depth == 2)
+            return score;
+
+        // If there are no more moves and no winner then
+        // it is a tie
+        //if (isMovesLeft(board) == false)
+        //    return 0;
+
+        // If this maximizer's move
+        if (isMax)
+        {
+            int best = -10000000;
+
+            //traverse all possible moves
+            foreach (GameObject pieceOne in BishopLPieces)
+            {
+                foreach (GameObject pieceTwo in BishopRPieces)
+                {
+                    foreach (GameObject pieceThree in KingPieces)
+                    {
+
+                        for (int x = 0; x < pieceOne.GetComponent<BaseAI>().validActions.Count; x++)
+                        {
+
+                            for (int y = 0; y < pieceTwo.GetComponent<BaseAI>().validActions.Count; y++)
+                            {
+
+                                for (int z = 0; z < pieceThree.GetComponent<BaseAI>().validActions.Count; z++)
+                                {
+                                    //makeMove
+
+                                    //call minimax recursively
+                                    best = Math.Max(best, minimax(board, depth + 1, !isMax));
+
+                                    //undo the move
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return best;
+        }
+
+        // If this minimizer's move
+        else
+        {
+            int best = 10000000;
+
+            //traverse all possible moves
+            foreach (GameObject pieceOne in BishopLPieces)
+            {
+                foreach (GameObject pieceTwo in BishopRPieces)
+                {
+                    foreach (GameObject pieceThree in KingPieces)
+                    {
+
+                        for (int x = 0; x < pieceOne.GetComponent<BaseAI>().validActions.Count; x++)
+                        {
+
+                            for (int y = 0; y < pieceTwo.GetComponent<BaseAI>().validActions.Count; y++)
+                            {
+
+                                for (int z = 0; z < pieceThree.GetComponent<BaseAI>().validActions.Count; z++)
+                                {
+                                    //makeMove
+
+                                    //call minimax recursively
+                                    best = Math.Min(best, minimax(board, depth + 1, !isMax));
+
+                                    //undo the move
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return best;
+        }
     }
 }

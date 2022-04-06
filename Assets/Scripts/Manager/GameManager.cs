@@ -324,6 +324,21 @@ public class GameManager : MonoBehaviour
                 AI.KingPieces.Add(newPiece);
             }
         }
+        else
+        {
+            if ((j == 1 && i == 0) || (j == 1 && i == 1) || (j == 1 && i == 2) || (j == 0 && i == 1) || (j == 0 && i == 2))
+            {
+                AI.PlayerBishopLPieces.Add(newPiece);
+            }
+            if ((j == 1 && i == 7) || (j == 1 && i == 6) || (j == 1 && i == 5) || (j == 0 && i == 6) || (j == 0 && i == 5))
+            {
+                AI.PlayerBishopRPieces.Add(newPiece);
+            }
+            if ((j == 1 && i == 3) || (j == 1 && i == 4) || (j == 0 && i == 0) || (j == 0 && i == 7) || (j == 0 && i == 3) || (j == 0 && i == 4))
+            {
+                AI.PlayerKingPieces.Add(newPiece);
+            }
+        }
 
         newPiece.GetComponent<IPieceBase>().CurrColPos = j;
         newPiece.GetComponent<IPieceBase>().CurrRowPos = i;

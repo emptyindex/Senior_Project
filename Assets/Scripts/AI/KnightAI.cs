@@ -61,9 +61,9 @@ public class KnightAI : BaseAI, IPieceBase, IProtectionBoard
         validActions.Add(validAction);
 
         //search possible actions
-        for (int x = Mathf.Max(0, currRow - 2); x <= Mathf.Min(currRow + 2, row_limit); x++)
+        for (int x = Mathf.Max(0, currRow - 4); x <= Mathf.Min(currRow + 4, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 2); y <= Mathf.Min(currCol + 2, column_limit); y++)
+            for (int y = Mathf.Max(0, currCol - 4); y <= Mathf.Min(currCol + 4, column_limit); y++)
             {
                 if (x != currRow || y != currCol)
                 {
