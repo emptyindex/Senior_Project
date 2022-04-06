@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KingAI : BaseAI, IPieceBase, IProtectionBoard
+public class KingAI : BaseAI
 {
     //public int PieceID { get; set; } = 16;
 
@@ -105,48 +105,5 @@ public class KingAI : BaseAI, IPieceBase, IProtectionBoard
         }
         AI.protectionBoard += protectionLevel;
         //print("King protection level: " + protectionLevel);
-    }
-
-    public void UpdateProtectionMap(int row, int col, int[,] board)
-    {
-        int row_limit = 7;
-        int column_limit = 7;
-
-        AI.protectionBoard -= protectionLevel;
-        protectionLevel = 0;
-
-        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
-        {
-            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
-            {
-                if (board[x, y] != 0 && x != row || y != col)
-                {
-                    //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by rook since they have a range of 2
-                    if (board[x, y] == 22)
-                    {
-                        protectionLevel += 1;
-                    }
-                }
-            }
-        }
-        AI.protectionBoard += protectionLevel;
-    }
-
-    public void revertProtectionMap()
-    {
-        throw new System.NotImplementedException();
     }
 }

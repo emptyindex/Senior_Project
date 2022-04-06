@@ -2,13 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RookAI : BaseAI, IPieceBase, IProtectionBoard
+public class RookAI : BaseAI
 {
-    //public int PieceID { get; set; } = 12;
-
-    int currScore;
-    int[] currAttack = new int[2];
-
     private void Awake()
     {
         this.PieceID = 2;
@@ -17,9 +12,6 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
     // Start is called before the first frame update
     void Start()
     {
-        //this.PieceID = 12;
-        //BestMove();
-
         this.hasFinished = false;
     }
 
@@ -34,11 +26,6 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
 
             setValidActions();
             this.hasFinished = true;
-
-            //for (int i = 0; i < validActions.Count; i++)
-            //{
-            //    print(validActions[i][0] + " move from " + validActions[i][1] + ", " + validActions[i][2] + " to " + validActions[i][3] + ", " + validActions[i][4]);
-            //}
         }
     }
 
@@ -220,48 +207,5 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
             return -1;
         else
             return 1;
-    }
-
-    public void UpdateProtectionMap(int row, int col, int[,] board)
-    {
-        int row_limit = 7;
-        int column_limit = 7;
-
-        AI.protectionBoard -= protectionLevel;
-        protectionLevel = 0;
-
-        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
-        {
-            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
-            {
-                if (board[x, y] != 0 && x != row || y != col)
-                {
-                    //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by rook since they have a range of 2
-                    if (board[x, y] == 22)
-                    {
-                        protectionLevel += 1;
-                    }
-                }
-            }
-        }
-        AI.protectionBoard += protectionLevel;
-    }
-
-    public void revertProtectionMap()
-    {
-        throw new System.NotImplementedException();
     }
 }
