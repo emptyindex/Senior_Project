@@ -487,4 +487,6 @@ public class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
         public int parent_i, parent_j;
         public float f, g, h;
     }
+
+    public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
 }
