@@ -73,10 +73,10 @@ public class AI : BasePlayer
                 print("Left Bishop Corp:");
                 foreach (GameObject thing in PlayerBishopLPieces)
                 {
-                //    int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
-                //    int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
-                //    thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
-                //    thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
+                    //    int tempRow = thing.GetComponent<IPieceBase>().CurrRowPos;
+                    //    int tempCol = thing.GetComponent<IPieceBase>().CurrColPos;
+                    //    thing.GetComponent<IPieceBase>().CurrColPos = tempRow;
+                    //    thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
                     print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrColPos + ", " + thing.GetComponent<IPieceBase>().CurrRowPos);
                 }
                 print("Right Bishop Corp:");
@@ -97,7 +97,7 @@ public class AI : BasePlayer
                     //thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
                     print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrColPos + ", " + thing.GetComponent<IPieceBase>().CurrRowPos);
                 }
-                
+
 
                 protectionBoard = 0;
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
@@ -125,37 +125,34 @@ public class AI : BasePlayer
                             checkCombinations(x, y, z);
                         }
                     }
-                }           
+                }
 
-                //move pieces to best found move
-                bestPieceOne.gameObject.transform.position = Manager.GetMovePosition(bestAction[0][1], bestAction[0][0]);
-                bestPieceTwo.gameObject.transform.position = Manager.GetMovePosition(bestAction[1][1], bestAction[1][0]);
-                bestPieceThree.gameObject.transform.position = Manager.GetMovePosition(bestAction[2][1], bestAction[2][0]);
+                if (bestAction[0][bestAction.Length - 1] == 0)
+                {
+                    MovePiece(bestPieceOne, 0);
+                }
+                else
+                {
+                    // attack
+                }
 
-                //update the integer board
-                Manager.UpdateIntBoard(bestPieceOne.GetComponent<IPieceBase>().CurrColPos, bestPieceOne.GetComponent<IPieceBase>().CurrRowPos, bestAction[0][0], bestAction[0][1], bestPieceOne.GetComponent<IPieceBase>().PieceID);
-                Manager.UpdateIntBoard(bestPieceTwo.GetComponent<IPieceBase>().CurrColPos, bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos, bestAction[1][0], bestAction[1][1], bestPieceTwo.GetComponent<IPieceBase>().PieceID);
-                Manager.UpdateIntBoard(bestPieceThree.GetComponent<IPieceBase>().CurrColPos, bestPieceThree.GetComponent<IPieceBase>().CurrRowPos, bestAction[2][0], bestAction[2][1], bestPieceThree.GetComponent<IPieceBase>().PieceID);
+                if (bestAction[1][bestAction.Length - 1] == 0)
+                {
+                    MovePiece(bestPieceTwo, 1);
+                }
+                else
+                {
+                    // attack
+                }
 
-                //update the protection map
-                bestPieceOne.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[0][0], bestAction[0][1], Board);
-                bestPieceTwo.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[1][0], bestAction[1][1], Board);
-                bestPieceThree.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[2][0], bestAction[2][1], Board);
-
-                //update the moved pieces current row and column
-                bestPieceOne.GetComponent<IPieceBase>().CurrColPos = bestAction[0][0];
-                bestPieceOne.GetComponent<IPieceBase>().CurrRowPos = bestAction[0][1];
-
-                bestPieceTwo.GetComponent<IPieceBase>().CurrColPos = bestAction[1][0];
-                bestPieceTwo.GetComponent<IPieceBase>().CurrRowPos = bestAction[1][1];
-
-                bestPieceThree.GetComponent<IPieceBase>().CurrColPos = bestAction[2][0];
-                bestPieceThree.GetComponent<IPieceBase>().CurrRowPos = bestAction[2][1];
-
-                //print to the consol the piece that moved and where it moved
-                print("piece " + bestPieceOne.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[0][0] + ", " + bestAction[0][1] + " and has protection of: " + bestPieceOne.GetComponent<BaseAI>().protectionLevel);
-                print("piece " + bestPieceTwo.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[1][0] + ", " + bestAction[1][1] + " and has protection of: " + bestPieceTwo.GetComponent<BaseAI>().protectionLevel);
-                print("piece " + bestPieceThree.GetComponent<IPieceBase>().PieceID + " has moved to: " + bestAction[2][0] + ", " + bestAction[2][1] + " and has protection of: " + bestPieceThree.GetComponent<BaseAI>().protectionLevel);
+                if (bestAction[2][bestAction.Length - 1] == 0)
+                {
+                    MovePiece(bestPieceThree, 2);
+                }
+                else
+                {
+                    // attack
+                }
 
                 // TO DO: 
                 IsTurn(false);
@@ -167,6 +164,22 @@ public class AI : BasePlayer
 
             yield return null;
         }
+    }
+
+    private void MovePiece(GameObject piece, int x)
+    {
+        var pieceBase = piece.GetComponent<IPieceBase>();
+
+        piece.transform.position = Manager.GetMovePosition(bestAction[x][1], bestAction[x][0]);
+
+        Manager.UpdateIntBoard(pieceBase.CurrColPos, pieceBase.CurrRowPos, bestAction[x][0], bestAction[x][1], pieceBase.PieceID);
+
+        piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[x][0], bestAction[x][1], Board);
+
+        pieceBase.CurrColPos = bestAction[x][0];
+        pieceBase.CurrRowPos = bestAction[x][1];
+
+        print("piece " + pieceBase.PieceID + " has moved to: " + bestAction[x][0] + ", " + bestAction[x][1] + " and has protection of: " + piece.GetComponent<BaseAI>().protectionLevel);
     }
 
     //this method takes in 3 pieces (1 from each corp commander)

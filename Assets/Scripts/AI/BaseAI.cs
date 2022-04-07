@@ -32,22 +32,26 @@ public class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
             for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
             {
                 if (board[x, y] != 0 && x != row || y != col)
-                {
+                {            
+                    var pieceID = board[x, y];
+                    var adjustedID = pieceID > 20 ? pieceID -= 20 : pieceID;
+
+                    var canDefend = x <= row + 1 && y <= col + 1 && y >= col - 1;
+
                     //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
+                    if (canDefend && x >= row - 1 && (adjustedID == 3 || adjustedID == 4 || adjustedID == 5 || adjustedID == 6))
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
+                    if (canDefend && x > row && board[x, y] == 21)
                     {
                         protectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
-                    if (board[x, y] == 22)
+                    if (adjustedID == 2)
                     {
                         protectionLevel += 1;
                     }
@@ -406,7 +410,7 @@ public class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
     }
 
     //checks if a move is within the board
-    bool isValid(int row, int col)
+    public bool isValid(int row, int col)
     {
         return (row >= 0) && (row < 8) && (col >= 0)
                && (col < 8);

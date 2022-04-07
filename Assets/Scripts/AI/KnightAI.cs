@@ -42,22 +42,10 @@ public class KnightAI : BaseAI
         int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
-        int[,] newBoard = new int[8, 8];
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                newBoard[i, j] = this.AIManager.Board[i, j];
-            }
-        }
-
         int row_limit = 7;
         int column_limit = 7;
 
-        int[] validAction = new int[5];
-
-        //add "no move" to the valid actions
-        validAction = new int[] { 23, currRow, currCol, currRow, currCol };
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol };
         validActions.Add(validAction);
 
         //search possible actions
@@ -68,47 +56,30 @@ public class KnightAI : BaseAI
                 if (x != currRow || y != currCol)
                 {
                     //check if move to spot is valid given movespeed of piece
-                    int moves = isMoveValid(newBoard, currRow, currCol, x, y);
+                    int moves = isMoveValid(this.AIManager.Board, currRow, currCol, x, y);
 
-                    if (moves <= 4 && newBoard[x, y] == 0)
+                    // check possible movies
+                    if (moves <= 4 && this.AIManager.Board[x, y] == 0)
                     {
                         moveFound = true;
-                        validAction = new int[] { 23, currRow, currCol, x, y };
+                        validAction = new int[] { this.PieceID, currRow, currCol, x, y, 0};
                         validActions.Add(validAction);
                     }
 
                     //check possible attacks
                     //since knight can move and attack in the same turn we can check through their whole move range
-                    if (moves <= 4 && (newBoard[x, y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 ||
-                        newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
+                    if (moves <= 4 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10)
                     {
                         moveFound = true;
-                        validAction = new int[] { 23, currRow, currCol, x, y };
+                        validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
                         validActions.Add(validAction);
                     }
 
-                    //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
-                        (newBoard[x, y] == 23 || newBoard[x, y] == 24 || newBoard[x, y] == 25 || newBoard[x, y] == 26))
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by pawn since they can only protect from behind
-                    if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 21)
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by rook since they have a range of 2
-                    if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 22)
-                    {
-                        protectionLevel += 1;
-                    }
+                    this.UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
                 }
             }
         }
-        AI.protectionBoard += protectionLevel;
+        //AI.protectionBoard += protectionLevel;
         //print("Knight protection level: " + protectionLevel);
     }
 }

@@ -36,45 +36,32 @@ public class PawnAI : BaseAI
         int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
-        int[,] newBoard = new int[8, 8];
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                newBoard[i, j] = this.AIManager.Board[i, j];
-            }
-        }
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol };
 
-        int[] validAction = new int [5];
-
-        //add "no move" to the valid actions
-        validAction = new int[] { 21, currRow, currCol, currRow, currCol };
         validActions.Add(validAction);
 
         for (int i = -1; i <= 1; i++)
         {
-            if (currRow - 1 > -1 && currCol + i < 8 && currCol + i > -1 && (newBoard[currRow - 1, currCol + i] == 0 || newBoard[currRow - 1, currCol + i] == 1 || newBoard[currRow - 1, currCol + i] == 2 ||
-            newBoard[currRow - 1, currCol + i] == 3 || newBoard[currRow - 1, currCol + i] == 4 || newBoard[currRow - 1, currCol + i] == 5 ||
-            newBoard[currRow - 1, currCol + i] == 6))
+            if(isValid(currRow - 1, currCol + i))
             {
-                validAction = new int[] { 21, currRow, currCol, currRow - 1, currCol + i };
-                validActions.Add(validAction);
-                //print("found action");
+                var pieceDifference = AIManager.Board[currRow - 1, currCol + i] > 0 ? Mathf.Abs(AIManager.Board[currRow - 1, currCol + i] - this.PieceID) : -1;
+
+                //can move
+                if (AIManager.Board[currRow - 1, currCol + i] == 0)
+                {
+                    validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 0};
+                    validActions.Add(validAction);
+                }
+                else if(pieceDifference >= 10)
+                {
+                    validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 1 };
+                    validActions.Add(validAction);
+                }
             }
         }
 
-
         UpdateProtectionMap(currRow, currCol, AIManager.Board);
 
-        AI.protectionBoard += protectionLevel;
-        /*
-        //print("Pawn protection level: " + protectionLevel);
-        int coun = 0;
-        for (int x = 0; x < validActions.Count; x++)
-        {
-            print("pawn move " + coun + ": " + validActions[x][3] + ", " + validActions[x][4]);
-            coun++;
-        }
-        */
+        //AI.protectionBoard += protectionLevel;
     }
 }
