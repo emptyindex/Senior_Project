@@ -6,9 +6,8 @@ using UnityEngine;
 /// <summary>
 /// Represents a Knight piece.
 /// </summary>
-public class Knight : BasePiece, IPieceBase, IRoyalty
+public class Knight : BasePiece, IRoyalty
 {
-    public int PieceID { get; set; } = 3;
     public int[] InitialStartPos { get; private set; } = new int[2];
 
     public bool HasMoved { get; private set; } = false;
@@ -27,9 +26,9 @@ public class Knight : BasePiece, IPieceBase, IRoyalty
     /// <param name="x">The piece's X position on the board.</param>
     /// <param name="y">The piece's Y position on the board.</param>
     /// <returns>A list of all valid moves for this piece.</returns>
-    public override List<GameObject> Highlight(GameObject[,] board, int x, int y)
+    public override (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y)
     {
-        return base.HighlightCells(board, x, y, this.MovementNum);
+        return base.HighlightCells(board, x, y);
     }
 
     public void UpdateMovementNum(int[] newPos)
@@ -50,9 +49,10 @@ public class Knight : BasePiece, IPieceBase, IRoyalty
         InitialStartPos = newPos;
     }
 
-    private void Start()
+    private void Awake()
     {
         this.MovementNum = 4;
+        this.PieceID = 3;
     }
 
     public int GetNumMoved(int[] newPos)

@@ -10,6 +10,7 @@ using UnityEngine;
 public class PlayerManager : BasePlayer
 {
     public GameObject[] pieces = new GameObject[16];
+
     private List<GameObject> corpsCommanders = new List<GameObject>();
 
     private List<GameObject> usedCommanders = new List<GameObject>();
@@ -114,6 +115,11 @@ public class PlayerManager : BasePlayer
                 }
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            InvokeAttackRoll();
+        }
     }
 
     private void AssignCorpsPieces()
@@ -123,8 +129,8 @@ public class PlayerManager : BasePlayer
 
         foreach (var commander in bishops)
         {
-            var posX = commander.GetComponent<BasePiece>().positionX;
-            var posY = commander.GetComponent<BasePiece>().positionY;
+            var posX = commander.GetComponent<BasePiece>().CurrRowPos;
+            var posY = commander.GetComponent<BasePiece>().CurrColPos;
 
             bool isLeftSide = true;
 
@@ -145,8 +151,8 @@ public class PlayerManager : BasePlayer
 
     private bool CanAdd(bool isLeftSide, GameObject pieceToCheck, int posX, int posY)
     {
-        var newX = pieceToCheck.GetComponent<BasePiece>().positionX;
-        var newY = pieceToCheck.GetComponent<BasePiece>().positionY;
+        var newX = pieceToCheck.GetComponent<BasePiece>().CurrRowPos;
+        var newY = pieceToCheck.GetComponent<BasePiece>().CurrColPos;
 
         bool boolRange;
 

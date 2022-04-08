@@ -6,18 +6,23 @@ using UnityEngine;
 /// <summary>
 /// Base Piece that all Human Player pieces inherit from.
 /// </summary>
-public abstract class BasePiece : MonoBehaviour
+public abstract class BasePiece : MonoBehaviour, IPieceBase
 {
     public int MovementNum { get; set; }
+    public int CurrRowPos { get; set; }
+    public int CurrColPos { get; set; }
+    public int PieceID { get; set; }
 
-    [HideInInspector]
-    public int positionX;
-    [HideInInspector]
-    public int positionY;
+    public Light spotLight;
+
+    public void Start()
+    {
+        spotLight.enabled = false;
+    }
 
     public int[] GetNumberMoves(int x, int y)
     {
-        return new int[] { Mathf.Abs(x - positionX), Mathf.Abs(y - positionY) };
+        return new int[] { Mathf.Abs(x - CurrRowPos), Mathf.Abs(y - CurrColPos) };
     }
 
     /// <summary>
@@ -27,22 +32,17 @@ public abstract class BasePiece : MonoBehaviour
     /// <param name="obj"></param>
     public void MovePiece(Cell cell, GameManager manager)
     {
-        int currX = positionY;
-        int currY = positionX;
+        int currX = CurrColPos;
+        int currY = CurrRowPos;
 
         var newPos = manager.GetMovePosition(cell.gameObject, gameObject);
 
-        int newX = positionY;
-        int newY = positionX;
+        int newX = CurrColPos;
+        int newY = CurrRowPos;
 
         manager.UpdateIntBoard(currX, currY, newX, newY, gameObject.GetComponent<IPieceBase>().PieceID);
 
         Move(newPos);
-
-        if (gameObject.GetComponent<Pawn>())
-        {
-            gameObject.GetComponent<Pawn>().UpdateMoved();
-        }
 
         cell.GetCurrentPiece = gameObject;
     }
@@ -55,7 +55,7 @@ public abstract class BasePiece : MonoBehaviour
     /// <param name="x">The current piece's X position on the board.</param>
     /// <param name="y">The current piece's Y position on the board.</param>
     /// <returns></returns>
-    public abstract List<GameObject> Highlight(GameObject[,] board, int x, int y);
+    public abstract (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y);
 
     /// <summary>
     /// This method gets the all possible positions a piece can move - both forwards and backwards.
@@ -80,9 +80,8 @@ public abstract class BasePiece : MonoBehaviour
     /// <param name="left">Whether the piece can move left.</param>
     /// <param name="right">Whether the piece can move right.</param>
     /// <returns></returns>
-    public List<GameObject> HighlightCells(GameObject[,] board,
+    public (List<GameObject>, List<GameObject>) HighlightCells(GameObject[,] board,
         int x, int y,
-        int maxTimes,
         bool diaRight = true,
         bool diaLeft = true,
         bool diaRightUp = true,
@@ -93,6 +92,9 @@ public abstract class BasePiece : MonoBehaviour
         bool right = true)
     {
         List<GameObject> inRange = new List<GameObject>();
+        List<GameObject> inRangeToAttack = new List<GameObject>();
+
+        var maxTimes = this.MovementNum;
 
         int timesMoved = 1;
         maxTimes++;
@@ -105,79 +107,63 @@ public abstract class BasePiece : MonoBehaviour
             moveY = y + timesMoved;
 
             // get diagonal down left
-            if (diaLeft)
-            {
-                diaLeft = !IsPopulated(board, x - timesMoved, moveY);
-
-                GetMove(board, x - timesMoved, moveY, inRange, diaLeft);
-            }
+            diaLeft = CheckGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved);
 
             moveX = x + timesMoved;
 
             // move right
-            if (right)
-            {
-                right = !IsPopulated(board, moveX, y);
-
-                GetMove(board, moveX, y, inRange, right);
-            }
+            right = CheckGetMove(board, right, inRange, inRangeToAttack, y, moveX);
 
             // move forward
-            if(up)
-            {
-                up = !IsPopulated(board, x, moveY);
-
-                GetMove(board, x, moveY, inRange, up);
-            }
+            up = CheckGetMove(board, up, inRange, inRangeToAttack, moveY, x);
 
             // move diagonal down right
-            if(diaRight)
-            {
-                diaRight = !IsPopulated(board, moveX, moveY);
-
-                GetMove(board, moveX, moveY, inRange, diaRight);
-            }
+            diaRight = CheckGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX);
 
             moveY = y - timesMoved;
 
             // move diagonal up right
-            if(diaRightUp)
-            {
-                diaRightUp = !IsPopulated(board, moveX, moveY);
-
-                GetMove(board, moveX, moveY, inRange, diaRightUp);
-            }
+            diaRightUp = CheckGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX);
 
             // move backwards
-            if(down)
-            {
-                down = !IsPopulated(board, x, moveY);
-
-                GetMove(board, x, moveY, inRange, down);
-            }
+            down = CheckGetMove(board, down, inRange, inRangeToAttack, moveY, x);
 
             moveX = x - timesMoved;
 
             // move left
-            if(left)
-            {
-                left = !IsPopulated(board, moveX, y);
-
-                GetMove(board, moveX, y, inRange, left);
-            }
+            left = CheckGetMove(board, left, inRange, inRangeToAttack, y, moveX);
 
             // move diagonal up left
-            if(diaLeftUp)
-            {
-                diaLeftUp = !IsPopulated(board, moveX, moveY);
-
-                GetMove(board, moveX, moveY, inRange, diaLeftUp);
-            }
+            diaLeftUp = CheckGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX);
 
             timesMoved++;
         }
 
-        return inRange;
+        return (inRange, inRangeToAttack);
+    }
+
+    private bool CheckGetMove(GameObject[,] board, bool canContinueDirection, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX)
+    {
+        if (canContinueDirection && IsValid(board, moveX, moveY))
+        {
+            if (IsPopulated(board, moveX, moveY))
+            {
+                if(HasEnemyPiece(board, moveX, moveY))
+                {
+                    GetMove(board, moveX, moveY, inRangeToAttack, true);
+
+                    return false;
+                }
+            }
+            else
+            {
+                GetMove(board, moveX, moveY, inRange, false);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -189,6 +175,16 @@ public abstract class BasePiece : MonoBehaviour
         gameObject.transform.position = position + new Vector3(0, 0.02f, 0);
     }
 
+    private bool IsValid(GameObject[,] board, int indexX, int indexY)
+    {
+        if (!InBounds(board, indexX, indexY)) 
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Determines whether a cell already contains a piece.
     /// </summary>
@@ -198,9 +194,21 @@ public abstract class BasePiece : MonoBehaviour
     /// <returns></returns>
     private static bool IsPopulated(GameObject[,] board, int indexX, int indexY)
     {
-        if(!InBounds(board, indexX, indexY) || board[indexX, indexY].GetComponent<Cell>().GetCurrentPiece)
+        if(board[indexX, indexY].GetComponent<Cell>().GetCurrentPiece)
         {
             return true;
+        }
+
+        return false;
+    }
+
+    private bool HasEnemyPiece(GameObject[,] board, int indexX, int indexY)
+    {
+        var piece = board[indexX, indexY].GetComponent<Cell>().GetCurrentPiece.GetComponent<IPieceBase>();
+
+        if (piece != null)
+        {
+            return Mathf.Abs(piece.PieceID - PieceID) >= 15;
         }
 
         return false;
@@ -216,12 +224,20 @@ public abstract class BasePiece : MonoBehaviour
     /// <param name="offset">The y position that we want to check.</param>
     /// <param name="inRange">The list of valid cells/moves.</param>
     /// <param name="canMove">The boolean to indicate whether a piece can move in the direction being checked.</param>
-    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool canMove)
+    private static void GetMove(GameObject[,] board, int coord, int offset, List<GameObject> inRange, bool checkAttack)
     {
-        if (canMove && !IsPopulated(board, coord, offset) && !inRange.Contains(board[coord, offset]))
+        if (!inRange.Contains(board[coord, offset]))
         {
             inRange.Add(board[coord, offset]);
-            board[coord, offset].GetComponent<Cell>().IsHighlighted = true;
+
+            if (checkAttack)
+            {
+                board[coord, offset].GetComponent<Cell>().IsAttackHighlighted = true;
+            }
+            else
+            {
+                board[coord, offset].GetComponent<Cell>().IsHighlighted = true;
+            }
         }
     }
 

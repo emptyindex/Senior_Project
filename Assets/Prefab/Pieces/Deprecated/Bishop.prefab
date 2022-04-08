@@ -115,8 +115,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spotLight: {fileID: 6375330740830510397}
-  positionX: 0
-  positionY: 0
 --- !u!114 &8832353463962160283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,8 +128,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasName: BishopMenu
+  notificationCanvas: {fileID: 0}
   controlledPieces: []
   player: {fileID: 0}
+  highlightedCells: []
+  attackCells: []
 --- !u!1 &6900651062834062987
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,6 +265,14 @@ PrefabInstance:
     - target: {fileID: 718726482632040355, guid: 5746241e11485394caf36b6983440feb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494924504628483758, guid: 5746241e11485394caf36b6983440feb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -350
+      objectReference: {fileID: 0}
+    - target: {fileID: 4494924504628483758, guid: 5746241e11485394caf36b6983440feb, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -72.1
       objectReference: {fileID: 0}
     - target: {fileID: 5642700338759465566, guid: 5746241e11485394caf36b6983440feb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
