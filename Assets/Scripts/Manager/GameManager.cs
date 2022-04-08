@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvAI;
+    public GameMode currGameMode = GameMode.PvAI;
 
     public BasePlayer[] GetBasePlayers()
     {
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     /// and Two AI players for AIvAI.
     /// After creating the players, it assigns the appropriate collection of pieces to each.
     /// </summary>
-    void Awake()
+    void Start()
     {
         Instantiate(boardPrefab);
 

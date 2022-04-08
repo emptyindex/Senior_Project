@@ -21,12 +21,12 @@ public class Dice : MonoBehaviour
 
         startPos = transform.position;
 
-        players = manager.GetBasePlayers();
+        //players = manager.GetBasePlayers();
 
-        foreach(var p in players)
-        {
-            p.AttackRollNeeded += Roll;
-        }
+        //foreach(var p in players)
+        //{
+        //    p.AttackRollNeeded += Roll;
+        //}
     }
 
     // Update is called once per frame
