@@ -45,7 +45,7 @@ public class KnightAI : BaseAI
         int row_limit = 7;
         int column_limit = 7;
 
-        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol };
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol, 0 };
         validActions.Add(validAction);
 
         //search possible actions
@@ -68,7 +68,7 @@ public class KnightAI : BaseAI
 
                     //check possible attacks
                     //since knight can move and attack in the same turn we can check through their whole move range
-                    if (moves <= 4 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10)
+                    if (moves <= 4 && this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10)
                     {
                         moveFound = true;
                         validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};

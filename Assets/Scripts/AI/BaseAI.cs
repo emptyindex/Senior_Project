@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
+public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
 {
     public int bestScore;
     public int[] bestMove;

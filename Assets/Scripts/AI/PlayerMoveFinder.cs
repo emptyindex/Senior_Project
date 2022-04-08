@@ -642,4 +642,8 @@ public class PlayerMoveFinder : BaseAI
         //AI.protectionBoard += protectionLevel;
     }
 
+    public override bool IsAttackSuccessful(int PieceToAttack, int numberRolled)
+    {
+        throw new System.NotImplementedException();
+    }
 }

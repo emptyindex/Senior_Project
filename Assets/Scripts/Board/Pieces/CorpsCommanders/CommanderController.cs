@@ -121,7 +121,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         // Do attack
         attackedPiece.transform.SetParent(deadPile.transform, false);
-        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, 2, 0);
+        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, 3, 0);
 
         // Tell other player they lost a piece
         manager.RemoveKilledPieceFromPlayer(player.gameObject, attackedPiece);

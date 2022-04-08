@@ -36,7 +36,7 @@ public class PawnAI : BaseAI
         int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
-        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol };
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol, 0};
 
         validActions.Add(validAction);
 
@@ -52,7 +52,7 @@ public class PawnAI : BaseAI
                     validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 0};
                     validActions.Add(validAction);
                 }
-                else if(pieceDifference >= 10)
+                else if(this.AIManager.Board[currRow - 1, currCol + i] > 0 && pieceDifference >= 10)
                 {
                     validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 1 };
                     validActions.Add(validAction);

@@ -63,7 +63,7 @@ public class KingAI : BaseAI
                     }
 
                     //check possible attacks
-                    if (Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10 &&
+                    if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10 &&
                         (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
                     {
                         moveFound = true;

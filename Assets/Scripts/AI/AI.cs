@@ -33,8 +33,19 @@ public class AI : BasePlayer
 
     public static bool AiTurn;
 
+    private AttackManager attackManager;
+
+    private GameObject deadPile;
+
     public static int protectionBoard;
     public static int dangerBoard;
+
+    private static GameObject attackingPiece;
+    private static GameObject cellToAttack;
+    private static int[][] storeBestAction = new int[3][];
+    private static List<int> indexesDone = new List<int>();
+
+    private static bool isAttacking = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +54,58 @@ public class AI : BasePlayer
 
         AiMoveList = new List<int[][]>();
 
+        attackManager = gameObject.GetComponent<AttackManager>();
+
+        attackManager.AttackRollNeeded += Manager.dice.Roll;
+        Manager.dice.OnDiceEnded += CheckAttackSuccessful;
+
+        deadPile = GameObject.FindWithTag("Deadpile");
+
         StartCoroutine("AiPick");
+    }
+
+    private void CheckAttackSuccessful()
+    {
+        // Verify this is the correct AI instance to check
+        if (attackingPiece != null && cellToAttack != null && Pieces.Contains(attackingPiece))
+        {
+            // get the piece being attacked
+            var attackedPiece = cellToAttack.GetComponent<Cell>().GetCurrentPiece;
+
+            // check whether the attack was successful on the attacked piece
+            bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(attackedPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);    
+
+            print(result);
+
+            // if the attack was successful, remove the piece from the other player and move it into the deadpile
+            // otherwise, end attacking
+            if (result)
+            {
+                attackedPiece.transform.SetParent(deadPile.transform);
+                attackedPiece.transform.position = deadPile.transform.position + new Vector3(0, 3, 0);
+
+                Manager.RemoveKilledPieceFromPlayer(this.gameObject, attackedPiece);
+
+                MovePiece(attackingPiece, attackedPiece.GetComponent<IPieceBase>().CurrColPos, attackedPiece.GetComponent<IPieceBase>().CurrRowPos);
+
+                // reset static variables
+                attackingPiece = null;
+                cellToAttack = null;
+                storeBestAction = new int[3][];
+
+                isAttacking = false;
+            }
+            else
+            {
+
+                // reset static variables
+                attackingPiece = null;
+                cellToAttack = null;
+                storeBestAction = new int[3][];
+
+                isAttacking = false;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -127,59 +189,73 @@ public class AI : BasePlayer
                     }
                 }
 
-                if (bestAction[0][bestAction.Length - 1] == 0)
+                storeBestAction = bestAction;
+                List<GameObject> pieces = new List<GameObject>() { bestPieceOne, bestPieceTwo, bestPieceThree };
+
+                for(int i = 0; i < storeBestAction.GetLength(0); i++)
                 {
-                    MovePiece(bestPieceOne, 0);
-                }
-                else
-                {
-                    // attack
+                    if(!indexesDone.Contains(i))
+                    {
+                        if (storeBestAction[i][2] == 0)
+                        {
+                            indexesDone.Add(i);
+                            MovePiece(pieces[i], storeBestAction[i][0], storeBestAction[i][1]);
+                        }
+                        else
+                        {
+                            indexesDone.Add(i);
+                            BeginAttack(storeBestAction, i, pieces[i]);
+
+                            yield return new WaitUntil(() => !isAttacking);
+                        }
+                    }
                 }
 
-                if (bestAction[1][bestAction.Length - 1] == 0)
-                {
-                    MovePiece(bestPieceTwo, 1);
-                }
-                else
-                {
-                    // attack
-                }
-
-                if (bestAction[2][bestAction.Length - 1] == 0)
-                {
-                    MovePiece(bestPieceThree, 2);
-                }
-                else
-                {
-                    // attack
-                }
-
-                // TO DO: 
                 IsTurn(false);
                 Manager.ChangeTurn(this.gameObject);
 
-                //showBoard();
-                //print("pressed SPACE");
+                indexesDone.Clear();
             }
 
             yield return null;
         }
     }
 
-    private void MovePiece(GameObject piece, int x)
+    private void BeginAttack(int[][] bestAction, int id, GameObject piece)
+    {
+        var cell = GameManager.boardArr[bestAction[id][0], bestAction[id][1]];
+
+        if(cell.GetComponent<Cell>() && cell.GetComponent<Cell>().containsPiece)
+        {
+            cellToAttack = cell;
+        }
+
+        attackingPiece = piece;
+
+        isAttacking = true;
+        attackManager.InvokeAttackRoll();
+    }
+
+    private void MovePiece(GameObject piece, int x, int y)
     {
         var pieceBase = piece.GetComponent<IPieceBase>();
 
-        piece.transform.position = Manager.GetMovePosition(bestAction[x][1], bestAction[x][0]);
+        piece.transform.position = Manager.GetMovePosition(y, x);
 
-        Manager.UpdateIntBoard(pieceBase.CurrColPos, pieceBase.CurrRowPos, bestAction[x][0], bestAction[x][1], pieceBase.PieceID);
+        Manager.UpdateIntBoard(pieceBase.CurrColPos, pieceBase.CurrRowPos, x, y, pieceBase.PieceID);
 
-        piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(bestAction[x][0], bestAction[x][1], Board);
+        var previousCell = GameManager.boardArr[pieceBase.CurrRowPos, pieceBase.CurrColPos].GetComponent<Cell>();
+        previousCell.GetCurrentPiece = null;
 
-        pieceBase.CurrColPos = bestAction[x][0];
-        pieceBase.CurrRowPos = bestAction[x][1];
+        var cell = GameManager.boardArr[y, x].GetComponent<Cell>();
+        cell.GetCurrentPiece = piece;
 
-        print("piece " + pieceBase.PieceID + " has moved to: " + bestAction[x][0] + ", " + bestAction[x][1] + " and has protection of: " + piece.GetComponent<BaseAI>().protectionLevel);
+        piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(x, y, Board);
+
+        pieceBase.CurrColPos = x;
+        pieceBase.CurrRowPos = y;
+
+        print("piece " + pieceBase.PieceID + " has moved to: " + x + ", " + y + " and has protection of: " + piece.GetComponent<BaseAI>().protectionLevel);
     }
 
     //this method takes in 3 pieces (1 from each corp commander)
@@ -199,9 +275,9 @@ public class AI : BasePlayer
                         ((pieceTwo.GetComponent<BaseAI>().validActions[y][3] != pieceThree.GetComponent<BaseAI>().validActions[z][3]) && (pieceTwo.GetComponent<BaseAI>().validActions[y][4] != pieceThree.GetComponent<BaseAI>().validActions[z][4])))
                     {
                         //temporary arrays to store actions
-                        int[] actionOne = new int[2];
-                        int[] actionTwo = new int[2];
-                        int[] actionThree = new int[2];
+                        int[] actionOne = new int[3];
+                        int[] actionTwo = new int[3];
+                        int[] actionThree = new int[3];
 
                         //move each piece and store the action in the temp arrays
                         MovePieceCheck(pieceOne, x, actionOne);
@@ -259,6 +335,7 @@ public class AI : BasePlayer
 
         action[0] = piece.GetComponent<BaseAI>().validActions[x][3];
         action[1] = piece.GetComponent<BaseAI>().validActions[x][4];
+        action[2] = piece.GetComponent<BaseAI>().validActions[x][5];
     }
 
     //method to find the score of a given board
@@ -397,5 +474,10 @@ public class AI : BasePlayer
             }
             return best;
         }
+    }
+
+    public override void RemovePiece(GameObject pieceToRemove)
+    {
+        throw new NotImplementedException();
     }
 }

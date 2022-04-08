@@ -34,7 +34,7 @@ public class RookAI : BaseAI
         int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
-        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol };
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol, 0};
         validActions.Add(validAction);
 
         //check moves
@@ -147,7 +147,7 @@ public class RookAI : BaseAI
                 return 1;
             }
 
-            if (Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 10)
+            if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 15)
             {
                 moveFound = true;
                 int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};

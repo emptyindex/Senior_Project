@@ -40,7 +40,7 @@ public class QueenAI : BaseAI
         int row_limit = 7;
         int column_limit = 7;
 
-        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol };
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol, 0};
 
         validActions.Add(validAction);
 
@@ -62,7 +62,7 @@ public class QueenAI : BaseAI
                     }
 
                     //check possible attacks
-                    if (Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10 &&
+                    if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 15 &&
                         (x <= CurrRowPos + 1) && (y <= CurrColPos + 1) && (x >= CurrRowPos - 1) && (y >= CurrColPos - 1))
                     {
                         moveFound = true;

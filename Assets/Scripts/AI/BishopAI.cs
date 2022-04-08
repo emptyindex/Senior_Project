@@ -156,7 +156,7 @@ public class BishopAI : BaseAI
                 return 1;
             }
 
-            if (Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 10)
+            if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 10)
             {
                 moveFound = true;
                 int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
