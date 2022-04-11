@@ -30,6 +30,9 @@ public class KingAI : BaseAI, IPieceBase, IProtectionBoard
 
             setValidActions();
             this.hasFinished = true;
+
+            AI.kingCol = this.GetComponent<IPieceBase>().CurrRowPos;
+            AI.kingRow = this.GetComponent<IPieceBase>().CurrColPos;
         }
     }
 

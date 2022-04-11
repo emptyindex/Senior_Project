@@ -19,6 +19,8 @@ public class BaseAI : MonoBehaviour, IPieceBase
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
 
+    public static List<int[][]> PlayerMoveTest;
+
     //method to find the score of a given board
     //since attacks are not guarenteed the current attack is also passed if a piece is attacking another
     //right now just returns a random value
@@ -26,6 +28,12 @@ public class BaseAI : MonoBehaviour, IPieceBase
     {
         int score = Random.Range(1, 1000);
         return score;
+    }
+
+    public static int MethodForTest()
+    {
+        int hi = PlayerMoveTest.Count;
+        return hi;
     }
 
     //method that checks if a move is valid and returns the least number of squares the piece has to move to reach the destination

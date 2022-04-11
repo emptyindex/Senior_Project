@@ -4,10 +4,13 @@ using UnityEngine;
 using System;
 using System.Linq;
 using Random = UnityEngine.Random;
+using Unity.Jobs;
+using Unity.Collections;
 
 public class AI : BasePlayer
 {
     //public GameObject rook, knight, bishop, queen, king, pawn;
+    private bool doJob;
 
     [HideInInspector]
     public int[,] Board;
@@ -29,19 +32,31 @@ public class AI : BasePlayer
     public static List<GameObject> PlayerBishopLPieces = new List<GameObject>();
     public static List<GameObject> PlayerBishopRPieces = new List<GameObject>();
     public static List<GameObject> PlayerKingPieces = new List<GameObject>();
-    public List<int[,]> PlayerMoveList;
+    public List<int[][]> PlayerMoveList;
 
     public static bool AiTurn;
 
     public static int protectionBoard;
     public static int dangerBoard;
 
+    public static int kingRow = 7;
+    public static int kingCol = 3;
+    //public static int BishopRRow = 7;
+    //public static int BishopRCol = 2;
+    //public static int BishopLRow = 7;
+    //public static int BishopLCol = 5;
+
+    public NativeArray<int> result;
+
     // Start is called before the first frame update
     void Start()
     {
+        doJob = false;
+
         AiTurn = true;
 
         AiMoveList = new List<int[][]>();
+        PlayerMoveList = new List<int[][]>();
 
         StartCoroutine("AiPick");
     }
@@ -68,6 +83,10 @@ public class AI : BasePlayer
         {
             if (this.canMove)
             {
+                AiMoveList.Clear();
+                PlayerMoveList.Clear();
+
+
                 PlayerMoveFinder.findPlayerMoves = true;
 
                 print("Left Bishop Corp:");
@@ -102,9 +121,7 @@ public class AI : BasePlayer
                 protectionBoard = 0;
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
 
-                //PlayerMoveFinder.findPlayerMoves = true;
-
-                yield return new WaitForSeconds(.5f);
+                yield return new WaitForSeconds(.15f);
 
                 //print(protectionBoard);
 
@@ -113,6 +130,17 @@ public class AI : BasePlayer
 
                 //BaseAI pieceThatMoved = null;
 
+                foreach (GameObject x in PlayerBishopLPieces)
+                {
+                    foreach (GameObject y in PlayerBishopRPieces)
+                    {
+                        foreach (GameObject z in PlayerKingPieces)
+                        {
+                            createMoveList(x, y, z, true);
+                        }
+                    }
+                }
+                print("debug");
                 //loops through all the pieces in each corp commander so we can score their moves together
                 //moves with highest score will be stored
                 foreach (GameObject x in BishopLPieces)
@@ -121,8 +149,8 @@ public class AI : BasePlayer
                     {
                         foreach (GameObject z in KingPieces)
                         {
-                            createMoveList(x, y, z, true);
-                            checkCombinations(x, y, z);
+                            //createMoveList(x, y, z, false);
+                            yield return checkCombinations(x, y, z);
                         }
                     }
                 }           
@@ -171,8 +199,13 @@ public class AI : BasePlayer
 
     //this method takes in 3 pieces (1 from each corp commander)
     //it will then loop through the valid actions that each piece can make and score it on a heuristic
-    public void checkCombinations(GameObject pieceOne, GameObject pieceTwo, GameObject pieceThree)
+    IEnumerator checkCombinations(GameObject pieceOne, GameObject pieceTwo, GameObject pieceThree)
     {
+        float startTime;
+        float endTime;
+        float elapsedTime = 0;
+        float desiredTime = 1f;
+
         for (int x = 0; x < pieceOne.GetComponent<BaseAI>().validActions.Count; x++)
         {
 
@@ -181,6 +214,8 @@ public class AI : BasePlayer
 
                 for (int z = 0; z < pieceThree.GetComponent<BaseAI>().validActions.Count; z++)
                 {
+                    startTime = Time.realtimeSinceStartup;
+
                     if (((pieceOne.GetComponent<BaseAI>().validActions[x][3] != pieceTwo.GetComponent<BaseAI>().validActions[y][3]) && (pieceOne.GetComponent<BaseAI>().validActions[x][4] != pieceTwo.GetComponent<BaseAI>().validActions[y][4])) ||
                         ((pieceOne.GetComponent<BaseAI>().validActions[x][3] != pieceThree.GetComponent<BaseAI>().validActions[z][3]) && (pieceOne.GetComponent<BaseAI>().validActions[x][4] != pieceThree.GetComponent<BaseAI>().validActions[z][4])) ||
                         ((pieceTwo.GetComponent<BaseAI>().validActions[y][3] != pieceThree.GetComponent<BaseAI>().validActions[z][3]) && (pieceTwo.GetComponent<BaseAI>().validActions[y][4] != pieceThree.GetComponent<BaseAI>().validActions[z][4])))
@@ -200,8 +235,8 @@ public class AI : BasePlayer
                         UpdateProtectionMap(pieceTwo, y);
                         UpdateProtectionMap(pieceThree, z);
 
-                        int newScore = HeuristicScore(Board, protectionBoard);
-
+                        int newScore = minimax(Board, 0, false);
+                        
                         if (newScore > bestScore)
                         {
                             bestScore = newScore;
@@ -217,10 +252,21 @@ public class AI : BasePlayer
                         MovePieceBack(pieceOne, x);
                         MovePieceBack(pieceTwo, y);
                         MovePieceBack(pieceThree, z);
+
+                        endTime = Time.realtimeSinceStartup;
+                        elapsedTime += endTime - startTime;
+
+                        if (elapsedTime >= desiredTime)
+                        {
+                            elapsedTime = 0;
+                            yield return null;
+                        }
                     }
                 }
             }
         }
+
+        yield return null;
     }
 
     //method that reverts a pieces movement back to its original position
@@ -269,19 +315,41 @@ public class AI : BasePlayer
 
     private void createMoveList(GameObject pieceOne, GameObject pieceTwo, GameObject pieceThree, bool isPlayer)
     {
-        foreach (int[] x in pieceOne.GetComponent<BaseAI>().validActions)
+        if (!isPlayer)
         {
-            foreach (int[] y in pieceTwo.GetComponent<BaseAI>().validActions)
+            foreach (int[] x in pieceOne.GetComponent<BaseAI>().validActions)
             {
-                foreach (int[] z in pieceThree.GetComponent<BaseAI>().validActions)
+                foreach (int[] y in pieceTwo.GetComponent<BaseAI>().validActions)
                 {
+                    foreach (int[] z in pieceThree.GetComponent<BaseAI>().validActions)
+                    {
 
-                    int[][] moveToAdd = new int[3][];
-                    moveToAdd[0] = x;
-                    moveToAdd[1] = y;
-                    moveToAdd[2] = z;
+                        int[][] moveToAdd = new int[3][];
+                        moveToAdd[0] = x;
+                        moveToAdd[1] = y;
+                        moveToAdd[2] = z;
 
-                    AiMoveList.Add(moveToAdd);
+                        AiMoveList.Add(moveToAdd);
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (int[] x in pieceOne.GetComponent<BasePiece>().validActions)
+            {
+                foreach (int[] y in pieceTwo.GetComponent<BasePiece>().validActions)
+                {
+                    foreach (int[] z in pieceThree.GetComponent<BasePiece>().validActions)
+                    {
+
+                        int[][] moveToAdd = new int[3][];
+                        moveToAdd[0] = x;
+                        moveToAdd[1] = y;
+                        moveToAdd[2] = z;
+
+                        PlayerMoveList.Add(moveToAdd);
+                    }
                 }
             }
         }
@@ -303,7 +371,7 @@ public class AI : BasePlayer
         if (score <= -10000)
             return score;
 
-        if (depth == 2)
+        if (depth == 1)
             return score;
 
         // If there are no more moves and no winner then
@@ -315,74 +383,170 @@ public class AI : BasePlayer
         if (isMax)
         {
             int best = -10000000;
-
+            //print("error");
             //traverse all possible moves
-            foreach (GameObject pieceOne in BishopLPieces)
+            foreach (int[][] moveSet in AiMoveList)
             {
-                foreach (GameObject pieceTwo in BishopRPieces)
+                //makeMove
+
+                //move 1
+                if (board[moveSet[0][3], moveSet[0][4]] == 0)
                 {
-                    foreach (GameObject pieceThree in KingPieces)
-                    {
-
-                        for (int x = 0; x < pieceOne.GetComponent<BaseAI>().validActions.Count; x++)
-                        {
-
-                            for (int y = 0; y < pieceTwo.GetComponent<BaseAI>().validActions.Count; y++)
-                            {
-
-                                for (int z = 0; z < pieceThree.GetComponent<BaseAI>().validActions.Count; z++)
-                                {
-                                    //makeMove
-
-                                    //call minimax recursively
-                                    best = Math.Max(best, minimax(board, depth + 1, !isMax));
-
-                                    //undo the move
-
-                                }
-                            }
-                        }
-                    }
+                    Manager.UpdateIntBoard(moveSet[0][2], moveSet[0][1], moveSet[0][3],
+                                  moveSet[0][4], moveSet[0][0]);
                 }
+                else
+                {
+                    Manager.UpdateIntBoard(moveSet[0][2], moveSet[0][1], moveSet[0][3],
+                                  moveSet[0][4], moveSet[0][0]);
+                }
+
+                //move 2
+                if (board[moveSet[1][3], moveSet[1][4]] == 0)
+                {
+                    Manager.UpdateIntBoard(moveSet[1][2], moveSet[1][1], moveSet[1][3],
+                              moveSet[1][4], moveSet[1][0]);
+                }
+                else
+                {
+                    Manager.UpdateIntBoard(moveSet[1][2], moveSet[1][1], moveSet[1][3],
+                              moveSet[1][4], moveSet[1][0]);
+                }
+
+                //move 3
+                if (board[moveSet[2][3], moveSet[2][4]] == 0)
+                {
+                    Manager.UpdateIntBoard(moveSet[2][2], moveSet[2][1], moveSet[2][3],
+                              moveSet[2][4], moveSet[2][0]);
+                }
+                else
+                {
+                    Manager.UpdateIntBoard(moveSet[2][2], moveSet[2][1], moveSet[2][3],
+                              moveSet[2][4], moveSet[2][0]);
+                }
+
+                //call minimax recursively
+                best = Math.Max(best, minimax(board, depth + 1, !isMax));
+
+                //undo the move
+
+
             }
             return best;
         }
-
         // If this minimizer's move
         else
         {
             int best = 10000000;
 
-            //traverse all possible moves
-            foreach (GameObject pieceOne in BishopLPieces)
+            if (doJob)
             {
-                foreach (GameObject pieceTwo in BishopRPieces)
+                NativeArray<int> result = new NativeArray<int>(1, Allocator.TempJob);
+                //NativeArray<int[]> moves = new NativeArray<int[]>(1, Allocator.TempJob);
+
+                AiJob job = new AiJob
                 {
-                    foreach (GameObject pieceThree in KingPieces)
-                    {
+                    //board = board,
+                    result = result,
+                };
+                JobHandle JH = job.Schedule();
 
-                        for (int x = 0; x < pieceOne.GetComponent<BaseAI>().validActions.Count; x++)
-                        {
+                JH.Complete();
 
-                            for (int y = 0; y < pieceTwo.GetComponent<BaseAI>().validActions.Count; y++)
-                            {
+                best = job.result[0];
 
-                                for (int z = 0; z < pieceThree.GetComponent<BaseAI>().validActions.Count; z++)
-                                {
-                                    //makeMove
+                result.Dispose();
 
-                                    //call minimax recursively
-                                    best = Math.Min(best, minimax(board, depth + 1, !isMax));
+                return best;
+            }
+            else
+            {
+                foreach (int[][] moveSet in PlayerMoveList)
+                {
 
-                                    //undo the move
+                    //makeMove
+                    Manager.UpdateIntBoard(moveSet[0][1], moveSet[0][2], moveSet[0][3],
+                                  moveSet[0][4], moveSet[0][0]);
 
-                                }
-                            }
-                        }
-                    }
+                    Manager.UpdateIntBoard(moveSet[1][1], moveSet[1][2], moveSet[1][3],
+                                  moveSet[1][4], moveSet[1][0]);
+
+                    Manager.UpdateIntBoard(moveSet[2][1], moveSet[2][2], moveSet[2][3],
+                                  moveSet[2][4], moveSet[2][0]);
+
+                    //call minimax recursively
+                    best = Math.Min(best, minimax(board, depth + 1, isMax));
+
+                    //undo the move
+                    Manager.UpdateIntBoard(moveSet[0][3], moveSet[0][4], moveSet[0][1],
+                                  moveSet[0][2], moveSet[0][0]);
+
+                    Manager.UpdateIntBoard(moveSet[1][3], moveSet[1][4], moveSet[1][1],
+                                  moveSet[1][2], moveSet[1][0]);
+
+                    Manager.UpdateIntBoard(moveSet[2][3], moveSet[2][4], moveSet[2][1],
+                                  moveSet[2][2], moveSet[2][0]);
+
+
                 }
             }
             return best;
         }
+    }
+
+    private JobHandle AiTaskJob()
+    {
+        AiJob job = new AiJob
+        {
+            //Manage = Manager,
+            //PlayerMoves = PlayerMoveList,
+            //board = Board,
+            result = result,
+        };
+        return job.Schedule();
+    }
+}
+
+public struct AiJob : IJob
+{
+    //public GameManager Manage;
+    //public List<int[][]> PlayerMoves;
+    //public int[,] board;
+    public NativeArray<int> result;
+
+    public void Execute()
+    {
+        /*
+        //makeMove
+        Manage.UpdateIntBoard(moveSet[0][1], moveSet[0][2], moveSet[0][3],
+                      moveSet[0][4], moveSet[0][0]);
+
+        Manage.UpdateIntBoard(moveSet[1][1], moveSet[1][2], moveSet[1][3],
+                      moveSet[1][4], moveSet[1][0]);
+
+        Manage.UpdateIntBoard(moveSet[2][1], moveSet[2][2], moveSet[2][3],
+                      moveSet[2][4], moveSet[2][0]);
+
+        //call minimax recursively
+        result[0] = HeuristicScore(board, 5);
+
+        //undo the move
+        Manage.UpdateIntBoard(moveSet[0][3], moveSet[0][4], moveSet[0][1],
+                      moveSet[0][2], moveSet[0][0]);
+
+        Manage.UpdateIntBoard(moveSet[1][3], moveSet[1][4], moveSet[1][1],
+                      moveSet[1][2], moveSet[1][0]);
+
+        Manage.UpdateIntBoard(moveSet[2][3], moveSet[2][4], moveSet[2][1],
+                      moveSet[2][2], moveSet[2][0]);
+        */
+        //BaseAI.MethodForTest();
+        result[0] = HeuristicScore(5);
+    }
+
+    public int HeuristicScore(int protection)
+    {
+        int score = protection;
+        return score;
     }
 }

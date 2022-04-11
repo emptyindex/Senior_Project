@@ -62,8 +62,8 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { 12, currRow, currCol, currRow, currCol };
-        validActions.Add(validAction);
+        //validAction = new int[] { 12, currRow, currCol, currRow, currCol };
+        //validActions.Add(validAction);
 
         //check moves
         //moves must be in a straight line

@@ -52,8 +52,8 @@ public class QueenAI : BaseAI, IPieceBase, IProtectionBoard
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { 15, currRow, currCol, currRow, currCol };
-        validActions.Add(validAction);
+        //validAction = new int[] { 15, currRow, currCol, currRow, currCol };
+        //validActions.Add(validAction);
 
         //search possible actions
         for (int x = Mathf.Max(0, currRow - 3); x <= Mathf.Min(currRow + 3, row_limit); x++)
@@ -67,8 +67,12 @@ public class QueenAI : BaseAI, IPieceBase, IProtectionBoard
                     if (moves <= 3 && newBoard[x, y] == 0)
                     {
                         moveFound = true;
-                        validAction = new int[] { 25, currRow, currCol, x, y };
-                        validActions.Add(validAction);
+                        float howGood = AssumeGoodness(currRow, currCol, newBoard);
+                        if (howGood > -5)
+                        {
+                            validAction = new int[] { 25, currRow, currCol, x, y };
+                            validActions.Add(validAction);
+                        }
                     }
 
                     //check possible attacks
@@ -144,5 +148,47 @@ public class QueenAI : BaseAI, IPieceBase, IProtectionBoard
             }
         }
         AI.protectionBoard += protectionLevel;
+    }
+
+    private float AssumeGoodness(int row, int col, int[,] board)
+    {
+        int row_limit = 7;
+        int column_limit = 7;
+
+        float goodness = 0;
+        float badness = 0;
+
+        for (int x = Mathf.Max(0, row - 3); x <= Mathf.Min(row + 3, row_limit); x++)
+        {
+            for (int y = Mathf.Max(0, col - 3); y <= Mathf.Min(col + 3, column_limit); y++)
+            {
+                if (board[x, y] == 21 || board[x, y] == 22 || board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25)
+                {
+                    goodness += 1;
+                }
+
+                if (board[x, y] == 24)
+                {
+                    goodness += 2;
+                }
+
+                if (board[x, y] == 26)
+                {
+                    goodness += 4;
+                }
+
+                if (x <= row + 2 && x >= row - 2 && y <= col + 2 && y >= col - 2 && (board[x, y] == 1 || board[x, y] == 3 || board[x, y] == 4))
+                {
+                    badness += 1;
+                }
+
+                if (x <= row + 2 && x >= row - 2 && y <= col + 2 && y >= col - 2 && (board[x, y] == 2 || board[x, y] == 5))
+                {
+                    badness += 2;
+                }
+            }
+        }
+
+        return goodness - badness;
     }
 }

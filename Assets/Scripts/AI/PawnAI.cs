@@ -48,8 +48,8 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
         int[] validAction = new int [5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { 21, currRow, currCol, currRow, currCol };
-        validActions.Add(validAction);
+        //validAction = new int[] { 21, currRow, currCol, currRow, currCol };
+        //validActions.Add(validAction);
 
         for (int i = -1; i <= 1; i++)
         {
