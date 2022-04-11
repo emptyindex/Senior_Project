@@ -97,6 +97,8 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\CameraFacing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
@@ -105,6 +107,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Packs\Laterns and candles\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />

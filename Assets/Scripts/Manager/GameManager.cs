@@ -58,10 +58,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void Awake()
     {
-        Instantiate(boardPrefab);
+        //Instantiate(boardPrefab);
 
         var renderer = boardPrefab.GetComponent<Renderer>();
-        var startPos = renderer.bounds.min;
+        var startPos = renderer.bounds.min + new Vector3(0.04f, 0, 0.04f);
 
         // Nested for loop to create the chess board
         for (int i = 0; i < boardArr.GetLength(0); i++)
@@ -342,7 +342,7 @@ public class GameManager : MonoBehaviour
 
         boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
 
-        newPiece.transform.position = boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+        newPiece.transform.position = boardArr[i, j].transform.position /*+ new Vector3(0, 0.01f, 0)*/;
     }
 
     /// <summary>
@@ -361,7 +361,7 @@ public class GameManager : MonoBehaviour
         var offsetX = cellRenderer.bounds.size.x * i;
         var offsetZ = cellRenderer.bounds.size.z * j;
 
-        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 1.25f, offsetZ));
+        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 0.025f, offsetZ));
         return newCell;
     }
 }

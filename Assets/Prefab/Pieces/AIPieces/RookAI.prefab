@@ -29,8 +29,7 @@ Transform:
   m_GameObject: {fileID: 3577953044272887861}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.1630497, y: 0.000000059604645, z: 6.7284594}
-  m_LocalScale: {x: 6, y: 6, z: 6}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -54,7 +53,6 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -97,13 +95,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e60fb9834e3dd44ab81d728abf976b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currRow: 0
-  currCol: 0
-  pieceNum: 0
   bestScore: 0
   bestMove: 
   moveFound: 0
   hasFinished: 0
+  protectionLevel: 0
+  dangerLevel: 0
 --- !u!114 &-8044891916444473866
 MonoBehaviour:
   m_ObjectHideFlags: 0
