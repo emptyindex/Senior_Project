@@ -150,7 +150,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 if(selectedPiece)
                 {
                     ClearCells();
-                    selectedPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+                    selectedPiece.GetComponent<PieceColorManager>().SetHighlight(false);
                 }
 
                 previousCell = cell;
@@ -165,7 +165,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 piecesToCheck.ForEach(p =>
                 {
                     if (!p.Equals(selectedPiece))
-                        p.GetComponent<BasePiece>().spotLight.enabled = false;
+                        p.GetComponent<BasePiece>().GetComponent<PieceColorManager>().SetHighlight(false);
                 });
 
                 return true;
@@ -272,7 +272,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         if (selectedPiece)
         {
-            selectedPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+            selectedPiece.GetComponent<PieceColorManager>().SetHighlight(false);
             selectedPiece = null;
         }
 

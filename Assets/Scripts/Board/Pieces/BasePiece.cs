@@ -13,13 +13,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
 
-    public Light spotLight;
-
-    public void Start()
-    {
-        spotLight.enabled = false;
-    }
-
     public int[] GetNumberMoves(int x, int y)
     {
         return new int[] { Mathf.Abs(x - CurrRowPos), Mathf.Abs(y - CurrColPos) };
