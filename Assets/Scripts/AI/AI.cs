@@ -465,7 +465,6 @@ public class AI : BasePlayer
                                     best = Math.Min(best, minimax(board, depth + 1, !isMax));
 
                                     //undo the move
-
                                 }
                             }
                         }
