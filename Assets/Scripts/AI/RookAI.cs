@@ -2,13 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RookAI : BaseAI, IPieceBase, IProtectionBoard
+public class RookAI : BaseAI
 {
-    //public int PieceID { get; set; } = 12;
-
-    int currScore;
-    int[] currAttack = new int[2];
-
     private void Awake()
     {
         this.PieceID = 2;
@@ -17,16 +12,13 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
     // Start is called before the first frame update
     void Start()
     {
-        //this.PieceID = 12;
-        //BestMove();
-
         this.hasFinished = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (this.hasFinished == false)
+        if (!this.hasFinished)
         {
             //BestMove();
             validActions.Clear();
@@ -34,11 +26,6 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
 
             setValidActions();
             this.hasFinished = true;
-
-            //for (int i = 0; i < validActions.Count; i++)
-            //{
-            //    print(validActions[i][0] + " move from " + validActions[i][1] + ", " + validActions[i][2] + " to " + validActions[i][3] + ", " + validActions[i][4]);
-            //}
         }
     }
 
@@ -77,8 +64,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow - move;
                     int y = currCol + move;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -88,8 +74,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow;
                     int y = currCol + move;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -99,8 +84,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow + move;
                     int y = currCol + move;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -110,8 +94,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow - move;
                     int y = currCol;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -121,8 +104,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow + move;
                     int y = currCol;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -132,8 +114,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow - move;
                     int y = currCol - move;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -143,8 +124,7 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow;
                     int y = currCol - move;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
 
@@ -154,114 +134,111 @@ public class RookAI : BaseAI, IPieceBase, IProtectionBoard
                     int x = currRow + move;
                     int y = currCol - move;
 
-                    int isBlocked = CheckActions(x, y, move, newBoard);
-                    if (isBlocked == -1)
+                    if (CheckActions(x, y) == -1)
                         break;
                 }
             }
+
+            this.UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
         }
 
-        //search possible attacks
-        //attacks can be up to 2 spaces away and do not need to be in a straight line
-        for (int x = Mathf.Max(0, currRow - 2); x <= Mathf.Min(currRow + 2, row_limit); x++)
-        {
-            for (int y = Mathf.Max(0, CurrColPos - 2); y <= Mathf.Min(CurrColPos + 2, column_limit); y++)
-            {
-                if (x != CurrRowPos || y != CurrColPos)
-                {
-
-                    //check possible attacks
-                    //since rook has the same move speed as attack range we can just check if the spot we found has an enemy on it
-                    if (newBoard[x, y] == 1 || newBoard[x, y] == 2 || newBoard[x, y] == 3 ||
-                        newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6)
-                    {
-                        validAction = new int[] { 12, currRow, currCol, x, y };
-                        validActions.Add(validAction);
-                    }
-
-                    //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
-                        (newBoard[x, y] == 13 || newBoard[x, y] == 14 || newBoard[x, y] == 15 || newBoard[x, y] == 16))
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by pawn since they can only protect from behind
-                    if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 11)
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by rook since they have a range of 2
-                    if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 12)
-                    {
-                        protectionLevel += 1;
-                    }
-                }
-            }
-        }
-        AI.protectionBoard += protectionLevel;
+        //AI.protectionBoard += protectionLevel;
         //print("Rook protection level: " + protectionLevel);
     }
 
-    int CheckActions(int x, int y, int move, int[,] newBoard)
+    int CheckActions(int x, int y)
     {
         int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         //check moves
-        if (x < 8 && y < 8 && x > -1 && y > -1 && newBoard[x, y] == 0)
-        {
-            int[] validAction = new int[] { 22, currRow, currCol, x, y };
-            validActions.Add(validAction);
-        }
-
-        if (x < 8 && y < 8 && x > -1 && y > -1 && newBoard[x, y] != 0)
-            return -1;
-        else
-            return 1;
-    }
-
-    public void UpdateProtectionMap(int row, int col, int[,] board)
-    {
-        int row_limit = 7;
-        int column_limit = 7;
-
-        AI.protectionBoard -= protectionLevel;
-        protectionLevel = 0;
-
-        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
-        {
-            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
+        if (isValid(x, y))
+        {  
+            if (this.AIManager.Board[x, y] == 0)
             {
-                if (board[x, y] != 0 && x != row || y != col)
-                {
-                    //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
-                    {
-                        protectionLevel += 1;
-                    }
+                int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 0};
+                validActions.Add(validAction);
 
-                    //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
-                    {
-                        protectionLevel += 1;
-                    }
+                return 1;
+            }
 
-                    //check protection by rook since they have a range of 2
-                    if (board[x, y] == 22)
-                    {
-                        protectionLevel += 1;
-                    }
-                }
+            if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 15)
+            {
+                moveFound = true;
+                int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
+                validActions.Add(validAction);
+
+                return -1;
             }
         }
-        AI.protectionBoard += protectionLevel;
-    }
 
-    public void revertProtectionMap()
+        return -1;
+    }
+    public override bool IsAttackSuccessful(int PieceToAttack, int roll)
     {
-        throw new System.NotImplementedException();
+        if (PieceToAttack > 20)
+        {
+            PieceToAttack -= 20;
+        }
+        switch (PieceToAttack)
+        {
+            case 6:
+                if (roll >= 4)
+                {
+                    return true;
+                    //game over
+                }
+                else
+                {
+                    return false;
+                }
+            case 5:
+                if (roll >= 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 3:
+                if (roll >= 4)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 4:
+                if (roll >= 5)
+                {
+                    return true;
+                    //bishop's pieces relegated to King, King's command authority lost
+                }
+                else
+                {
+                    return false;
+                }
+            case 2:
+                if (roll >= 5)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case 1:
+                if (roll >= 5)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
+        return false;
     }
 }

@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
+    public Dice dice;
+
     public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
@@ -227,6 +229,21 @@ public class GameManager : MonoBehaviour
             case 1:
                 players[0].GetComponent<BasePlayer>().IsTurn(true);
                 Debug.Log("Player 1's turn.");
+                break;
+        }
+    }
+
+    public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
+    {
+        int index = players.FindIndex(player).FirstOrDefault();
+
+        switch (index)
+        {
+            case 0:
+                players[1].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+            case 1:
+                players[0].GetComponent<BasePlayer>().RemovePiece(piece);
                 break;
         }
     }
