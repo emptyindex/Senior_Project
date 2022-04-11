@@ -67,7 +67,7 @@ public class KnightAI : BaseAI
                     if (moves <= 4 && this.AIManager.Board[x, y] == 0)
                     {
                         moveFound = true;
-                        float howGood = AssumeGoodness(currRow, currCol, newBoard);
+                        float howGood = AssumeGoodness(currRow, currCol, this.AIManager.Board);
                         if (howGood > -4)
                         {
                             validAction = new int[] { this.PieceID, currRow, currCol, x, y, 0};
