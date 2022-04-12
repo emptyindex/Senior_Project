@@ -247,4 +247,9 @@ public class AI : BasePlayer
     {
         this.Pieces = pieces.ToArray();
     }
+
+    public override void RemovePiece(GameObject pieceToRemove)
+    {
+        throw new NotImplementedException();
+    }
 }

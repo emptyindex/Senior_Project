@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
+    public Dice dice;
+
     public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
@@ -41,7 +43,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvAI;
+    private GameMode currGameMode = GameMode.PvP;
 
     public BasePlayer[] GetBasePlayers()
     {
@@ -119,7 +121,9 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
+                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
+                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:
@@ -227,6 +231,21 @@ public class GameManager : MonoBehaviour
             case 1:
                 players[0].GetComponent<BasePlayer>().IsTurn(true);
                 Debug.Log("Player 1's turn.");
+                break;
+        }
+    }
+
+    public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
+    {
+        int index = players.FindIndex(player).FirstOrDefault();
+
+        switch (index)
+        {
+            case 0:
+                players[1].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+            case 1:
+                players[0].GetComponent<BasePlayer>().RemovePiece(piece);
                 break;
         }
     }
