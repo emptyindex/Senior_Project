@@ -8,7 +8,6 @@ public class DiceNumberTextScript : MonoBehaviour
 {
     public static int diceNumber;
   
-
     private TextMeshProUGUI text;
 
     // Start is called before the first frame update

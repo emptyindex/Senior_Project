@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\Tools.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\CameraFacing.cs" />
     <Compile Include="Assets\Scripts\AI\IProtectionBoard.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceCheckZoneScript.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
     <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
     <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipManager.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\CorpsCommanders\KingCorpsCommander.cs" />
@@ -97,8 +99,6 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
-    <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
-    <Compile Include="Assets\Packs\Laterns and candles\scripts\CameraFacing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
