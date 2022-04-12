@@ -64,7 +64,6 @@
     <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\Tools.cs" />
-    <Compile Include="Assets\Packs\Laterns and candles\scripts\CameraFacing.cs" />
     <Compile Include="Assets\Scripts\AI\IProtectionBoard.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceCheckZoneScript.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
     <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
-    <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
     <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipManager.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\CorpsCommanders\KingCorpsCommander.cs" />
@@ -85,7 +83,6 @@
     <Compile Include="Assets\Scripts\AI\RookAI.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Audio\MusicPlayer.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\PieceColorManager.cs" />
     <Compile Include="Assets\Scripts\Board\Cell.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipTrigger.cs" />
     <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
@@ -94,11 +91,14 @@
     <Compile Include="Assets\Scripts\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
     <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
-    <Compile Include="Assets\Packs\Free Low Poly Chess Set\Example\Scripts\CameraRotate.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Knight.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\CameraFacing.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\PieceColorManager.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
+    <Compile Include="Assets\Packs\Free Low Poly Chess Set\Example\Scripts\CameraRotate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
