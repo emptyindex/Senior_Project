@@ -52,7 +52,7 @@ public class Dice : MonoBehaviour
 
         //transform.SetPositionAndRotation(transform.position, transform.rotation);
 
-        rb.AddForce(transform.up * 1500);
+        rb.AddForce(transform.up * 1600);
         rb.AddTorque(dirX, dirY, dirZ);
 
         isStarted = true;

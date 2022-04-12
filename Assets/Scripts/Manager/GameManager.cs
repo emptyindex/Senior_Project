@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvAI;
+    private GameMode currGameMode = GameMode.PvP;
 
     public BasePlayer[] GetBasePlayers()
     {
