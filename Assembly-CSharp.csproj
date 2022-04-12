@@ -77,7 +77,6 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
     <Compile Include="Assets\Scripts\Manager\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\AI\RookAI.cs" />
-    <Compile Include="Assets\Scripts\Board\Pieces\AttackManager.cs" />
     <Compile Include="Assets\Scripts\Board\Cell.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipTrigger.cs" />
     <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
@@ -89,6 +88,7 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\AttackManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
