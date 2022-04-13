@@ -7,8 +7,7 @@ using TMPro;
 public class DiceNumberTextScript : MonoBehaviour
 {
     public static int diceNumber;
-    public static string diceText;
-
+  
     private TextMeshProUGUI text;
 
     // Start is called before the first frame update
@@ -20,6 +19,7 @@ public class DiceNumberTextScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         text.text = diceNumber.ToString();
     }
 }

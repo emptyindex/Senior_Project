@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -27,7 +28,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     {
         return new int[] { Mathf.Abs(x - CurrRowPos), Mathf.Abs(y - CurrColPos) };
     }
-
 
     /// <summary>
     /// Moves the piece to the new cell location.
@@ -176,7 +176,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="position">The new position to move.</param>
     private void Move(Vector3 position)
     {
-        gameObject.transform.position = position + new Vector3(0, 0.02f, 0);
+        gameObject.transform.position = position + new Vector3(0, 0.01f, 0);
     }
 
     private bool IsValid(GameObject[,] board, int indexX, int indexY)
@@ -258,4 +258,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
 
         return temp && indexY < board.GetLength(1) && indexY > -1;
     }
+
+    public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
 }

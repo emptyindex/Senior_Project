@@ -30,11 +30,32 @@ public class PlayerManager : BasePlayer
         this.pieces = pieces.ToArray();
     }
 
+    public override void RemovePiece(GameObject pieceToRemove)
+    {
+        int index = pieces.FindIndex(pieceToRemove).FirstOrDefault();
+
+        var commander = corpsCommanders.Where(c => c.GetComponent<CommanderController>().controlledPieces.Contains(pieceToRemove)).FirstOrDefault();
+        if (commander != null)
+        {
+            commander.GetComponent<CommanderController>().controlledPieces.Remove(pieceToRemove);
+        }
+        else
+        {
+            throw new ArgumentException($"{pieceToRemove} is not controlled by any of this player's commanders.");
+        }
+
+        var tempList = new List<GameObject>(pieces);
+        tempList.RemoveAt(index);
+
+        pieces = tempList.ToArray();
+    }
+
     public void EndTurn()
     {
         canMove = false;
 
-        corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+        //corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+        corpsCommanders.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(false));
 
         usedCommanders.Clear();
         movesTaken = 0;
@@ -62,6 +83,8 @@ public class PlayerManager : BasePlayer
         corpsCommanders = pieces.Where(p => p.GetComponent<CommanderController>() != null).ToList();
 
         this.AssignCorpsPieces();
+
+        Debug.Log(gameObject.name);
 
         corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().OnCommandEnded += UpdateMoves);
         corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().player = this);
@@ -94,7 +117,7 @@ public class PlayerManager : BasePlayer
                 {
                     Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
 
-                    if(hit.transform)
+                    if (hit.transform)
                     {
                         var cell = hit.transform.gameObject.GetComponent<Cell>();
 
@@ -107,17 +130,12 @@ public class PlayerManager : BasePlayer
                             corpsCommanders.ForEach(c =>
                             {
                                 if (!c.Equals(selectedPiece))
-                                    c.GetComponent<BasePiece>().spotLight.enabled = false;
+                                    c.GetComponent<PieceColorManager>().SetHighlight(false);
                             });
                         }
                     }
                 }
             }
-        }
-
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            InvokeAttackRoll();
         }
     }
 
@@ -182,6 +200,7 @@ public class PlayerManager : BasePlayer
     {
         var toHighlight = corpsCommanders.Except(usedCommanders).ToList();
 
-        toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        //toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        toHighlight.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(true));
     }
 }

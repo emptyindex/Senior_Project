@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
+    public Dice dice;
+
     public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
@@ -41,7 +43,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvAI;
+    public GameMode currGameMode;
 
     public BasePlayer[] GetBasePlayers()
     {
@@ -56,12 +58,12 @@ public class GameManager : MonoBehaviour
     /// and Two AI players for AIvAI.
     /// After creating the players, it assigns the appropriate collection of pieces to each.
     /// </summary>
-    void Awake()
+    void Start()
     {
-        Instantiate(boardPrefab);
+        //Instantiate(boardPrefab);
 
         var renderer = boardPrefab.GetComponent<Renderer>();
-        var startPos = renderer.bounds.min;
+        var startPos = renderer.bounds.min + new Vector3(0.04f, 0, 0.04f);
 
         // Nested for loop to create the chess board
         for (int i = 0; i < boardArr.GetLength(0); i++)
@@ -95,12 +97,12 @@ public class GameManager : MonoBehaviour
                     // if it's the second to last row on the board, we need to place the higher order piecs for the second player.
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        PopulateCellForGameMode(player2Pieces, i, j, false);
+                        PopulateCellForGameMode(player2Pieces, i, j, true);
                     }
                     // if it's in the second row of the board, we need to place a row of pawns for the second player.
                     if (j == boardArr.GetLength(0) - 1)
                     {
-                        PopulateCellForGameMode(player2Pieces, i, j, false, true);
+                        PopulateCellForGameMode(player2Pieces, i, j, true, true);
                     }
                 }
 
@@ -119,7 +121,9 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
+                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
+                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:
@@ -231,6 +235,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
+    {
+        int index = players.FindIndex(player).FirstOrDefault();
+
+        switch (index)
+        {
+            case 0:
+                players[1].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+            case 1:
+                players[0].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+        }
+    }
+
     /// <summary>
     /// Helper method for highlighting the available moves when a player has selected a piece to move.
     /// This method is exlusively used for Human players.
@@ -304,12 +323,9 @@ public class GameManager : MonoBehaviour
 
     private void PopulateCell(List<GameObject> playerList, int i, int j, bool isBlack, GameObject newPiece)
     {
-        if (isBlack)
-        {
-            newPiece.GetComponent<Renderer>().material.color *= 0.5f;
-        }
+        newPiece.GetComponent<PieceColorManager>().SetMaterialAndRotation(isBlack);
 
-        if(newPiece.GetComponent<BaseAI>())
+        if (newPiece.GetComponent<BaseAI>())
         {
             if ((j == 6 && i == 7) || (j == 6 && i == 6) || (j == 6 && i == 5) || (j == 7 && i == 6) || (j == 7 && i == 5))
             {
@@ -360,7 +376,7 @@ public class GameManager : MonoBehaviour
 
         boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
 
-        newPiece.transform.position = boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+        newPiece.transform.position = boardArr[i, j].transform.position /*+ new Vector3(0, 0.01f, 0)*/;
     }
 
     /// <summary>
@@ -379,7 +395,7 @@ public class GameManager : MonoBehaviour
         var offsetX = cellRenderer.bounds.size.x * i;
         var offsetZ = cellRenderer.bounds.size.z * j;
 
-        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 1.25f, offsetZ));
+        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 0.025f, offsetZ));
         return newCell;
     }
 }

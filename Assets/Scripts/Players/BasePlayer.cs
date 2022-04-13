@@ -13,12 +13,13 @@ public abstract class BasePlayer : MonoBehaviour
 
     public bool isGameOver = false;
 
-    public delegate void AttackRollNeededEvent();
-    public event AttackRollNeededEvent AttackRollNeeded;
+    /* delegate void AttackRollNeededEvent();
+    public event AttackRollNeededEvent AttackRollNeeded;*/
 
     public GameManager Manager { get; set; }
 
     public abstract void SetPieces(List<GameObject> pieces);
+    public abstract void RemovePiece(GameObject pieceToRemove);
 
     /// <summary>
     /// This determines whether it is this player's turn to move.
@@ -29,8 +30,8 @@ public abstract class BasePlayer : MonoBehaviour
         canMove = newVal;
     }
 
-    protected void InvokeAttackRoll()
+    /*protected void InvokeAttackRoll()
     {
         AttackRollNeeded.Invoke();
-    }
+    }*/
 }
