@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Deadpile
   - Music
+  - GameModeManager
+  - GameModeController
+  - Manager
   layers:
   - Default
   - TransparentFX

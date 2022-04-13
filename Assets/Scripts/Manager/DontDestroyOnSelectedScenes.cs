@@ -24,7 +24,7 @@ using System.Collections.Generic;
          SceneManager.sceneLoaded += OnSceneLoaded;
      }
  
-     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+     protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
      {
          // delete any potential duplicates that might be in the scene already, keeping only this one 
          CheckForDuplicateInstances();
@@ -33,7 +33,7 @@ using System.Collections.Generic;
          CheckIfSceneInList();
      }
  
-     void CheckForDuplicateInstances()
+     protected void CheckForDuplicateInstances()
      {
          // cache all objects containing this component
          DontDestroyOnSelectedScenes[] collection = FindObjectsOfType<DontDestroyOnSelectedScenes>();
@@ -52,7 +52,7 @@ using System.Collections.Generic;
          }
      }
  
-     void CheckIfSceneInList()
+     protected void CheckIfSceneInList()
      {
          // check what scene we are in and compare it to the list of strings 
          string currentScene = SceneManager.GetActiveScene().name;
