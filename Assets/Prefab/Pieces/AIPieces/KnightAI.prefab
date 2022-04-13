@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2079686563150596510}
   - component: {fileID: 2766312188255581380}
   - component: {fileID: -2950897402091160781}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: KnightAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

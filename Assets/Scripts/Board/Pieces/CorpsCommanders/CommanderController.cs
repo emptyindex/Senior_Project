@@ -95,9 +95,23 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     private void CheckAttackSuccessful()
     {
-        if(controlledPieces.Contains(attackingPiece) && attackingPiece != null && cellToAttack != null) 
+        if(attackingPiece != null && cellToAttack != null && controlledPieces.Contains(attackingPiece)) 
         {
-            bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);
+            var attackingBasePiece = attackingPiece.GetComponent<IPieceBase>();
+            var adjNum = attackingBasePiece.PieceID > 20 ? attackingBasePiece.PieceID - 20 : attackingBasePiece.PieceID;
+
+            if (adjNum == 3)
+            {
+                var colDis = Mathf.Abs(attackingBasePiece.CurrColPos - cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().CurrColPos);
+                var rowDis = Mathf.Abs(attackingBasePiece.CurrRowPos - cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().CurrRowPos);
+
+                attackingPiece.GetComponent<IRoyalty>().HasMoved = colDis > 1 || rowDis > 1;
+            }
+
+            var diceRollAdj = adjNum == 3 ? (attackingPiece.GetComponent<IRoyalty>().HasMoved ? 1 : 0) : 0;
+            
+
+            bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber + diceRollAdj);
 
             print(result);
 
@@ -118,6 +132,17 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     private void FinishAttack()
     {
         var attackedPiece = cellToAttack.GetCurrentPiece;
+
+        if (attackedPiece.GetComponent<Rigidbody>() == null)
+        {
+            var rb = attackedPiece.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb.useGravity = true;
+        }
+
+        if (attackedPiece.GetComponent<BoxCollider>() == null)
+        {
+            var _ = attackedPiece.AddComponent(typeof(BoxCollider)) as BoxCollider;
+        }
 
         // Do attack
         attackedPiece.transform.SetParent(deadPile.transform, false);
@@ -278,9 +303,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
                             if (!highlightedCells.Any())
                             {
-                                royalty.ResetMovementNum();
-
                                 EndMovement(startPosX, startPosY, endPosX, endPosY);
+                                royalty.ResetMovementNum();
 
                                 return;
                             }
@@ -350,6 +374,12 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         if (selectedPiece)
         {
+            var royalty = selectedPiece.GetComponent<IRoyalty>();
+            if (royalty != null)
+            {
+                royalty.ResetMovementNum();
+            }
+
             selectedPiece.GetComponent<PieceColorManager>().SetHighlight(false);
             selectedPiece = null;
         }

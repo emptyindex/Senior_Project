@@ -112,8 +112,19 @@ public class AI : BasePlayer
             // otherwise, end attacking
             if (result)
             {
+                if(attackedPiece.GetComponent<Rigidbody>() == null)
+                {
+                    var rb = attackedPiece.AddComponent(typeof(Rigidbody)) as Rigidbody;
+                    rb.useGravity = true;
+                }
+
+                if(attackedPiece.GetComponent<BoxCollider>() == null)
+                {
+                    var _ = attackedPiece.AddComponent(typeof(BoxCollider)) as BoxCollider;
+                }
+
                 attackedPiece.transform.SetParent(deadPile.transform);
-                attackedPiece.transform.position = deadPile.transform.position + new Vector3(0, 3, 0);
+                attackedPiece.transform.position = deadPile.transform.position + new Vector3(0, 0.5f, 0);
 
                 Manager.RemoveKilledPieceFromPlayer(this.gameObject, attackedPiece);
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6056470003793210731}
   - component: {fileID: 2652624734157904176}
   - component: {fileID: -2429627032346198968}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BishopAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2542059046761225990}
   - component: {fileID: 9738319693509269}
   - component: {fileID: -4673801934781115520}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: KingAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

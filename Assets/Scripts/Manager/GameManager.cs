@@ -196,7 +196,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 GetMovePosition(int i, int j)
     {
-        return boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+        return boardArr[i, j].transform.position;
     }
 
     private void UpdateIntBoard(List<GameObject> pieces)

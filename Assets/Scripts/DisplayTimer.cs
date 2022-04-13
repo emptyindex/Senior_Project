@@ -10,10 +10,14 @@ public class DisplayTimer : MonoBehaviour
 
     public TMP_Text textTimer;
 
+    private string zeroText;
     private float timer = 0.0f;
     private bool isTimer = false;
 
-    
+    private void Start()
+    {
+        zeroText = textTimer.text;
+    }
 
     // Update is called once per frame
     void Update()
@@ -44,6 +48,7 @@ public class DisplayTimer : MonoBehaviour
     public void ResetTimer()
     {
         timer = 0.0f;
+        textTimer.text = zeroText;
     }
 
 }

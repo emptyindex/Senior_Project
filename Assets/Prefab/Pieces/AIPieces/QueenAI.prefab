@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1878462258651869021}
   - component: {fileID: 5534100684381174468}
   - component: {fileID: 4648229184912784577}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: QueenAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
