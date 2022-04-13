@@ -57,6 +57,7 @@
     <Compile Include="Assets\Scripts\Manager\ChangeScene.cs" />
     <Compile Include="Assets\Scripts\Audio\PlayAudio1.cs" />
     <Compile Include="Assets\Scripts\Manager\DontDestroyOnSelectedScenes.cs" />
+    <Compile Include="Assets\Scripts\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\CorpsCommanders\CommanderController.cs" />
     <Compile Include="Assets\Scripts\AI\AI.cs" />
     <Compile Include="Assets\Scripts\Manager\LoadSceneDelay.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Assets\Scripts\Camera\Camera1.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\Tools.cs" />
+    <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\AI\IProtectionBoard.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceCheckZoneScript.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip.cs" />
@@ -71,6 +73,8 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
     <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
+    <Compile Include="Assets\Scripts\LevelManager.cs" />
+    <Compile Include="Assets\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipManager.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\CorpsCommanders\KingCorpsCommander.cs" />
@@ -81,6 +85,9 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
     <Compile Include="Assets\Scripts\Manager\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\AI\RookAI.cs" />
+    <Compile Include="Assets\Scripts\SoundManager.cs" />
+    <Compile Include="Assets\Scripts\DisplayTimer.cs" />
+    <Compile Include="Assets\Scripts\SceneLoading.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Audio\MusicPlayer.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\AttackManager.cs" />
@@ -89,7 +96,6 @@
     <Compile Include="Assets\Scripts\AI\PawnAI.cs" />
     <Compile Include="Assets\Scripts\Dice\Dice.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Royalty\IRoyalty.cs" />
-    <Compile Include="Assets\Scripts\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
     <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Knight.cs" />
