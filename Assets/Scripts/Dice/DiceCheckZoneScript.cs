@@ -5,25 +5,6 @@ using UnityEngine.UI;
 
 public class DiceCheckZoneScript : MonoBehaviour
 {
-    Vector3 diceVelocity;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    void FixedUpdate (){
-         //diceVelocity = Dice.diceVelocity;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     void OnTriggerStay(Collider col)
     {
         switch (col.gameObject.name)

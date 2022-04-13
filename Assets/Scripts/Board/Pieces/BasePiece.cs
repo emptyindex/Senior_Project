@@ -247,4 +247,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
 
         return temp && indexY < board.GetLength(1) && indexY > -1;
     }
+
+    public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
 }
