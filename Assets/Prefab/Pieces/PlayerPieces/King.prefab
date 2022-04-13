@@ -114,7 +114,10 @@ GameObject:
   - component: {fileID: 5634839122343149880}
   - component: {fileID: 5634839122343149883}
   - component: {fileID: 3867136734449974148}
-  m_Layer: 0
+  - component: {fileID: -3927635148156092483}
+  - component: {fileID: -7758371243863927190}
+  - component: {fileID: -2006149145989720701}
+  m_Layer: 2
   m_Name: King
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,6 +218,7 @@ MonoBehaviour:
   player: {fileID: 0}
   highlightedCells: []
   attackCells: []
+  isAttacking: 0
   notesText: {fileID: 1097112073949238410}
 --- !u!114 &3867136734449974148
 MonoBehaviour:
@@ -232,6 +236,47 @@ MonoBehaviour:
   - {fileID: 2100000, guid: adefce1589f7e584ebd7c6d597a46ee9, type: 2}
   - {fileID: 2100000, guid: 5a3ab2601b4968341a959d89a206c835, type: 2}
   - {fileID: 2100000, guid: d4d7eac13228ecf438ea47e02f4b62ea, type: 2}
+--- !u!114 &-3927635148156092483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5634839122343149882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 817818ff1087ce241b8246c699ddfa3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &-7758371243863927190
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5634839122343149882}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &-2006149145989720701
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5634839122343149882}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8763499, y: 1.7193428, z: 0.7589414}
+  m_Center: {x: 0, y: 0.8596714, z: -3.0541664e-15}
 --- !u!1 &7000554336846181327
 GameObject:
   m_ObjectHideFlags: 0

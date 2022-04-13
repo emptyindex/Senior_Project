@@ -165,7 +165,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="position">The new position to move.</param>
     private void Move(Vector3 position)
     {
-        gameObject.transform.position = position + new Vector3(0, 0.02f, 0);
+        gameObject.transform.position = position + new Vector3(0, 0.01f, 0);
     }
 
     private bool IsValid(GameObject[,] board, int indexX, int indexY)

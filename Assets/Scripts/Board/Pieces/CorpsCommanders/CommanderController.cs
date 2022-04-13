@@ -18,9 +18,9 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 {
     public Canvas canvas;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> controlledPieces = new List<GameObject>();
-    //[HideInInspector]
+    [HideInInspector]
     public PlayerManager player;
 
     protected new Camera camera;
@@ -84,7 +84,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         attackManager.AttackRollNeeded += manager.dice.Roll;
         manager.dice.OnDiceEnded += CheckAttackSuccessful;
 
-        this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
+        this.MenuCanvas = canvas.gameObject;
 
         this.MenuCanvas.SetActive(false);
 
@@ -108,7 +108,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
             else
             {
                 cellToAttack.GetComponent<Cell>().IsAttackHighlighted = false;
-                attackingPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+                attackingPiece.GetComponent<PieceColorManager>().SetHighlight(false);
 
                 this.ResetMove();
             }
@@ -121,7 +121,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         // Do attack
         attackedPiece.transform.SetParent(deadPile.transform, false);
-        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, 2, 0);
+        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, .5f, 0);
 
         // Tell other player they lost a piece
         manager.RemoveKilledPieceFromPlayer(player.gameObject, attackedPiece);
@@ -130,7 +130,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         attackingPiece.GetComponent<BasePiece>().MovePiece(cellToAttack, manager);
 
         cellToAttack.GetComponent<Cell>().IsAttackHighlighted = false;
-        attackingPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+        attackingPiece.GetComponent<PieceColorManager>().SetHighlight(false);
 
         this.ResetMove();
     }

@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu.unity
     guid: af7c43decddc0dd498c87c47fd3d5656
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: dd9646fd5b01deb4a85425c681254f38
+    path: Assets/Scenes/MainScene.unity
+    guid: 2629d8a074505e54da4875054ab87ea5
   - enabled: 1
     path: Assets/Scenes/Controls.unity
     guid: c736504412593134491ab4862de0c95c
@@ -18,14 +18,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Credits.unity
     guid: 62482ef8f3e5bb243bae44de9eaab347
   - enabled: 1
-    path: Assets/Scenes/DiceDemo.unity
-    guid: 9a836b5f905cefa46b5c16ad2024e380
-  - enabled: 1
     path: Assets/Scenes/Loading.unity
     guid: f931f59d6b06712469eac68bc1bb0e85
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/GameMode.unity
     guid: ffcdf875a586e004dac097d14ef1788c
