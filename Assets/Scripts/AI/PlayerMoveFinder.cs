@@ -19,6 +19,7 @@ public class PlayerMoveFinder : BaseAI
     // Update is called once per frame
     void Update()
     {
+
         if (findPlayerMoves == true)
         {
             int[,] newBoard = new int[8, 8];
@@ -49,6 +50,8 @@ public class PlayerMoveFinder : BaseAI
 
     void findPieceType(GameObject piece, int[,] newBoard)
     {
+        piece.GetComponent<BasePiece>().validActions.Clear();
+
         if (piece.GetComponent<BasePiece>().PieceID % 10 == 1)
             findPawnValid(piece.GetComponent<BasePiece>().CurrColPos, piece.GetComponent<BasePiece>().CurrRowPos, newBoard, piece);
         else if (piece.GetComponent<BasePiece>().PieceID % 10 == 2)
@@ -73,8 +76,8 @@ public class PlayerMoveFinder : BaseAI
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
-        piece.GetComponent<BasePiece>().validActions.Add(validAction);
+        //validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
+        //piece.GetComponent<BasePiece>().validActions.Add(validAction);
 
         for (int i = -1; i <= 1; i++)
         {
@@ -102,8 +105,8 @@ public class PlayerMoveFinder : BaseAI
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
-        piece.GetComponent<BasePiece>().validActions.Add(validAction);
+        //validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
+        //piece.GetComponent<BasePiece>().validActions.Add(validAction);
 
         //check moves
         //moves must be in a straight line
@@ -252,13 +255,13 @@ public class PlayerMoveFinder : BaseAI
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
-        piece.GetComponent<BasePiece>().validActions.Add(validAction);
+        //validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
+        //piece.GetComponent<BasePiece>().validActions.Add(validAction);
 
         //search possible actions
-        for (int x = Mathf.Max(0, currRow - 4); x <= Mathf.Min(currRow + 4, row_limit); x++)
+        for (int x = Mathf.Max(0, currRow - 3); x <= Mathf.Min(currRow + 3, row_limit); x++)
         {
-            for (int y = Mathf.Max(0, currCol - 4); y <= Mathf.Min(currCol + 4, column_limit); y++)
+            for (int y = Mathf.Max(0, currCol - 3); y <= Mathf.Min(currCol + 3, column_limit); y++)
             {
                 if (x != currRow || y != currCol)
                 {
@@ -267,8 +270,12 @@ public class PlayerMoveFinder : BaseAI
 
                     if (moves <= 4 && newBoard[x, y] == 0)
                     {
-                        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, x, y };
-                        piece.GetComponent<BasePiece>().validActions.Add(validAction);
+                        float howGood = AssumeGoodness(currRow, currCol, newBoard);
+                        if (howGood > -4)
+                        {
+                            validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, x, y };
+                            validActions.Add(validAction);
+                        }
                     }
 
                     //check possible attacks
@@ -426,7 +433,7 @@ public class PlayerMoveFinder : BaseAI
                         (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
                     {
                         moveFound = true;
-                        validAction = new int[] { 14, currRow, currCol, x, y };
+                        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, x, y };
                         piece.GetComponent<BasePiece>().validActions.Add(validAction);
                     }
 
@@ -463,8 +470,8 @@ public class PlayerMoveFinder : BaseAI
         int[] validAction = new int[5];
 
         //add "no move" to the valid actions
-        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
-        piece.GetComponent<BasePiece>().validActions.Add(validAction);
+        //validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, currRow, currCol };
+        //piece.GetComponent<BasePiece>().validActions.Add(validAction);
 
         //search possible actions
         for (int x = Mathf.Max(0, currRow - 3); x <= Mathf.Min(currRow + 3, row_limit); x++)
@@ -478,8 +485,12 @@ public class PlayerMoveFinder : BaseAI
                     if (moves <= 3 && newBoard[x, y] == 0)
                     {
                         moveFound = true;
-                        validAction = new int[] { 25, currRow, currCol, x, y };
-                        piece.GetComponent<BasePiece>().validActions.Add(validAction);
+                        float howGood = AssumeGoodness(currRow, currCol, newBoard);
+                        if (howGood > -5)
+                        {
+                            validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, x, y, 0 };
+                            validActions.Add(validAction);
+                        }
                     }
 
                     //check possible attacks
@@ -488,7 +499,7 @@ public class PlayerMoveFinder : BaseAI
                         (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
                     {
                         moveFound = true;
-                        validAction = new int[] { 25, currRow, currCol, x, y };
+                        validAction = new int[] { 5, currRow, currCol, x, y };
                         piece.GetComponent<BasePiece>().validActions.Add(validAction);
                     }
 
@@ -542,7 +553,7 @@ public class PlayerMoveFinder : BaseAI
                     if (moves <= 3 && newBoard[x, y] == 0)
                     {
                         moveFound = true;
-                        validAction = new int[] { 26, currRow, currCol, x, y };
+                        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, x, y };
                         piece.GetComponent<BasePiece>().validActions.Add(validAction);
                     }
 
@@ -552,7 +563,7 @@ public class PlayerMoveFinder : BaseAI
                         (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
                     {
                         moveFound = true;
-                        validAction = new int[] { 26, currRow, currCol, x, y };
+                        validAction = new int[] { piece.GetComponent<BasePiece>().PieceID, currRow, currCol, x, y };
                         piece.GetComponent<BasePiece>().validActions.Add(validAction);
                     }
 
@@ -640,6 +651,53 @@ public class PlayerMoveFinder : BaseAI
             }
         }
         //AI.protectionBoard += protectionLevel;
+    }
+
+    private float AssumeGoodness(int row, int col, int[,] board)
+    {
+        int row_limit = 7;
+        int column_limit = 7;
+
+        float goodness = 0;
+        float badness = 0;
+
+        for (int x = Mathf.Max(0, row - 3); x <= Mathf.Min(row + 3, row_limit); x++)
+        {
+            for (int y = Mathf.Max(0, col - 3); y <= Mathf.Min(col + 3, column_limit); y++)
+            {
+                if (board[x, y] == 1 || board[x, y] == 2 || board[x, y] == 3 || board[x, y] == 4 || board[x, y] == 5)
+                {
+                    goodness += 1;
+                }
+
+                if (board[x, y] == 4)
+                {
+                    goodness += 2;
+                }
+
+                if (board[x, y] == 6)
+                {
+                    goodness += 4;
+                }
+
+                if (x <= row + 2 && x >= row - 2 && y <= col + 2 && y >= col - 2 && (board[x, y] == 21 || board[x, y] == 23 || board[x, y] == 24))
+                {
+                    badness += 1;
+                }
+
+                if (x <= row + 2 && x >= row - 2 && y <= col + 2 && y >= col - 2 && (board[x, y] == 22 || board[x, y] == 25))
+                {
+                    badness += 2;
+                }
+            }
+        }
+
+        return goodness - badness;
+    }
+
+    public override bool IsAttackSuccessful(int PieceToAttack, int numberRolled)
+    {
+        throw new System.NotImplementedException();
     }
 
 }

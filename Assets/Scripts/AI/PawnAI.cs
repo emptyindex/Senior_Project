@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
+public class PawnAI : BaseAI
 {
     private void Awake()
     {
@@ -25,6 +25,7 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
@@ -36,84 +37,37 @@ public class PawnAI : BaseAI, IPieceBase, IProtectionBoard
         int currCol = this.GetComponent<IPieceBase>().CurrRowPos;
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
-        int[,] newBoard = new int[8, 8];
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                newBoard[i, j] = this.AIManager.Board[i, j];
-            }
-        }
-
-        int[] validAction = new int [5];
+        int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol, 0};
 
         //add "no move" to the valid actions
-        validAction = new int[] { 21, currRow, currCol, currRow, currCol };
-        validActions.Add(validAction);
+        //validAction = new int[] { 21, currRow, currCol, currRow, currCol };
+        //validActions.Add(validAction);
 
         for (int i = -1; i <= 1; i++)
         {
-            if (currRow - 1 > -1 && currCol + i < 8 && currCol + i > -1 && (newBoard[currRow - 1, currCol + i] == 0 || newBoard[currRow - 1, currCol + i] == 1 || newBoard[currRow - 1, currCol + i] == 2 ||
-            newBoard[currRow - 1, currCol + i] == 3 || newBoard[currRow - 1, currCol + i] == 4 || newBoard[currRow - 1, currCol + i] == 5 ||
-            newBoard[currRow - 1, currCol + i] == 6))
+            if(isValid(currRow - 1, currCol + i))
             {
-                validAction = new int[] { 21, currRow, currCol, currRow - 1, currCol + i };
-                validActions.Add(validAction);
-                //print("found action");
-            }
-        }
+                var pieceDifference = AIManager.Board[currRow - 1, currCol + i] > 0 ? Mathf.Abs(AIManager.Board[currRow - 1, currCol + i] - this.PieceID) : -1;
 
-
-        UpdateProtectionMap(currRow, currCol, AIManager.Board);
-
-        AI.protectionBoard += protectionLevel;
-        /*
-        //print("Pawn protection level: " + protectionLevel);
-        int coun = 0;
-        for (int x = 0; x < validActions.Count; x++)
-        {
-            print("pawn move " + coun + ": " + validActions[x][3] + ", " + validActions[x][4]);
-            coun++;
-        }
-        */
-    }
-
-    public void UpdateProtectionMap(int row, int col, int[,] board)
-    {
-        int row_limit = 7;
-        int column_limit = 7;
-
-        AI.protectionBoard -= protectionLevel;
-        protectionLevel = 0;
-
-        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
-        {
-            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
-            {
-                if (board[x, y] != 0 && x != row || y != col)
+                //can move
+                if (AIManager.Board[currRow - 1, currCol + i] == 0)
                 {
-                    //check protection by bishop, queen, and king since they all have the same attack range
-                    if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
-                        (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by pawn since they can only protect from behind
-                    if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
-                    {
-                        protectionLevel += 1;
-                    }
-
-                    //check protection by rook since they have a range of 2
-                    if (board[x, y] == 22)
-                    {
-                        protectionLevel += 1;
-                    }
+                    validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 0};
+                    validActions.Add(validAction);
+                }
+                
+                if(this.AIManager.Board[currRow - 1, currCol + i] > 0 && pieceDifference >= 10)
+                {
+                    validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 1};
+                    validActions.Add(validAction);
                 }
             }
         }
-        AI.protectionBoard += protectionLevel;
+
+        UpdateProtectionMap(currRow, currCol, AIManager.Board);
+        UpdateDangerMap(currRow, currCol, AIManager.Board);
+
+        //AI.protectionBoard += protectionLevel;
     }
     public override bool IsAttackSuccessful(int PieceToAttack, int roll)
     {

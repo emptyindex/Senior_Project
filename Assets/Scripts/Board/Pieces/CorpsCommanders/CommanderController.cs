@@ -147,7 +147,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         if(HasTakenCommand)
         {
-            Debug.Log($"The current move on: {this.gameObject.name} is {CurrentMove}");
+            //Debug.Log($"The current move on: {this.gameObject.name} is {CurrentMove}");
 
             if(CurrentMove == MoveToMake.None)
             {

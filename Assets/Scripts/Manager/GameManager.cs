@@ -121,9 +121,7 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
-                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
-                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:

@@ -111,6 +111,9 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Scripts\AI\PlayerMoveFinder.cs" />
+    <Compile Include="Assets\Scripts\Manager\AttackManager.cs" />
+    <Compile Include="Assets\Scripts\AI\NewBehaviourScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
