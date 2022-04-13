@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject ai;
 
+    public Dice dice;
+
     public GameObject boardPrefab;
 
     public GameObject whiteCell, blackCell;
@@ -119,7 +121,9 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
+                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
+                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:
@@ -199,7 +203,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateIntBoard(List<GameObject> pieces)
     {
-        pieces.ForEach(p => { board[p.GetComponent<IPieceBase>().CurrRowPos, p.GetComponent<IPieceBase>().CurrColPos] = p.GetComponent<IPieceBase>().PieceID; });
+        pieces.ForEach(p => { board[p.GetComponent<IPieceBase>().CurrColPos, p.GetComponent<IPieceBase>().CurrRowPos] = p.GetComponent<IPieceBase>().PieceID; });
     }
 
     public void UpdateIntBoard(int i, int j, int newi, int newj, int pieceID)
@@ -227,6 +231,21 @@ public class GameManager : MonoBehaviour
             case 1:
                 players[0].GetComponent<BasePlayer>().IsTurn(true);
                 Debug.Log("Player 1's turn.");
+                break;
+        }
+    }
+
+    public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
+    {
+        int index = players.FindIndex(player).FirstOrDefault();
+
+        switch (index)
+        {
+            case 0:
+                players[1].GetComponent<BasePlayer>().RemovePiece(piece);
+                break;
+            case 1:
+                players[0].GetComponent<BasePlayer>().RemovePiece(piece);
                 break;
         }
     }
@@ -307,6 +326,22 @@ public class GameManager : MonoBehaviour
         if (isBlack)
         {
             newPiece.GetComponent<Renderer>().material.color *= 0.5f;
+        }
+
+        if(newPiece.GetComponent<BaseAI>())
+        {
+            if ((j == 6 && i == 7) || (j == 6 && i == 6) || (j == 6 && i == 5) || (j == 7 && i == 6) || (j == 7 && i == 5))
+            {
+                AI.BishopLPieces.Add(newPiece);
+            }
+            if ((j == 6 && i == 0) || (j == 6 && i == 1) || (j == 6 && i == 2) || (j == 7 && i == 1) || (j == 7 && i == 2))
+            {
+                AI.BishopRPieces.Add(newPiece);
+            }
+            if ((j == 6 && i == 3) || (j == 6 && i == 4) || (j == 7 && i == 0) || (j == 7 && i == 7) || (j == 7 && i == 3) || (j == 7 && i == 4))
+            {
+                AI.KingPieces.Add(newPiece);
+            }
         }
 
         newPiece.GetComponent<IPieceBase>().CurrColPos = j;

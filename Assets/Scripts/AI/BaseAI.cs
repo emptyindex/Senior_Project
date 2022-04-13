@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class BaseAI : MonoBehaviour, IPieceBase
+public abstract class BaseAI : MonoBehaviour, IPieceBase
 {
     public int bestScore;
     public int[] bestMove;
     public bool moveFound;
     public bool hasFinished;
+
+    public List<int[]> validActions = new List<int[]>();
+    public int protectionLevel;
+    public int dangerLevel;
 
     public AI AIManager { get; set; }
     public int CurrRowPos { get; set; }
@@ -18,7 +22,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
     //method to find the score of a given board
     //since attacks are not guarenteed the current attack is also passed if a piece is attacking another
     //right now just returns a random value
-    public int HeuristicScore(int[,] theBoard, int[] currentAttack)
+    public int HeuristicScore(int[,] theBoard)
     {
         int score = Random.Range(1, 1000);
         return score;
@@ -76,8 +80,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check North
             if (isValid(row - 1, col) == true)
             {
-                if (isDestination(row - 1, col, destRow, destCol) == true &&
-                    isUnBlocked(grid, row - 1, col) == true)
+                if (isDestination(row - 1, col, destRow, destCol) == true )
                 {
                     cellDetails[row - 1, col].parent_i = row;
                     cellDetails[row - 1, col].parent_j = col;
@@ -112,8 +115,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check South
             if (isValid(row + 1, col) == true)
             {
-                if (isDestination(row + 1, col, destRow, destCol) == true &&
-                    isUnBlocked(grid, row + 1, col) == true)
+                if (isDestination(row + 1, col, destRow, destCol) == true )
                 {
                     cellDetails[row + 1, col].parent_i = row;
                     cellDetails[row + 1, col].parent_j = col;
@@ -148,8 +150,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check East
             if (isValid(row, col + 1) == true)
             {
-                if (isDestination(row, col + 1, destRow, destCol) == true &&
-                    isUnBlocked(grid, row, col + 1) == true)
+                if (isDestination(row, col + 1, destRow, destCol) == true)
                 {
                     cellDetails[row, col + 1].parent_i = row;
                     cellDetails[row, col + 1].parent_j = col;
@@ -184,8 +185,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check West
             if (isValid(row, col - 1) == true)
             {
-                if (isDestination(row, col - 1, destRow, destCol) == true &&
-                    isUnBlocked(grid, row, col - 1) == true)
+                if (isDestination(row, col - 1, destRow, destCol) == true)
                 {
                     cellDetails[row, col - 1].parent_i = row;
                     cellDetails[row, col - 1].parent_j = col;
@@ -220,8 +220,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check North-West
             if (isValid(row - 1, col - 1) == true)
             {
-                if (isDestination(row - 1, col - 1, destRow, destCol) == true &&
-                    isUnBlocked(grid, row - 1, col - 1) == true)
+                if (isDestination(row - 1, col - 1, destRow, destCol) == true )
                 {
                     cellDetails[row - 1, col - 1].parent_i = row;
                     cellDetails[row - 1, col - 1].parent_j = col;
@@ -256,8 +255,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check North-East
             if (isValid(row - 1, col + 1) == true)
             {
-                if (isDestination(row - 1, col + 1, destRow, destCol) == true &&
-                    isUnBlocked(grid, row - 1, col + 1) == true)
+                if (isDestination(row - 1, col + 1, destRow, destCol) == true)
                 {
                     cellDetails[row - 1, col + 1].parent_i = row;
                     cellDetails[row - 1, col + 1].parent_j = col;
@@ -292,8 +290,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check South-East
             if (isValid(row + 1, col + 1) == true)
             {
-                if (isDestination(row + 1, col + 1, destRow, destCol) == true &&
-                    isUnBlocked(grid, row + 1, col + 1) == true)
+                if (isDestination(row + 1, col + 1, destRow, destCol) == true)
                 {
                     cellDetails[row + 1, col + 1].parent_i = row;
                     cellDetails[row + 1, col + 1].parent_j = col;
@@ -328,8 +325,7 @@ public class BaseAI : MonoBehaviour, IPieceBase
             //check South-West
             if (isValid(row + 1, col - 1) == true)
             {
-                if (isDestination(row + 1, col - 1, destRow, destCol) == true &&
-                    isUnBlocked(grid, row + 1, col - 1) == true)
+                if (isDestination(row + 1, col - 1, destRow, destCol) == true )
                 {
                     cellDetails[row + 1, col - 1].parent_i = row;
                     cellDetails[row + 1, col - 1].parent_j = col;
@@ -449,4 +445,6 @@ public class BaseAI : MonoBehaviour, IPieceBase
         public int parent_i, parent_j;
         public float f, g, h;
     }
+
+    public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
 }
