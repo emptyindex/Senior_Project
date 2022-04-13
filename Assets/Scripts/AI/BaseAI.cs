@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class BaseAI : MonoBehaviour, IPieceBase
+public abstract class BaseAI : MonoBehaviour, IPieceBase
 {
     public int bestScore;
     public int[] bestMove;
@@ -445,4 +445,6 @@ public class BaseAI : MonoBehaviour, IPieceBase
         public int parent_i, parent_j;
         public float f, g, h;
     }
+
+    public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
 }
