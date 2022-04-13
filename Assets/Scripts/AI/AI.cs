@@ -1031,7 +1031,7 @@ public class AI : BasePlayer
         if (score <= -1000)
             return score;
 
-        if (depth == 0)
+        if (depth == VariableDepth)
             return score;
 
         // If there are no more moves and no winner then
