@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public abstract class BaseAI : MonoBehaviour, IPieceBase
+public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
 {
     public int bestScore;
     public int[] bestMove;
@@ -18,6 +18,97 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase
     public int CurrRowPos { get; set; }
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
+
+    public static List<int[][]> PlayerMoveTest;
+
+    public void UpdateProtectionMap(int row, int col, int[,] board)
+    {
+        int row_limit = 7;
+        int column_limit = 7;
+
+        AI.protectionBoard -= protectionLevel;
+        protectionLevel = 0;
+
+        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
+        {
+            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
+            {
+                if (board[x, y] != 0 && x != row || y != col)
+                {            
+                    var pieceID = board[x, y];
+                    var adjustedID = pieceID > 20 ? pieceID -= 20 : pieceID;
+
+                    var canDefend = x <= row + 1 && y <= col + 1 && y >= col - 1;
+
+                    //check protection by bishop, queen, and king since they all have the same attack range
+                    if (canDefend && x >= row - 1 && (adjustedID == 3 || adjustedID == 4 || adjustedID == 5 || adjustedID == 6))
+                    {
+                        protectionLevel += 1;
+                    }
+
+                    //check protection by pawn since they can only protect from behind
+                    if (canDefend && x > row && board[x, y] == 21)
+                    {
+                        protectionLevel += 1;
+                    }
+
+                    //check protection by rook since they have a range of 2
+                    if (adjustedID == 2)
+                    {
+                        protectionLevel += 1;
+                    }
+                }
+            }
+        }
+        AI.protectionBoard += protectionLevel;
+    }
+
+    public void UpdateDangerMap(int row, int col, int[,] board)
+    {
+        int row_limit = 7;
+        int column_limit = 7;
+
+        AI.dangerBoard -= dangerLevel;
+        dangerLevel = 0;
+
+        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
+        {
+            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
+            {
+                if (board[x, y] != 0 && x != row || y != col)
+                {
+                    //check danger from pawns
+                    if (board[x, y] == 1 && x < row && (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1))
+                    {
+                        dangerLevel += 1;
+                    }
+
+                    //check danger from pieces with 1 attack range
+                    if ((x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1) && (board[x, y] == 3 || board[x, y] == 5 || board[x, y] == 6))
+                    {
+                        dangerLevel += 2;
+                    }
+
+                    //check danger from rooks
+                    if (board[x, y] == 4)
+                    {
+                        dangerLevel += 2;
+                    }
+                }
+            }
+        }
+        //check danger from knights
+        if (Mathf.Abs(row - AI.knightOneRow) < 4 && Mathf.Abs(col - AI.knightOneCol) < 4)
+        {
+            dangerLevel += 1;
+        }
+        if (Mathf.Abs(row - AI.knightTwoRow) < 4 && Mathf.Abs(col - AI.knightTwoCol) < 4)
+        {
+            dangerLevel += 1;
+        }
+
+        AI.dangerBoard += dangerLevel;
+    }
 
     //method to find the score of a given board
     //since attacks are not guarenteed the current attack is also passed if a piece is attacking another
@@ -368,7 +459,7 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase
     }
 
     //checks if a move is within the board
-    bool isValid(int row, int col)
+    public bool isValid(int row, int col)
     {
         return (row >= 0) && (row < 8) && (col >= 0)
                && (col < 8);

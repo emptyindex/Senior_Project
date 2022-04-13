@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1237999707022386743}
   - component: {fileID: 5770914416295819699}
   - component: {fileID: 4421886443020415047}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PawnAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

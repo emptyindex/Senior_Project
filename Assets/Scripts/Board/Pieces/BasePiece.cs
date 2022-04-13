@@ -13,6 +13,10 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
 
+    public List<int[]> validActions = new List<int[]>();
+    public int protectionLevel;
+    public int dangerLevel;
+
     public int[] GetNumberMoves(int x, int y)
     {
         return new int[] { Mathf.Abs(x - CurrRowPos), Mathf.Abs(y - CurrColPos) };
@@ -100,34 +104,34 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             moveY = y + timesMoved;
 
             // get diagonal down left
-            diaLeft = CheckGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved);
+            diaLeft = CheckGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved, timesMoved);
 
             moveX = x + timesMoved;
 
             // move right
-            right = CheckGetMove(board, right, inRange, inRangeToAttack, y, moveX);
+            right = CheckGetMove(board, right, inRange, inRangeToAttack, y, moveX, timesMoved);
 
             // move forward
-            up = CheckGetMove(board, up, inRange, inRangeToAttack, moveY, x);
+            up = CheckGetMove(board, up, inRange, inRangeToAttack, moveY, x, timesMoved);
 
             // move diagonal down right
-            diaRight = CheckGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX);
+            diaRight = CheckGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX, timesMoved);
 
             moveY = y - timesMoved;
 
             // move diagonal up right
-            diaRightUp = CheckGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX);
+            diaRightUp = CheckGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX, timesMoved);
 
             // move backwards
-            down = CheckGetMove(board, down, inRange, inRangeToAttack, moveY, x);
+            down = CheckGetMove(board, down, inRange, inRangeToAttack, moveY, x, timesMoved);
 
             moveX = x - timesMoved;
 
             // move left
-            left = CheckGetMove(board, left, inRange, inRangeToAttack, y, moveX);
+            left = CheckGetMove(board, left, inRange, inRangeToAttack, y, moveX, timesMoved);
 
             // move diagonal up left
-            diaLeftUp = CheckGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX);
+            diaLeftUp = CheckGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX, timesMoved);
 
             timesMoved++;
         }
@@ -135,13 +139,13 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         return (inRange, inRangeToAttack);
     }
 
-    private bool CheckGetMove(GameObject[,] board, bool canContinueDirection, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX)
+    private bool CheckGetMove(GameObject[,] board, bool canContinueDirection, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX, int timesMoved)
     {
         if (canContinueDirection && IsValid(board, moveX, moveY))
         {
             if (IsPopulated(board, moveX, moveY))
             {
-                if(HasEnemyPiece(board, moveX, moveY))
+                if(HasEnemyPiece(board, moveX, moveY) && IsAbleToAttack(timesMoved))
                 {
                     GetMove(board, moveX, moveY, inRangeToAttack, true);
 
@@ -157,6 +161,29 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         }
 
         return false;
+    }
+
+    private bool IsAbleToAttack(int timesMoved)
+    {
+        var adjPieceID = this.PieceID > 20 ? this.PieceID - 20 : this.PieceID;
+
+        if(timesMoved > 1)
+        {
+            if(adjPieceID == 3)
+            {
+                //this.gameObject.GetComponent<IRoyalty>().HasMoved = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        if (this.gameObject.GetComponent<IRoyalty>() != null && this.gameObject.GetComponent<IRoyalty>().HasMoved)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /// <summary>

@@ -121,9 +121,7 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
-                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
-                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:
@@ -198,7 +196,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 GetMovePosition(int i, int j)
     {
-        return boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+        return boardArr[i, j].transform.position;
     }
 
     private void UpdateIntBoard(List<GameObject> pieces)
@@ -338,6 +336,21 @@ public class GameManager : MonoBehaviour
             if ((j == 6 && i == 3) || (j == 6 && i == 4) || (j == 7 && i == 0) || (j == 7 && i == 7) || (j == 7 && i == 3) || (j == 7 && i == 4))
             {
                 AI.KingPieces.Add(newPiece);
+            }
+        }
+        else
+        {
+            if ((j == 1 && i == 0) || (j == 1 && i == 1) || (j == 1 && i == 2) || (j == 0 && i == 1) || (j == 0 && i == 2))
+            {
+                AI.PlayerBishopLPieces.Add(newPiece);
+            }
+            if ((j == 1 && i == 7) || (j == 1 && i == 6) || (j == 1 && i == 5) || (j == 0 && i == 6) || (j == 0 && i == 5))
+            {
+                AI.PlayerBishopRPieces.Add(newPiece);
+            }
+            if ((j == 1 && i == 3) || (j == 1 && i == 4) || (j == 0 && i == 0) || (j == 0 && i == 7) || (j == 0 && i == 3) || (j == 0 && i == 4))
+            {
+                AI.PlayerKingPieces.Add(newPiece);
             }
         }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3599660095635079571}
   - component: {fileID: 1803011654743620640}
   - component: {fileID: -8044891916444473866}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: RookAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
