@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,6 +53,9 @@
     <UnityVersion>2020.3.26f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\Scripts\AI\KingAI.cs" />
     <Compile Include="Assets\Scripts\Manager\ChangeScene.cs" />
     <Compile Include="Assets\Scripts\Audio\PlayAudio1.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="Assets\Scripts\Board\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\Tools.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\CameraFacing.cs" />
     <Compile Include="Assets\Scripts\AI\IProtectionBoard.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceCheckZoneScript.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
     <Compile Include="Assets\Scripts\LevelManager.cs" />
     <Compile Include="Assets\Scripts\UI\GameModeManager.cs" />
+    <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
     <Compile Include="Assets\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\AI\BaseAI.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipManager.cs" />
@@ -92,6 +97,7 @@
     <Compile Include="Assets\Scripts\SceneLoading.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Audio\MusicPlayer.cs" />
+    <Compile Include="Assets\Scripts\Board\Pieces\PieceColorManager.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\AttackManager.cs" />
     <Compile Include="Assets\Scripts\Board\Cell.cs" />
     <Compile Include="Assets\Scripts\UI\TooltipTrigger.cs" />
@@ -100,6 +106,7 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Royalty\IRoyalty.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\IPieceBase.cs" />
     <Compile Include="Assets\Scripts\Camera\CamRotate.cs" />
+    <Compile Include="Assets\Packs\Free Low Poly Chess Set\Example\Scripts\CameraRotate.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Knight.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
@@ -112,6 +119,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Packs\Laterns and candles\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Packs\Pottery_Bowl\Read_me.txt" />
@@ -121,6 +129,7 @@
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\Packs\Free Low Poly Chess Set\README.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
