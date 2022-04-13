@@ -31,11 +31,10 @@ public class KnightAI : BaseAI
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
-
-            print("knight valid: " + validActions.Count);
         }
     }
 
@@ -85,6 +84,7 @@ public class KnightAI : BaseAI
                     }
 
                     this.UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
+                    this.UpdateDangerMap(currRow, currCol, AIManager.Board);
                 }
             }
         }
@@ -145,7 +145,7 @@ public class KnightAI : BaseAI
                     return false;
                 }
             case 1:
-                if (roll >= 2)
+                if (roll >= 1)
                 {
                     return true;
                 }

@@ -23,6 +23,7 @@ public class RookAI : BaseAI
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
@@ -140,6 +141,7 @@ public class RookAI : BaseAI
             }
 
             this.UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
+            UpdateDangerMap(currRow, currCol, AIManager.Board);
         }
 
         //AI.protectionBoard += protectionLevel;
@@ -162,7 +164,7 @@ public class RookAI : BaseAI
                 return 1;
             }
 
-            if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 15)
+            if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 10)
             {
                 moveFound = true;
                 int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};

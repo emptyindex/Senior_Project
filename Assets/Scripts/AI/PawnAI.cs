@@ -25,6 +25,7 @@ public class PawnAI : BaseAI
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
@@ -37,8 +38,6 @@ public class PawnAI : BaseAI
         int currRow = this.GetComponent<IPieceBase>().CurrColPos;
 
         int[] validAction = new int[] { this.PieceID, currRow, currCol, currRow, currCol, 0};
-
-        int[] validAction = new int [5];
 
         //add "no move" to the valid actions
         //validAction = new int[] { 21, currRow, currCol, currRow, currCol };
@@ -56,15 +55,17 @@ public class PawnAI : BaseAI
                     validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 0};
                     validActions.Add(validAction);
                 }
-                else if(this.AIManager.Board[currRow - 1, currCol + i] > 0 && pieceDifference >= 10)
+                
+                if(this.AIManager.Board[currRow - 1, currCol + i] > 0 && pieceDifference >= 10)
                 {
-                    validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 1 };
+                    validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 1};
                     validActions.Add(validAction);
                 }
             }
         }
 
         UpdateProtectionMap(currRow, currCol, AIManager.Board);
+        UpdateDangerMap(currRow, currCol, AIManager.Board);
 
         //AI.protectionBoard += protectionLevel;
     }

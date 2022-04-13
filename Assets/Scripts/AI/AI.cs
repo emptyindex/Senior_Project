@@ -18,11 +18,12 @@ public class AI : BasePlayer
     public GameObject[,] BoardState;
     public GameObject[] Pieces;
 
-    public int bestScore;
+    public float bestScore;
     public GameObject bestPieceOne;
     public GameObject bestPieceTwo;
     public GameObject bestPieceThree;
     public int[][] bestAction = new int[3][];
+    public int[][] newBestAction = new int[3][];
 
     public static List<GameObject> BishopLPieces = new List<GameObject>();
     public static List<GameObject> BishopRPieces = new List<GameObject>();
@@ -34,6 +35,8 @@ public class AI : BasePlayer
     public static List<GameObject> PlayerKingPieces = new List<GameObject>();
     public List<int[][]> PlayerMoveList;
 
+    private int VariableDepth;
+
     public static bool AiTurn;
 
     private AttackManager attackManager;
@@ -43,12 +46,22 @@ public class AI : BasePlayer
     public static int protectionBoard;
     public static int dangerBoard;
 
-    public static int kingRow = 7;
-    public static int kingCol = 3;
-    //public static int BishopRRow = 7;
-    //public static int BishopRCol = 2;
-    //public static int BishopLRow = 7;
-    //public static int BishopLCol = 5;
+    public int[] AssumeOverwritten1;
+    public int[] AssumeOverwritten2;
+    public int[] AssumeOverwritten3;
+
+    public float certaintyOne;
+    public float attackScoreOne;
+    public float certaintyTwo;
+    public float attackScoreTwo;
+    public float certaintyThree;
+    public float attackScoreThree;
+
+    public static int knightOneRow = 0;
+    public static int knightOneCol = 1;
+
+    public static int knightTwoRow = 0;
+    public static int knightTwoCol = 6;
 
     public NativeArray<int> result;
     private static GameObject attackingPiece;
@@ -67,6 +80,10 @@ public class AI : BasePlayer
 
         AiMoveList = new List<int[][]>();
         PlayerMoveList = new List<int[][]>();
+
+        newBestAction[0] = new int[] {0, 0, 0 };
+        newBestAction[1] = new int[] { 0, 0, 0 };
+        newBestAction[2] = new int[] { 0, 0, 0 };
 
         attackManager = gameObject.GetComponent<AttackManager>();
 
@@ -122,6 +139,31 @@ public class AI : BasePlayer
         }
     }
 
+    public override void RemovePiece(GameObject pieceToRemove) 
+    {
+        List<GameObject> tempList = new List<GameObject>(Pieces);
+        tempList.Remove(pieceToRemove);
+        Pieces = tempList.ToArray();
+
+        var commanderPiece = BishopLPieces.Contains(pieceToRemove);
+        if (commanderPiece)
+        {
+            BishopLPieces.Remove(pieceToRemove);
+        }
+
+        commanderPiece = BishopRPieces.Contains(pieceToRemove);
+        if (commanderPiece)
+        {
+            BishopRPieces.Remove(pieceToRemove);
+        }
+
+        commanderPiece = KingPieces.Contains(pieceToRemove);
+        if (commanderPiece)
+        {
+            KingPieces.Remove(pieceToRemove);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -149,7 +191,7 @@ public class AI : BasePlayer
 
 
                 PlayerMoveFinder.findPlayerMoves = true;
-
+                /*
                 print("Left Bishop Corp:");
                 foreach (GameObject thing in PlayerBishopLPieces)
                 {
@@ -177,10 +219,12 @@ public class AI : BasePlayer
                     //thing.GetComponent<IPieceBase>().CurrRowPos = tempCol;
                     print(thing.GetComponent<IPieceBase>().PieceID + ", at pos: " + thing.GetComponent<IPieceBase>().CurrColPos + ", " + thing.GetComponent<IPieceBase>().CurrRowPos);
                 }
-
-
+                */
                 protectionBoard = 0;
+                dangerBoard = 0;
                 Array.ForEach(Pieces, p => p.GetComponent<BaseAI>().hasFinished = false);
+
+                //print("Current Danger = " + dangerBoard);
 
                 yield return new WaitForSeconds(.15f);
 
@@ -201,6 +245,28 @@ public class AI : BasePlayer
                         }
                     }
                 }
+                foreach (GameObject x in BishopLPieces)
+                {
+                    foreach (GameObject y in BishopRPieces)
+                    {
+                        foreach (GameObject z in KingPieces)
+                        {
+                            createMoveList(x, y, z, false);
+                        }
+
+                    }
+                }
+
+                if (PlayerMoveList.Count + AiMoveList.Count > 20000)
+                {
+                    VariableDepth = 0;
+                }
+
+                if (PlayerMoveList.Count + AiMoveList.Count <= 20000)
+                {
+                    VariableDepth = 1;
+                }
+
                 print("debug");
                 //loops through all the pieces in each corp commander so we can score their moves together
                 //moves with highest score will be stored
@@ -210,30 +276,36 @@ public class AI : BasePlayer
                     {
                         foreach (GameObject z in KingPieces)
                         {
-                            //createMoveList(x, y, z, false);
                             yield return checkCombinations(x, y, z);
                         }
                     }
                 }
 
-                storeBestAction = bestAction;
+                //storeBestAction = bestAction;
                 List<GameObject> pieces = new List<GameObject>() { bestPieceOne, bestPieceTwo, bestPieceThree };
 
-                for(int i = 0; i < storeBestAction.GetLength(0); i++)
+                for(int i = 0; i < bestAction.GetLength(0); i++)
                 {
                     if(!indexesDone.Contains(i))
                     {
-                        if (storeBestAction[i][2] == 0)
+                        if (bestAction[i][2] == 0)
                         {
                             indexesDone.Add(i);
-                            MovePiece(pieces[i], storeBestAction[i][0], storeBestAction[i][1]);
+                            MovePiece(pieces[i], bestAction[i][0], bestAction[i][1]);
                         }
                         else
                         {
+                            //int[][] newBestAction = new int[3][];
+
+                            newBestAction[i][0] = bestAction[i][1];
+                            newBestAction[i][1] = bestAction[i][0];
+                            newBestAction[i][2] = bestAction[i][2];
+
                             indexesDone.Add(i);
-                            BeginAttack(storeBestAction, i, pieces[i]);
+                            BeginAttack(newBestAction, i, pieces[i]);
 
                             yield return new WaitUntil(() => !isAttacking);
+                            //yield return new WaitForSeconds(10);
                         }
                     }
                 }
@@ -278,11 +350,12 @@ public class AI : BasePlayer
         cell.GetCurrentPiece = piece;
 
         piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(x, y, Board);
+        piece.GetComponent<IProtectionBoard>().UpdateDangerMap(x, y, Board);
 
         pieceBase.CurrColPos = x;
         pieceBase.CurrRowPos = y;
 
-        print("piece " + pieceBase.PieceID + " has moved to: " + x + ", " + y + " and has protection of: " + piece.GetComponent<BaseAI>().protectionLevel);
+        print("piece " + pieceBase.PieceID + " has moved to: " + x + ", " + y + " and has danger of: " + piece.GetComponent<BaseAI>().dangerLevel);
     }
 
     //this method takes in 3 pieces (1 from each corp commander)
@@ -314,16 +387,57 @@ public class AI : BasePlayer
                         int[] actionThree = new int[3];
 
                         //move each piece and store the action in the temp arrays
-                        MovePieceCheck(pieceOne, x, actionOne);
-                        MovePieceCheck(pieceTwo, y, actionTwo);
-                        MovePieceCheck(pieceThree, z, actionThree);
+                        if (pieceOne.GetComponent<BaseAI>().validActions[x][5] == 0) 
+                        {
+                            MovePieceCheck(pieceOne, x, actionOne);
+                            attackScoreOne = 0;
+                            certaintyOne = 1;
+                            //AssumeOverwritten1 = new int[] { pieceOne.GetComponent<BaseAI>().validActions[x][3], pieceOne.GetComponent<BaseAI>().validActions[x][4] };
+                        }
+                        if (pieceTwo.GetComponent<BaseAI>().validActions[y][5] == 0)
+                        {
+                            MovePieceCheck(pieceTwo, y, actionTwo);
+                            attackScoreTwo = 0;
+                            certaintyTwo = 1;
+                            //AssumeOverwritten2 = new int[] { pieceTwo.GetComponent<BaseAI>().validActions[y][3], pieceTwo.GetComponent<BaseAI>().validActions[y][4] };
+                        }
+                        if (pieceThree.GetComponent<BaseAI>().validActions[z][5] == 0)
+                        {
+                            MovePieceCheck(pieceThree, z, actionThree);
+                            attackScoreThree = 0;
+                            certaintyThree = 1;
+                            //AssumeOverwritten3 = new int[] { pieceThree.GetComponent<BaseAI>().validActions[z][3], pieceThree.GetComponent<BaseAI>().validActions[z][4] };
+                        }
+
+                        //attack with each piece and store the action in the temp arrays
+                        if (pieceOne.GetComponent<BaseAI>().validActions[x][5] == 1)
+                        {
+                            float[] temp1 = AttackPieceCheck(pieceOne, x, actionOne, Board);
+                            attackScoreOne = temp1[0];
+                            certaintyOne = temp1[1];
+                            //AssumeOverwritten1 = new int[] { pieceOne.GetComponent<BaseAI>().validActions[x][3], pieceOne.GetComponent<BaseAI>().validActions[x][4] };
+                        }
+                        if (pieceTwo.GetComponent<BaseAI>().validActions[y][5] == 1)
+                        {
+                            float[] temp2 = AttackPieceCheck(pieceTwo, y, actionTwo, Board);
+                            attackScoreOne = temp2[0];
+                            certaintyOne = temp2[1];
+                            //AssumeOverwritten2 = new int[] { pieceTwo.GetComponent<BaseAI>().validActions[y][3], pieceTwo.GetComponent<BaseAI>().validActions[y][4] };
+                        }
+                        if (pieceThree.GetComponent<BaseAI>().validActions[z][5] == 1)
+                        {
+                            float[] temp3 = AttackPieceCheck(pieceThree, z, actionThree, Board);
+                            attackScoreOne = temp3[0];
+                            certaintyOne = temp3[1];
+                            //AssumeOverwritten3 = new int[] { pieceThree.GetComponent<BaseAI>().validActions[z][3], pieceThree.GetComponent<BaseAI>().validActions[z][4] };
+                        }
 
                         //update protection of pieces
                         UpdateProtectionMap(pieceOne, x);
                         UpdateProtectionMap(pieceTwo, y);
                         UpdateProtectionMap(pieceThree, z);
 
-                        int newScore = minimax(Board, 0, false);
+                        float newScore = minimax(Board, 0, false);
                         
                         if (newScore > bestScore)
                         {
@@ -370,6 +484,8 @@ public class AI : BasePlayer
     private void UpdateProtectionMap(GameObject piece, int x)
     {
         piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4], Board);
+
+        piece.GetComponent<IProtectionBoard>().UpdateDangerMap(piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4], Board);
     }
 
     //method that moves a piece to a new position and stores the action
@@ -383,6 +499,458 @@ public class AI : BasePlayer
         action[2] = piece.GetComponent<BaseAI>().validActions[x][5];
     }
 
+    //method that moves a piece to a new position and stores the action
+    private float[] AttackPieceCheck(GameObject piece, int x, int[] action, int[,] board)
+    {
+        //Manager.UpdateIntBoard(piece.GetComponent<IPieceBase>().CurrColPos, piece.GetComponent<IPieceBase>().CurrRowPos, piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4], piece.GetComponent<IPieceBase>().PieceID);
+        float tempCert = 1;
+        float tempAttScore = 0;
+        //check pawn
+        if(piece.GetComponent<IPieceBase>().PieceID == 21)
+        {
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .2f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .2f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .35f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .2f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .2f;
+            }
+        }
+
+        //check rooks
+        if (piece.GetComponent<IPieceBase>().PieceID == 22)
+        {
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 1)
+            {
+                tempAttScore = 1;
+                tempCert = .35f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .35f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .35f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .5f;
+            }
+        }
+
+        //check knights
+        if (piece.GetComponent<IPieceBase>().PieceID == 23)
+        {
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 1)
+            {
+                tempAttScore = 5;
+                tempCert = 1f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .45f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .45f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .45f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .45f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .45f;
+            }
+        }
+
+        //check bishops
+        if (piece.GetComponent<IPieceBase>().PieceID == 24)
+        {
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .1f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .1f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .1f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .1f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .35f;
+            }
+        }
+
+        //check queen
+        if (piece.GetComponent<IPieceBase>().PieceID == 25)
+        {
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .9f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .35f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .5f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .5f;
+            }
+        }
+
+        //check king
+        if (piece.GetComponent<IPieceBase>().PieceID == 26)
+        {
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .01f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .01f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .01f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .01f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .01f;
+            }
+            if (board[piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4]] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .5f;
+            }
+        }
+        float[] temp = new float[2];
+        temp[0] = tempAttScore;
+        temp[1] = tempCert;
+
+        action[0] = piece.GetComponent<BaseAI>().validActions[x][3];
+        action[1] = piece.GetComponent<BaseAI>().validActions[x][4];
+        action[2] = piece.GetComponent<BaseAI>().validActions[x][5];
+
+        return temp;
+    }
+
+    //method that moves a piece to a new position and stores the action
+    private float[] AttackPieceCheckPlayer(int pieceID, int x, int y, int[,] board)
+    {
+        //Manager.UpdateIntBoard(piece.GetComponent<IPieceBase>().CurrColPos, piece.GetComponent<IPieceBase>().CurrRowPos, piece.GetComponent<BaseAI>().validActions[x][3], piece.GetComponent<BaseAI>().validActions[x][4], piece.GetComponent<IPieceBase>().PieceID);
+        float tempCert = 1;
+        float tempAttScore = 0;
+        //check pawn
+        if (pieceID == 21)
+        {
+            if (board[x, y] == 1)
+            {
+                tempAttScore = 5;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 2)
+            {
+                tempAttScore = 15;
+                tempCert = .2f;
+            }
+            if (board[x, y] == 3)
+            {
+                tempAttScore = 15;
+                tempCert = .2f;
+            }
+            if (board[x, y] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .35f;
+            }
+            if (board[x, y] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .2f;
+            }
+            if (board[x, y] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .2f;
+            }
+        }
+
+        //check rooks
+        if (pieceID == 22)
+        {
+            if (board[x, y] == 1)
+            {
+                tempAttScore = 1;
+                tempCert = .35f;
+            }
+            if (board[x, y] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .35f;
+            }
+            if (board[x, y] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .35f;
+            }
+            if (board[x, y] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .5f;
+            }
+        }
+
+        //check knights
+        if (pieceID == 23)
+        {
+            if (board[x, y] == 1)
+            {
+                tempAttScore = 10;
+                tempCert = 1f;
+            }
+            if (board[x, y] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .45f;
+            }
+            if (board[x, y] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .45f;
+            }
+            if (board[x, y] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .45f;
+            }
+            if (board[x, y] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .45f;
+            }
+            if (board[x, y] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .45f;
+            }
+        }
+
+        //check bishops
+        if (pieceID == 24)
+        {
+            if (board[x, y] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .1f;
+            }
+            if (board[x, y] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .1f;
+            }
+            if (board[x, y] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .1f;
+            }
+            if (board[x, y] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .1f;
+            }
+            if (board[x, y] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .35f;
+            }
+        }
+
+        //check queen
+        if (pieceID == 25)
+        {
+            if (board[x, y] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .9f;
+            }
+            if (board[x, y] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .35f;
+            }
+            if (board[x, y] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .5f;
+            }
+            if (board[x, y] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .5f;
+            }
+        }
+
+        //check king
+        if (pieceID == 26)
+        {
+            if (board[x, y] == 1)
+            {
+                tempAttScore = 2;
+                tempCert = .01f;
+            }
+            if (board[x, y] == 2)
+            {
+                tempAttScore = 10;
+                tempCert = .01f;
+            }
+            if (board[x, y] == 3)
+            {
+                tempAttScore = 10;
+                tempCert = .01f;
+            }
+            if (board[x, y] == 4)
+            {
+                tempAttScore = 50;
+                tempCert = .01f;
+            }
+            if (board[x, y] == 5)
+            {
+                tempAttScore = 15;
+                tempCert = .01f;
+            }
+            if (board[x, y] == 6)
+            {
+                tempAttScore = 15000;
+                tempCert = .5f;
+            }
+        }
+        float[] temp = new float[2];
+        temp[0] = tempAttScore;
+        temp[1] = tempCert;
+
+        //action[0] = piece.GetComponent<BaseAI>().validActions[x][3];
+        //action[1] = piece.GetComponent<BaseAI>().validActions[x][4];
+        //action[2] = piece.GetComponent<BaseAI>().validActions[x][5];
+
+        return temp;
+    }
+
     //method to find the score of a given board
     //right now it only cares for how protected the board pieces are
     public int HeuristicScore(int[,] theBoard, int protection)
@@ -391,9 +959,12 @@ public class AI : BasePlayer
         return score;
     }
 
-    public int HeuristicScore(int[,] theBoard)
+    public float HeuristicScore(int[,] theBoard)
     {
-        int score = protectionBoard;
+        float score = protectionBoard - dangerBoard;
+        score = (score + attackScoreOne) * certaintyOne;
+        score = (score + attackScoreTwo) * certaintyTwo;
+        score = (score + attackScoreThree) * certaintyThree;
         return score;
     }
 
@@ -445,22 +1016,22 @@ public class AI : BasePlayer
     }
 
 
-    int minimax(int[,] board, int depth, bool isMax)
+    float minimax(int[,] board, int depth, bool isMax)
     {
         //score the board state
-        int score = HeuristicScore(board);
+        float score = HeuristicScore(board);
 
         // If Maximizer has won the game return his/her
         // evaluated score
-        if (score >= 10000)
+        if (score >= 1000)
             return score;
 
         // If Minimizer has won the game return his/her
         // evaluated score
-        if (score <= -10000)
+        if (score <= -1000)
             return score;
 
-        if (depth == 1)
+        if (depth == 0)
             return score;
 
         // If there are no more moves and no winner then
@@ -471,7 +1042,7 @@ public class AI : BasePlayer
         // If this maximizer's move
         if (isMax)
         {
-            int best = -10000000;
+            float best = -10000000;
             //print("error");
             //traverse all possible moves
             foreach (int[][] moveSet in AiMoveList)
@@ -526,7 +1097,7 @@ public class AI : BasePlayer
         // If this minimizer's move
         else
         {
-            int best = 10000000;
+            float best = 10000000;
 
             if (doJob)
             {
@@ -552,16 +1123,45 @@ public class AI : BasePlayer
             {
                 foreach (int[][] moveSet in PlayerMoveList)
                 {
-
+                    //&& moveSet[0][1] != AssumeOverwritten1[0] && moveSet[0][2] != AssumeOverwritten1[1]
                     //makeMove
-                    Manager.UpdateIntBoard(moveSet[0][1], moveSet[0][2], moveSet[0][3],
+                    if (board[moveSet[0][3], moveSet[0][4]] == 0) 
+                    { 
+                        Manager.UpdateIntBoard(moveSet[0][1], moveSet[0][2], moveSet[0][3],
                                   moveSet[0][4], moveSet[0][0]);
+                    }
 
-                    Manager.UpdateIntBoard(moveSet[1][1], moveSet[1][2], moveSet[1][3],
+                    if (board[moveSet[1][3], moveSet[1][4]] == 0 )
+                    {
+                        Manager.UpdateIntBoard(moveSet[1][1], moveSet[1][2], moveSet[1][3],
                                   moveSet[1][4], moveSet[1][0]);
+                    }
 
-                    Manager.UpdateIntBoard(moveSet[2][1], moveSet[2][2], moveSet[2][3],
+                    if (board[moveSet[2][3], moveSet[2][4]] == 0)
+                    {
+                        Manager.UpdateIntBoard(moveSet[2][1], moveSet[2][2], moveSet[2][3],
                                   moveSet[2][4], moveSet[2][0]);
+                    }
+
+                    //or make attack
+                    if (board[moveSet[0][3], moveSet[0][4]] != 0)
+                    {
+                        float[] temp1 = AttackPieceCheckPlayer(moveSet[0][0], moveSet[0][3], moveSet[0][4], board);
+                        attackScoreOne = temp1[0];
+                        certaintyOne = temp1[1];
+                    }
+                    if (board[moveSet[0][3], moveSet[0][4]] != 0)
+                    {
+                        float[] temp2 = AttackPieceCheckPlayer(moveSet[1][0], moveSet[1][3], moveSet[1][4], board);
+                        attackScoreTwo = temp2[0];
+                        certaintyTwo = temp2[1];
+                    }
+                    if (board[moveSet[0][3], moveSet[0][4]] != 0)
+                    {
+                        float[] temp3 = AttackPieceCheckPlayer(moveSet[2][0], moveSet[2][3], moveSet[2][4], board);
+                        attackScoreThree = temp3[0];
+                        certaintyThree = temp3[1];
+                    }
 
                     //call minimax recursively
                     best = Math.Min(best, minimax(board, depth + 1, isMax));

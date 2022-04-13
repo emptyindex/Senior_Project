@@ -31,6 +31,7 @@ public class BishopAI : BaseAI
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
@@ -134,6 +135,7 @@ public class BishopAI : BaseAI
             }
 
             UpdateProtectionMap(currRow, currCol, AIManager.Board);
+            UpdateDangerMap(currRow, currCol, AIManager.Board);
         }
     
         //AI.protectionBoard += protectionLevel;
@@ -168,6 +170,7 @@ public class BishopAI : BaseAI
 
         return -1;
     }
+
     public override bool IsAttackSuccessful(int PieceToAttack, int roll)
     {
         if (PieceToAttack > 20)

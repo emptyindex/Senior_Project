@@ -20,6 +20,7 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
     public int PieceID { get; set; }
 
     public static List<int[][]> PlayerMoveTest;
+
     public void UpdateProtectionMap(int row, int col, int[,] board)
     {
         int row_limit = 7;
@@ -62,6 +63,53 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
         AI.protectionBoard += protectionLevel;
     }
 
+    public void UpdateDangerMap(int row, int col, int[,] board)
+    {
+        int row_limit = 7;
+        int column_limit = 7;
+
+        AI.dangerBoard -= dangerLevel;
+        dangerLevel = 0;
+
+        for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
+        {
+            for (int y = Mathf.Max(0, col - 2); y <= Mathf.Min(col + 2, column_limit); y++)
+            {
+                if (board[x, y] != 0 && x != row || y != col)
+                {
+                    //check danger from pawns
+                    if (board[x, y] == 1 && x < row && (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1))
+                    {
+                        dangerLevel += 1;
+                    }
+
+                    //check danger from pieces with 1 attack range
+                    if ((x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1) && (board[x, y] == 3 || board[x, y] == 5 || board[x, y] == 6))
+                    {
+                        dangerLevel += 2;
+                    }
+
+                    //check danger from rooks
+                    if (board[x, y] == 4)
+                    {
+                        dangerLevel += 2;
+                    }
+                }
+            }
+        }
+        //check danger from knights
+        if (Mathf.Abs(row - AI.knightOneRow) < 4 && Mathf.Abs(col - AI.knightOneCol) < 4)
+        {
+            dangerLevel += 1;
+        }
+        if (Mathf.Abs(row - AI.knightTwoRow) < 4 && Mathf.Abs(col - AI.knightTwoCol) < 4)
+        {
+            dangerLevel += 1;
+        }
+
+        AI.dangerBoard += dangerLevel;
+    }
+
     //method to find the score of a given board
     //since attacks are not guarenteed the current attack is also passed if a piece is attacking another
     //right now just returns a random value
@@ -69,12 +117,6 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
     {
         int score = Random.Range(1, 1000);
         return score;
-    }
-
-    public static int MethodForTest()
-    {
-        int hi = PlayerMoveTest.Count;
-        return hi;
     }
 
     //method that checks if a move is valid and returns the least number of squares the piece has to move to reach the destination

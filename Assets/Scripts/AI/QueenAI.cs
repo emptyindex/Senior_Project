@@ -26,6 +26,7 @@ public class QueenAI : BaseAI
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
@@ -51,7 +52,7 @@ public class QueenAI : BaseAI
         {
             for (int y = Mathf.Max(0, CurrColPos - 3); y <= Mathf.Min(CurrColPos + 3, column_limit); y++)
             {
-                if (x != CurrRowPos || y != CurrColPos)
+                if (x != currRow || y != currCol)
                 {
                     //check if move to spot is valid given movespeed of piece
                     int moves = isMoveValid(this.AIManager.Board, currRow, currCol, x, y);
@@ -68,7 +69,7 @@ public class QueenAI : BaseAI
                     }
 
                     //check possible attacks
-                    if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 15 &&
+                    if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10 &&
                         (x <= CurrRowPos + 1) && (y <= CurrColPos + 1) && (x >= CurrRowPos - 1) && (y >= CurrColPos - 1))
                     {
                         moveFound = true;
@@ -77,7 +78,8 @@ public class QueenAI : BaseAI
                     }
 
                     //update protection map
-                    this.UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
+                    UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
+                    UpdateDangerMap(currRow, currCol, AIManager.Board);
                 }
             }
         }

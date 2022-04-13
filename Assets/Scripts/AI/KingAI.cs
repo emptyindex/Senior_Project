@@ -27,12 +27,13 @@ public class KingAI : BaseAI
             //BestMove();
             validActions.Clear();
             protectionLevel = 0;
+            dangerLevel = 0;
 
             setValidActions();
             this.hasFinished = true;
 
-            AI.kingCol = this.GetComponent<IPieceBase>().CurrRowPos;
-            AI.kingRow = this.GetComponent<IPieceBase>().CurrColPos;
+            //AI.kingCol = this.GetComponent<IPieceBase>().CurrRowPos;
+            //AI.kingRow = this.GetComponent<IPieceBase>().CurrColPos;
         }
     }
 
@@ -76,6 +77,7 @@ public class KingAI : BaseAI
 
                     //UpdateProtectionMap
                    UpdateProtectionMap(currRow, currCol, this.AIManager.Board);
+                   UpdateDangerMap(currRow, currCol, AIManager.Board);
                 }
             }
         }
