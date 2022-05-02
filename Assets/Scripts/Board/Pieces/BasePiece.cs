@@ -169,7 +169,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
 
         if(timesMoved > 1)
         {
-            if(adjPieceID == 3)
+            if(adjPieceID == 3 || adjPieceID == 2)
             {
                 //this.gameObject.GetComponent<IRoyalty>().HasMoved = true;
                 return true;
