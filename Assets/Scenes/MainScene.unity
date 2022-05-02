@@ -862,6 +862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dce3e3796bfea9449796a896af6dfe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveManager: {fileID: 1930760223}
   player: {fileID: 5624974584527986448, guid: 94c22ac77f0902a47ad7612b1b791759, type: 3}
   ai: {fileID: 6842021588314291327, guid: d00bd714fab0515409651286afa8c712, type: 3}
   dice: {fileID: 372059505}
@@ -3433,7 +3434,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Resume
+  m_text: Save
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11633,7 +11634,7 @@ GameObject:
   - component: {fileID: 1433555213}
   - component: {fileID: 1433555212}
   m_Layer: 5
-  m_Name: Resume Button (1)
+  m_Name: SaveGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11706,7 +11707,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1930760218}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: Resume
+        m_MethodName: Save
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14862,6 +14863,7 @@ GameObject:
   - component: {fileID: 1930760220}
   - component: {fileID: 1930760219}
   - component: {fileID: 1930760218}
+  - component: {fileID: 1930760223}
   m_Layer: 5
   m_Name: Pause Button
   m_TagString: Untagged
@@ -14997,6 +14999,22 @@ RectTransform:
   m_AnchoredPosition: {x: -127, y: -54}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1930760223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930760217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f82448f50a4ccb1478d97c86248fd96b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deadPile: {fileID: 0}
+  players:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1001 &1932295470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17021,7 +17039,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &7501911598510620534
 CanvasRenderer:
   m_ObjectHideFlags: 0
