@@ -12,6 +12,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     public int CurrRowPos { get; set; }
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
+    public bool IsDead { get; set; }
 
     public List<int[]> validActions = new List<int[]>();
     public int protectionLevel;
@@ -276,4 +277,14 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     }
 
     public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
+
+    public override bool Equals(object other)
+    {
+        return base.Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return System.HashCode.Combine(CurrRowPos, CurrColPos, PieceID, IsDead);
+    }
 }

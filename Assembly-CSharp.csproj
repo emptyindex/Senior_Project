@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,9 +53,6 @@
     <UnityVersion>2021.2.8f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\Scripts\AI\KingAI.cs" />
     <Compile Include="Assets\Scripts\Manager\ChangeScene.cs" />
     <Compile Include="Assets\Scripts\Audio\PlayAudio1.cs" />
@@ -77,7 +74,7 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Rook.cs" />
     <Compile Include="Assets\Scripts\AI\BishopAI.cs" />
     <Compile Include="Assets\Scripts\Board\Pieces\BasePiece.cs" />
-    <Compile Include="Assets\Scripts\LevelManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\LevelManager.cs" />
     <Compile Include="Assets\Scripts\UI\GameModeManager.cs" />
     <Compile Include="Assets\Packs\Laterns and candles\scripts\ExtendedFlycam.cs" />
     <Compile Include="Assets\Scripts\AI\AiJobSplitter.cs" />
@@ -93,8 +90,8 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Queen.cs" />
     <Compile Include="Assets\Scripts\Manager\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\AI\RookAI.cs" />
-    <Compile Include="Assets\Scripts\SoundManager.cs" />
-    <Compile Include="Assets\Scripts\DisplayTimer.cs" />
+    <Compile Include="Assets\Scripts\Manager\SoundManager.cs" />
+    <Compile Include="Assets\Scripts\UI\DisplayTimer.cs" />
     <Compile Include="Assets\GameModeController.cs" />
     <Compile Include="Assets\Scripts\SceneLoading.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
@@ -114,6 +111,8 @@
     <Compile Include="Assets\Scripts\Board\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Dice\DiceNumberTextScript.cs" />
     <Compile Include="Assets\Scripts\AI\KnightAI.cs" />
+    <Compile Include="Assets\Scripts\Manager\SaveManager.cs" />
+    <Compile Include="Assets\DeadPile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />

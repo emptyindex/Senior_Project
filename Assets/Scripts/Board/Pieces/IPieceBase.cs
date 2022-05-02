@@ -4,6 +4,8 @@ using UnityEngine;
 
 public interface IPieceBase
 {
+    public bool IsDead { get; set; }
+
     public int CurrRowPos { get; set; }
 
     public int CurrColPos { get; set; }

@@ -41,8 +41,6 @@ public class AI : BasePlayer
 
     private AttackManager attackManager;
 
-    private GameObject deadPile;
-
     public static int protectionBoard;
     public static int dangerBoard;
 
@@ -90,8 +88,6 @@ public class AI : BasePlayer
         attackManager.AttackRollNeeded += Manager.dice.Roll;
         Manager.dice.OnDiceEnded += CheckAttackSuccessful;
 
-        deadPile = GameObject.FindWithTag("Deadpile");
-
         StartCoroutine("AiPick");
     }
 
@@ -122,9 +118,6 @@ public class AI : BasePlayer
                 {
                     var _ = attackedPiece.AddComponent(typeof(BoxCollider)) as BoxCollider;
                 }
-
-                attackedPiece.transform.SetParent(deadPile.transform);
-                attackedPiece.transform.position = deadPile.transform.position + new Vector3(0, 0.5f, 0);
 
                 Manager.RemoveKilledPieceFromPlayer(this.gameObject, attackedPiece);
 
@@ -1203,6 +1196,15 @@ public class AI : BasePlayer
             result = result,
         };
         return job.Schedule();
+    }
+
+    public override List<IPieceBase> GetPieces()
+    {
+        var bishopLPieces = BishopLPieces.ConvertAll(p => p.GetComponent<IPieceBase>());
+        var bishopRPieces = BishopRPieces.ConvertAll(p => p.GetComponent<IPieceBase>());
+        var kingPieces = KingPieces.ConvertAll(p => p.GetComponent<IPieceBase>());
+
+        return new List<IPieceBase>(bishopLPieces.Concat(bishopRPieces).Concat(kingPieces));
     }
 }
 

@@ -34,8 +34,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     private static GameObject attackingPiece;
     private static Cell cellToAttack;
 
-    private GameObject deadPile;
-
     public List<GameObject> highlightedCells = new List<GameObject>();
     public List<GameObject> attackCells = new List<GameObject>();
 
@@ -89,8 +87,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         this.MenuCanvas.SetActive(false);
 
         this.CurrentMove = MoveToMake.None;
-
-        deadPile = GameObject.FindWithTag("Deadpile");
     }
 
     private void CheckAttackSuccessful()
@@ -143,10 +139,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         {
             var _ = attackedPiece.AddComponent(typeof(BoxCollider)) as BoxCollider;
         }
-
-        // Do attack
-        attackedPiece.transform.SetParent(deadPile.transform, false);
-        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, .5f, 0);
 
         // Tell other player they lost a piece
         manager.RemoveKilledPieceFromPlayer(player.gameObject, attackedPiece);

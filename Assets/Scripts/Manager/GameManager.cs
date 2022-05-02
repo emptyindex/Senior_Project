@@ -20,6 +20,7 @@ public enum GameMode
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    public SaveManager saveManager;
     public GameObject player;
     public GameObject ai;
 
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] humanPieces;
     public GameObject[] aiPieces;
 
+    private DeadPile deadPile;
     private GameObject[] players = new GameObject[2];
 
     private int indexer = 0;
@@ -61,6 +63,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         //Instantiate(boardPrefab);
+
+        deadPile = GameObject.FindWithTag("Deadpile").GetComponent<DeadPile>();
 
         var renderer = boardPrefab.GetComponent<Renderer>();
         var startPos = renderer.bounds.min + new Vector3(0.04f, 0, 0.04f);
@@ -138,6 +142,9 @@ public class GameManager : MonoBehaviour
 
         // Tell player one that it's their turn. 
         players[0].GetComponent<BasePlayer>().IsTurn(true);
+
+        saveManager.deadPile = deadPile;
+        saveManager.players = players.ToList().ConvertAll(p => p.GetComponent<BasePlayer>()).ToArray();
     }
 
     private void PopulateCellForGameMode(List<GameObject> pieces, int i, int j, bool isBlack, bool isHigherOrder = false)
@@ -235,6 +242,10 @@ public class GameManager : MonoBehaviour
 
     public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
     {
+        deadPile.deadPieces.Add(piece.GetComponent<IPieceBase>());
+        piece.transform.SetParent(deadPile.transform);
+        piece.transform.position = deadPile.transform.position + new Vector3(0, 0.5f, 0);
+
         int index = players.FindIndex(player).FirstOrDefault();
 
         switch (index)

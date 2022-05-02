@@ -18,6 +18,7 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
     public int CurrRowPos { get; set; }
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
+    public bool IsDead { get; set; }
 
     public static List<int[][]> PlayerMoveTest;
 
@@ -538,4 +539,14 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
     }
 
     public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
+
+    public override bool Equals(object other)
+    {
+        return base.Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return System.HashCode.Combine(base.GetHashCode(), CurrRowPos, CurrColPos, PieceID, IsDead);
+    }
 }

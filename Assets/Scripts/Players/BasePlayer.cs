@@ -18,6 +18,8 @@ public abstract class BasePlayer : MonoBehaviour
 
     public GameManager Manager { get; set; }
 
+    public abstract List<IPieceBase> GetPieces();
+
     public abstract void SetPieces(List<GameObject> pieces);
     public abstract void RemovePiece(GameObject pieceToRemove);
 
