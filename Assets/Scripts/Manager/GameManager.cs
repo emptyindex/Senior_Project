@@ -268,6 +268,8 @@ public class GameManager : MonoBehaviour
 
     public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
     {
+        piece.layer = LayerMask.NameToLayer("Ignore Raycast");
+
         deadPile.deadPieces.Add(piece.GetComponent<IPieceBase>());
         piece.transform.SetParent(deadPile.transform);
         piece.transform.position = deadPile.transform.position + new Vector3(0, 0.5f, 0);
