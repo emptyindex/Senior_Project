@@ -30,7 +30,7 @@ public class BishopAI : BaseAI
         {
             //BestMove();
             validActions.Clear();
-            protectionLevel = 0;
+            ProtectionLevel = 0;
             dangerLevel = 0;
 
             setValidActions();
@@ -161,6 +161,13 @@ public class BishopAI : BaseAI
             if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 10)
             {
                 moveFound = true;
+
+                // if the bishop can attack a king
+                if(AIManager.Board[x, y] == 26 || AIManager.Board[x, y] == 6)
+                {
+                    AIManager.Manager.NotifiyCheck(AIManager.gameObject);
+                }
+
                 int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
                 validActions.Add(validAction);
 

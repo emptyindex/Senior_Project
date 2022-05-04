@@ -25,7 +25,7 @@ public class QueenAI : BaseAI
         {
             //BestMove();
             validActions.Clear();
-            protectionLevel = 0;
+            ProtectionLevel = 0;
             dangerLevel = 0;
 
             setValidActions();
@@ -72,6 +72,12 @@ public class QueenAI : BaseAI
                     if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10 &&
                         (x <= CurrRowPos + 1) && (y <= CurrColPos + 1) && (x >= CurrRowPos - 1) && (y >= CurrColPos - 1))
                     {
+                        // if the Queen can attack a king
+                        if (this.AIManager.Board[x, y] == 26 || this.AIManager.Board[x, y] == 6)
+                        {
+                            AIManager.Manager.NotifiyCheck(AIManager.gameObject);
+                        }
+
                         moveFound = true;
                         validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
                         validActions.Add(validAction);

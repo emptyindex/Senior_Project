@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 6056470003793210731}
   - component: {fileID: 2652624734157904176}
   - component: {fileID: -2429627032346198968}
-  m_Layer: 2
+  - component: {fileID: 8643984709098854507}
+  m_Layer: 3
   m_Name: BishopAI
-  m_TagString: Untagged
+  m_TagString: Piece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,6 +31,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,6 +55,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -99,7 +102,6 @@ MonoBehaviour:
   bestMove: 
   moveFound: 0
   hasFinished: 0
-  protectionLevel: 0
   dangerLevel: 0
 --- !u!114 &-2429627032346198968
 MonoBehaviour:
@@ -116,3 +118,16 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: 00912c1e55787984d8a57cef15d87a8b, type: 2}
   - {fileID: 2100000, guid: 519bb7ad9c0b01145b66756f3c261e30, type: 2}
+--- !u!65 &8643984709098854507
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6078750470299024705}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8763499, y: 1.5062299, z: 0.7589414}
+  m_Center: {x: 0, y: 0.75311494, z: 0}

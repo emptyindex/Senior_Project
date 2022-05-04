@@ -34,8 +34,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     private static GameObject attackingPiece;
     private static Cell cellToAttack;
 
-    private GameObject deadPile;
-
     public List<GameObject> highlightedCells = new List<GameObject>();
     public List<GameObject> attackCells = new List<GameObject>();
 
@@ -89,8 +87,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         this.MenuCanvas.SetActive(false);
 
         this.CurrentMove = MoveToMake.None;
-
-        deadPile = GameObject.FindWithTag("Deadpile");
     }
 
     private void CheckAttackSuccessful()
@@ -117,6 +113,15 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
             if (result)
             {
+                // we successfully killed the king
+                if(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 6 || cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 26)
+                {
+                    commandAuthorityTaken = true;
+                    manager.EndGame(player.gameObject);
+
+                    goto BREAK;
+                }
+
                 FinishAttack();
             }
             else
@@ -127,6 +132,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 this.ResetMove();
             }
         }
+
+        BREAK:;
     }
 
     private void FinishAttack()
@@ -143,10 +150,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         {
             var _ = attackedPiece.AddComponent(typeof(BoxCollider)) as BoxCollider;
         }
-
-        // Do attack
-        attackedPiece.transform.SetParent(deadPile.transform, false);
-        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, .5f, 0);
 
         // Tell other player they lost a piece
         manager.RemoveKilledPieceFromPlayer(player.gameObject, attackedPiece);
@@ -225,9 +228,15 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     {
         if(Input.GetMouseButtonUp(0))
         {
-            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+            int layerMask = 1 << 7;
+            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, layerMask);
 
-            var cell = hit.transform.gameObject.GetComponent<Cell>();
+            Cell cell = null;
+
+            if(hit.transform)
+            {
+                cell = hit.transform.gameObject.GetComponent<Cell>();
+            }
 
             // if we clicked on a cell populated with one of this corps commander's controlled pieces
             if (cell && cell.GetCurrentPiece && piecesToCheck.Contains(cell.GetCurrentPiece))
@@ -244,7 +253,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
                 if (toMove)
                 {
-                    (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
+                    (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell, selectedPiece);
                 }
 
                 piecesToCheck.ForEach(p =>
@@ -290,13 +299,12 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                             previousCell = GameManager.boardArr[basePiece.CurrRowPos, basePiece.CurrColPos].GetComponent<Cell>();
 
                             basePiece.MovePiece(cell, manager);
-                            previousCell.GetCurrentPiece = null;
 
                             royalty.UpdateMovementNum(indexes);
                             royalty.ResetPos(indexes);
 
                             ClearCells();
-                            (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
+                            (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell, selectedPiece);
 
                             endPosX = basePiece.CurrRowPos;
                             endPosY = basePiece.CurrColPos;
@@ -320,7 +328,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                     else
                     {
                         selectedPiece.GetComponent<BasePiece>().MovePiece(cell, manager);
-                        previousCell.GetCurrentPiece = null;
 
                         endPosX = basePiece.CurrRowPos;
                         endPosY = basePiece.CurrColPos;

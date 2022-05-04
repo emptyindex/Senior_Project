@@ -5,19 +5,28 @@ using System.Linq;
 
 public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
 {
+    [HideInInspector]
     public int bestScore;
+    [HideInInspector]
     public int[] bestMove;
+    [HideInInspector]
     public bool moveFound;
+    [HideInInspector]
     public bool hasFinished;
 
+    [HideInInspector]
     public List<int[]> validActions = new List<int[]>();
-    public int protectionLevel;
+    [HideInInspector]
     public int dangerLevel;
+
+    private int protectionLevel;
+    public int ProtectionLevel { get => protectionLevel; set => protectionLevel = value; }
 
     public AI AIManager { get; set; }
     public int CurrRowPos { get; set; }
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
+    public bool IsDead { get; set; }
 
     public static List<int[][]> PlayerMoveTest;
 
@@ -538,4 +547,14 @@ public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
     }
 
     public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
+
+    public override bool Equals(object other)
+    {
+        return base.Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return System.HashCode.Combine(base.GetHashCode(), CurrRowPos, CurrColPos, PieceID, IsDead);
+    }
 }

@@ -100,7 +100,7 @@ public class PlayerManager : BasePlayer
     /// </summary>
     void Update()
     {
-        if(movesTaken >= maxMovesPerTurn)
+        if(movesTaken >= maxMovesPerTurn || isGameOver)
         {
             canMove = false;
         }
@@ -115,7 +115,8 @@ public class PlayerManager : BasePlayer
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+                    int layerMask = 1 << 7;
+                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, layerMask);
 
                     if (hit.transform)
                     {
@@ -202,5 +203,12 @@ public class PlayerManager : BasePlayer
 
         //toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
         toHighlight.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(true));
+    }
+
+    public override List<IPieceBase> GetPieces()
+    {
+        var convertedPieces = pieces.ToList().ConvertAll(p => p.GetComponent<IPieceBase>());
+
+        return new List<IPieceBase>(convertedPieces);
     }
 }

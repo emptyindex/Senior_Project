@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 961852420732449810}
   - component: {fileID: 971524860269194519}
   - component: {fileID: 6141082381242328723}
-  m_Layer: 2
+  - component: {fileID: 2411750507372894836}
+  m_Layer: 3
   m_Name: Queen
-  m_TagString: Untagged
+  m_TagString: Piece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,6 +31,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.558405, y: 0.000000059604645, z: 0.95512676}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,6 +55,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -95,7 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3133964b95733a94198c137648f92fb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  protectionLevel: 0
   dangerLevel: 0
 --- !u!114 &6141082381242328723
 MonoBehaviour:
@@ -113,3 +115,16 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 1ed4f381fcff50d47acee09c5d1fdef2, type: 2}
   - {fileID: 2100000, guid: 7d884c4fe6f7eec41a8c4c06eb3784e2, type: 2}
   - {fileID: 2100000, guid: 3f76a28c863e8be439bf08c536cb2ed9, type: 2}
+--- !u!65 &2411750507372894836
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940119620506124366}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8763499, y: 1.7013237, z: 0.7589414}
+  m_Center: {x: 0, y: 0.8506619, z: 0}

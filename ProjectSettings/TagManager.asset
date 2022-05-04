@@ -9,15 +9,16 @@ TagManager:
   - GameModeManager
   - GameModeController
   - Manager
+  - Piece
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - GamePieces
   - Water
   - UI
   - 
-  - 
+  - Cell
   - 
   - 
   - 
