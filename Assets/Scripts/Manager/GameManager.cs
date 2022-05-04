@@ -201,7 +201,9 @@ public class GameManager : MonoBehaviour
             player.GetComponent<BasePlayer>().isGameOver = true;
         }
 
-        var playerIndex = players.FindIndex(winner);
+        var playerIndex = players.FindIndex(winner).First();
+
+        Debug.Log($"Player {playerIndex + 1} won. END GAME.");
 
         //gameOverPanel.SetActive(true);
         //gameOverText.text = $"Player {playerIndex} won!";
