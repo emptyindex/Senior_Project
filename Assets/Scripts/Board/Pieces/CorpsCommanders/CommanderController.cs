@@ -42,14 +42,10 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
     protected bool isMoving = false;
     public bool isAttacking = false;
 
-    private bool commandAuthorityTaken = false;
     private bool isFirstMove = true;
 
     public bool HasTakenCommand { get; set; } = false;
     public GameObject MenuCanvas { get; set; }
-
-    public delegate void CommandEndedEvent();
-    public event CommandEndedEvent OnCommandEnded;
 
     public MoveToMake CurrentMove { get; set; }
 
@@ -116,7 +112,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 // we successfully killed the king
                 if(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 6 || cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 26)
                 {
-                    commandAuthorityTaken = true;
+                    this.ResetMove();
                     manager.EndGame(this.gameObject);
 
                     goto BREAK;
@@ -165,18 +161,8 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     protected void Update()
     {
-        if(commandAuthorityTaken)
-        {
-            HasTakenCommand = false;
-            commandAuthorityTaken = false;
-
-            OnCommandEnded.Invoke();
-        }
-
         if(HasTakenCommand)
         {
-            //Debug.Log($"The current move on: {this.gameObject.name} is {CurrentMove}");
-
             if(CurrentMove == MoveToMake.None)
             {
                 MenuCanvas.SetActive(true);
@@ -204,15 +190,26 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 MovePiece();
             }
 
-            if(Input.GetKeyUp(KeyCode.C) && isMoving)
+            if(Input.GetKeyUp(KeyCode.C))
             {
-                if(selectedPiece.GetComponent<IRoyalty>() != null && selectedPiece.GetComponent<IRoyalty>().HasMoved)
+                if(isMoving)
                 {
-                    ResetMove();
+                    if(selectedPiece.GetComponent<IRoyalty>() != null && selectedPiece.GetComponent<IRoyalty>().HasMoved)
+                    {
+                        ResetMove();
+                    }
+                    else
+                    {
+                        ResetMoveWithOutEnd();
+                    }
                 }
                 else
                 {
                     ResetMoveWithOutEnd();
+                    MenuCanvas.SetActive(false);
+                    HasTakenCommand = false;
+                    isFirstMove = true;
+                    player.CancelMove();
                 }
             }
         }
@@ -407,11 +404,13 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         CurrentMove = MoveToMake.None;
     }
 
-    protected void ResetMove()
+    public void ResetMove()
     {
         ResetMoveWithOutEnd();
 
-        commandAuthorityTaken = true;
+        player.UpdateMoves();
+
+        HasTakenCommand = false;
         isFirstMove = true;
     }
 
