@@ -7,18 +7,6 @@ public class PauseMenu : MonoBehaviour
 {
    [SerializeField] GameObject pauseMenu;
 
-    private SaveManager saveManager;
-
-    private void Start()
-    {
-        saveManager = GetComponent<SaveManager>();
-    }
-
-    public void Save()
-    {
-        saveManager.SaveBoardState();
-    }
-
     public void Pause()
     {
         pauseMenu.SetActive(true);
@@ -36,6 +24,4 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(sceneID);
     }
-
- 
 }

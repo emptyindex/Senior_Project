@@ -226,19 +226,19 @@ public class PlayerMoveFinder : BaseAI
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
                         (newBoard[x, y] == 3 || newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
                     if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 1)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
                     if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 2)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
                 }
             }
@@ -291,19 +291,19 @@ public class PlayerMoveFinder : BaseAI
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
                         (newBoard[x, y] == 3 || newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
                     if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 1)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
                     if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 2)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
                 }
             }
@@ -441,19 +441,19 @@ public class PlayerMoveFinder : BaseAI
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
                         (newBoard[x, y] == 3 || newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
                     if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 1)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
                     if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 2)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
                 }
             }
@@ -509,19 +509,19 @@ public class PlayerMoveFinder : BaseAI
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
                         (newBoard[x, y] == 3 || newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
                     if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 1)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
                     if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 2)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
                 }
             }
@@ -571,19 +571,19 @@ public class PlayerMoveFinder : BaseAI
                     if (x <= currRow + 1 && x >= currRow - 1 && y <= currCol + 1 && y >= currCol - 1 &&
                         (newBoard[x, y] == 3 || newBoard[x, y] == 4 || newBoard[x, y] == 5 || newBoard[x, y] == 6))
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
                     if (x <= currRow + 1 && x > currRow && y <= currCol + 1 && y >= currCol - 1 && newBoard[x, y] == 1)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
                     if (x <= currRow + 2 && x >= currRow - 2 && y <= currCol + 2 && y >= currCol - 2 && newBoard[x, y] == 2)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
                 }
             }
@@ -621,7 +621,7 @@ public class PlayerMoveFinder : BaseAI
         int column_limit = 7;
 
         //AI.protectionBoard -= protectionLevel;
-        piece.GetComponent<BasePiece>().protectionLevel = 0;
+        piece.GetComponent<IPieceBase>().ProtectionLevel = 0;
 
         for (int x = Mathf.Max(0, row - 2); x <= Mathf.Min(row + 2, row_limit); x++)
         {
@@ -633,19 +633,19 @@ public class PlayerMoveFinder : BaseAI
                     if (x <= row + 1 && x >= row - 1 && y <= col + 1 && y >= col - 1 &&
                         (board[x, y] == 23 || board[x, y] == 24 || board[x, y] == 25 || board[x, y] == 26))
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by pawn since they can only protect from behind
                     if (x <= row + 1 && x > row && y <= col + 1 && y >= col - 1 && board[x, y] == 21)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
 
                     //check protection by rook since they have a range of 2
                     if (board[x, y] == 22)
                     {
-                        piece.GetComponent<BasePiece>().protectionLevel += 1;
+                        piece.GetComponent<IPieceBase>().ProtectionLevel += 1;
                     }
                 }
             }

@@ -5,14 +5,22 @@ using System.Linq;
 
 public abstract class BaseAI : MonoBehaviour, IPieceBase, IProtectionBoard
 {
+    [HideInInspector]
     public int bestScore;
+    [HideInInspector]
     public int[] bestMove;
+    [HideInInspector]
     public bool moveFound;
+    [HideInInspector]
     public bool hasFinished;
 
+    [HideInInspector]
     public List<int[]> validActions = new List<int[]>();
-    public int protectionLevel;
+    [HideInInspector]
     public int dangerLevel;
+
+    private int protectionLevel;
+    public int ProtectionLevel { get => protectionLevel; set => protectionLevel = value; }
 
     public AI AIManager { get; set; }
     public int CurrRowPos { get; set; }

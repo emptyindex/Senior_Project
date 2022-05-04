@@ -26,7 +26,7 @@ public class KingAI : BaseAI
         {
             //BestMove();
             validActions.Clear();
-            protectionLevel = 0;
+            ProtectionLevel = 0;
             dangerLevel = 0;
 
             setValidActions();
@@ -70,6 +70,12 @@ public class KingAI : BaseAI
                     if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10 &&
                         (x <= currRow + 1) && (y <= currCol + 1) && (x >= currRow - 1) && (y >= currCol - 1))
                     {
+                        // if the king can attack anohter king
+                        if (AIManager.Board[x, y] == 26 || AIManager.Board[x, y] == 6)
+                        {
+                            AIManager.Manager.NotifiyCheck(AIManager.gameObject);
+                        }
+
                         moveFound = true;
                         validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1 };
                         validActions.Add(validAction);

@@ -14,9 +14,13 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     public int PieceID { get; set; }
     public bool IsDead { get; set; }
 
+    [HideInInspector]
     public List<int[]> validActions = new List<int[]>();
-    public int protectionLevel;
+    [HideInInspector]
     public int dangerLevel;
+
+    private int protectionLevel;
+    public int ProtectionLevel { get => protectionLevel; set => protectionLevel = value; }
 
     public int[] GetNumberMoves(int x, int y)
     {
@@ -41,8 +45,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         manager.UpdateIntBoard(currX, currY, newX, newY, gameObject.GetComponent<IPieceBase>().PieceID);
 
         Move(newPos);
-
-        cell.GetCurrentPiece = gameObject;
     }
 
 
@@ -53,7 +55,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="x">The current piece's X position on the board.</param>
     /// <param name="y">The current piece's Y position on the board.</param>
     /// <returns></returns>
-    public abstract (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y);
+    public abstract (List<GameObject> moves, List<GameObject> attacks) Highlight(GameObject[,] board, int x, int y);
 
     /// <summary>
     /// This method gets the all possible positions a piece can move - both forwards and backwards.
@@ -146,7 +148,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         {
             if (IsPopulated(board, moveX, moveY))
             {
-                if(HasEnemyPiece(board, moveX, moveY) && IsAbleToAttack(timesMoved))
+                if (HasEnemyPiece(board, moveX, moveY) && IsAbleToAttack(timesMoved))
                 {
                     GetMove(board, moveX, moveY, inRangeToAttack, true);
 

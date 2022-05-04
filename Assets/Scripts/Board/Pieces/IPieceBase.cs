@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IPieceBase
 {
+    public int ProtectionLevel { get; set; }
     public bool IsDead { get; set; }
 
     public int CurrRowPos { get; set; }

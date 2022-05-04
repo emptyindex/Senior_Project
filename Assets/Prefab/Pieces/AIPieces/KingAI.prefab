@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 2542059046761225990}
   - component: {fileID: 9738319693509269}
   - component: {fileID: -4673801934781115520}
-  m_Layer: 2
+  - component: {fileID: 6199014514989865776}
+  m_Layer: 3
   m_Name: KingAI
-  m_TagString: Untagged
+  m_TagString: Piece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,6 +31,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -1, z: 0.000000021855694, w: 0}
   m_LocalPosition: {x: 4.9588013, y: -0.000000059604645, z: 7.13513}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,6 +55,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -99,7 +102,6 @@ MonoBehaviour:
   bestMove: 
   moveFound: 0
   hasFinished: 0
-  protectionLevel: 0
   dangerLevel: 0
 --- !u!114 &-4673801934781115520
 MonoBehaviour:
@@ -116,3 +118,16 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: adefce1589f7e584ebd7c6d597a46ee9, type: 2}
   - {fileID: 2100000, guid: 5a3ab2601b4968341a959d89a206c835, type: 2}
+--- !u!65 &6199014514989865776
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2527068552313422698}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8763499, y: 1.7193428, z: 0.7589414}
+  m_Center: {x: 0, y: 0.8596714, z: -3.0541664e-15}

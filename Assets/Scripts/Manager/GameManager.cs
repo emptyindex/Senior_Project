@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System;
+using TMPro;
 
 /// <summary>
 /// Public Enum to represent the 3 different types of game modes.
@@ -20,7 +20,7 @@ public enum GameMode
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public SaveManager saveManager;
+    public TextMeshProUGUI checkNotifyText;
     public GameObject player;
     public GameObject ai;
 
@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void Start()
     {
+        checkNotifyText.text = string.Empty;
         //Instantiate(boardPrefab);
 
         deadPile = GameObject.FindWithTag("Deadpile").GetComponent<DeadPile>();
@@ -142,9 +143,6 @@ public class GameManager : MonoBehaviour
 
         // Tell player one that it's their turn. 
         players[0].GetComponent<BasePlayer>().IsTurn(true);
-
-        saveManager.deadPile = deadPile;
-        saveManager.players = players.ToList().ConvertAll(p => p.GetComponent<BasePlayer>()).ToArray();
     }
 
     private void PopulateCellForGameMode(List<GameObject> pieces, int i, int j, bool isBlack, bool isHigherOrder = false)
@@ -182,6 +180,33 @@ public class GameManager : MonoBehaviour
                 PopulateCell(pieces, i, j, isBlack, Instantiate(aiPieces[index]));
                 break;
         }
+    }
+
+    private void NotifiyCheck(int playerIndex)
+    {
+        checkNotifyText.text = $"Player {playerIndex + 1}'s King is Checked.";
+    }
+
+    public void NotifiyCheck(GameObject safePlayer)
+    {
+        var playerIndex = players.FindIndex(safePlayer).First() == 0 ? 1 : 0;
+
+        checkNotifyText.text = $"Player {playerIndex + 1}'s King is Checked.";
+    }
+
+    public void EndGame(GameObject winner)
+    {
+        foreach(var player in players)
+        {
+            player.GetComponent<BasePlayer>().isGameOver = true;
+        }
+
+        var playerIndex = players.FindIndex(winner);
+
+        //gameOverPanel.SetActive(true);
+        //gameOverText.text = $"Player {playerIndex} won!";
+
+        Time.timeScale = 0f;
     }
 
     /// <summary>
@@ -225,6 +250,7 @@ public class GameManager : MonoBehaviour
     /// <param name="player">The player that just finished their turn.</param>
     public void ChangeTurn(GameObject player)
     {
+        checkNotifyText.text = string.Empty;
         int index = players.FindIndex(player).FirstOrDefault();
 
         switch(index)
@@ -267,12 +293,25 @@ public class GameManager : MonoBehaviour
     /// <param name="hit">The RaycastHit that represents the location the player has clicked.</param>
     /// <param name="cell">The Cell object to get the current piece that needs to be moved.</param>
     /// <returns>Returns all the highlighted cells where a piece can move.</returns>
-    public (List<GameObject>, List<GameObject>) SetSelectedPiece(RaycastHit hit, Cell cell)
+    public (List<GameObject>, List<GameObject>) SetSelectedPiece(RaycastHit hit, Cell cell, GameObject pieceToMove)
     {
         var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
 
+        var highlightedCells = pieceToMove.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+
+        var containsKing = highlightedCells.attacks.Where(c => c.GetComponent<Cell>().GetCurrentPiece.GetComponent<KingAI>() || c.GetComponent<Cell>().GetCurrentPiece.GetComponent<King>());
+
+        if(containsKing.Any())
+        {
+            NotifiyCheck(containsKing.First().GetComponent<Cell>().GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 6 ? 0 : 1);
+        }
+        else
+        {
+            checkNotifyText.text = string.Empty;
+        }
+
         // highlight available slots
-        return cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+        return highlightedCells;
     }
 
     /// <summary>
@@ -382,8 +421,6 @@ public class GameManager : MonoBehaviour
     private void SetPosition(List<GameObject> playerList, int i, int j, GameObject newPiece)
     {
         playerList.Add(newPiece);
-
-        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
 
         newPiece.transform.position = boardArr[i, j].transform.position /*+ new Vector3(0, 0.01f, 0)*/;
     }

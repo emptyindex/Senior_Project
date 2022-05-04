@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 4084688155501794328}
   - component: {fileID: 4106377587527060559}
   - component: {fileID: 5999591890999361462}
-  m_Layer: 2
+  - component: {fileID: 6657673719202172276}
+  m_Layer: 3
   m_Name: Knight
-  m_TagString: Untagged
+  m_TagString: Piece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,6 +31,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.871196, y: -0.057797536, z: 7.5065956}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,6 +55,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -95,7 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f1df215fc11b7c4ab54f262bfe2f90c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  protectionLevel: 0
   dangerLevel: 0
 --- !u!114 &5999591890999361462
 MonoBehaviour:
@@ -113,3 +115,16 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0d997373e4b0f7349a0bcfd9f75af5c4, type: 2}
   - {fileID: 2100000, guid: bae910897e7359a4c8e219248d19fc3c, type: 2}
   - {fileID: 2100000, guid: 35f247e8456f1f14ebc00dd5bac02c3d, type: 2}
+--- !u!65 &6657673719202172276
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4106377587527060558}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.895717, y: 1.25607, z: 0.83156425}
+  m_Center: {x: 0, y: 0.628035, z: 0.027925223}

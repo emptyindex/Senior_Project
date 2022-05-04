@@ -24,7 +24,7 @@ public class PawnAI : BaseAI
         {
             //BestMove();
             validActions.Clear();
-            protectionLevel = 0;
+            ProtectionLevel = 0;
             dangerLevel = 0;
 
             setValidActions();
@@ -58,6 +58,12 @@ public class PawnAI : BaseAI
                 
                 if(this.AIManager.Board[currRow - 1, currCol + i] > 0 && pieceDifference >= 10)
                 {
+                    // if the pawn can attack a king
+                    if (this.AIManager.Board[currRow - 1, currCol + i] == 26 || this.AIManager.Board[currRow - 1, currCol + i] == 6)
+                    {
+                        AIManager.Manager.NotifiyCheck(AIManager.gameObject);
+                    }
+
                     validAction = new int[] { this.PieceID, currRow, currCol, currRow - 1, currCol + i, 1};
                     validActions.Add(validAction);
                 }

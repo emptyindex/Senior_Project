@@ -100,7 +100,7 @@ public class PlayerManager : BasePlayer
     /// </summary>
     void Update()
     {
-        if(movesTaken >= maxMovesPerTurn)
+        if(movesTaken >= maxMovesPerTurn || isGameOver)
         {
             canMove = false;
         }
@@ -115,7 +115,8 @@ public class PlayerManager : BasePlayer
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+                    int layerMask = 1 << 7;
+                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, layerMask);
 
                     if (hit.transform)
                     {

@@ -30,7 +30,7 @@ public class KnightAI : BaseAI
         {
             //BestMove();
             validActions.Clear();
-            protectionLevel = 0;
+            ProtectionLevel = 0;
             dangerLevel = 0;
 
             setValidActions();
@@ -78,6 +78,12 @@ public class KnightAI : BaseAI
                     //since knight can move and attack in the same turn we can check through their whole move range
                     if (moves <= 4 && this.AIManager.Board[x, y] > 0 && Mathf.Abs(this.AIManager.Board[x, y] - this.PieceID) >= 10)
                     {
+                        // if the knight can attack a king
+                        if (AIManager.Board[x, y] == 26 || AIManager.Board[x, y] == 6)
+                        {
+                            AIManager.Manager.NotifiyCheck(AIManager.gameObject);
+                        }
+
                         moveFound = true;
                         validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
                         validActions.Add(validAction);

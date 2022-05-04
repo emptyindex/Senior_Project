@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 1237999707022386743}
   - component: {fileID: 5770914416295819699}
   - component: {fileID: 4421886443020415047}
-  m_Layer: 2
+  - component: {fileID: 5030359910635702973}
+  m_Layer: 3
   m_Name: PawnAI
-  m_TagString: Untagged
+  m_TagString: Piece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,6 +31,7 @@ Transform:
   m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: 5.394666, y: 0, z: 4.437144}
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,6 +55,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -99,7 +102,6 @@ MonoBehaviour:
   bestMove: 
   moveFound: 0
   hasFinished: 0
-  protectionLevel: 0
   dangerLevel: 0
 --- !u!114 &4421886443020415047
 MonoBehaviour:
@@ -116,3 +118,16 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: b5a19b2be2f034c4a892e205b62b52c8, type: 2}
   - {fileID: 2100000, guid: 039463fa509ddec4f8f62464f3decc3e, type: 2}
+--- !u!65 &5030359910635702973
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260894824786317501}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.75590956, y: 1.2133604, z: 0.654637}
+  m_Center: {x: 0, y: 0.6066802, z: -2.155361e-15}

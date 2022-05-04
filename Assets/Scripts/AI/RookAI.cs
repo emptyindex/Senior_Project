@@ -22,7 +22,7 @@ public class RookAI : BaseAI
         {
             //BestMove();
             validActions.Clear();
-            protectionLevel = 0;
+            ProtectionLevel = 0;
             dangerLevel = 0;
 
             setValidActions();
@@ -166,6 +166,12 @@ public class RookAI : BaseAI
 
             if (this.AIManager.Board[x, y] > 0 && Mathf.Abs(AIManager.Board[x, y] - this.PieceID) >= 10)
             {
+                // if the Rook can attack a king
+                if (this.AIManager.Board[x, y] == 26 || this.AIManager.Board[x, y] == 6)
+                {
+                    AIManager.Manager.NotifiyCheck(AIManager.gameObject);
+                }
+
                 moveFound = true;
                 int[] validAction = new int[] { this.PieceID, currRow, currCol, x, y, 1};
                 validActions.Add(validAction);

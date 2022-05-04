@@ -18,21 +18,31 @@ public class AI : BasePlayer
     public GameObject[,] BoardState;
     public GameObject[] Pieces;
 
+    [HideInInspector]
     public float bestScore;
+    [HideInInspector]
     public GameObject bestPieceOne;
+    [HideInInspector]
     public GameObject bestPieceTwo;
+    [HideInInspector]
     public GameObject bestPieceThree;
+    [HideInInspector]
     public int[][] bestAction = new int[3][];
+    [HideInInspector]
     public int[][] newBestAction = new int[3][];
 
     public static List<GameObject> BishopLPieces = new List<GameObject>();
     public static List<GameObject> BishopRPieces = new List<GameObject>();
     public static List<GameObject> KingPieces = new List<GameObject>();
+
+    [HideInInspector]
     public List<int[][]> AiMoveList;
 
     public static List<GameObject> PlayerBishopLPieces = new List<GameObject>();
     public static List<GameObject> PlayerBishopRPieces = new List<GameObject>();
     public static List<GameObject> PlayerKingPieces = new List<GameObject>();
+
+    [HideInInspector]
     public List<int[][]> PlayerMoveList;
 
     private int VariableDepth;
@@ -44,15 +54,24 @@ public class AI : BasePlayer
     public static int protectionBoard;
     public static int dangerBoard;
 
+    [HideInInspector]
     public int[] AssumeOverwritten1;
+    [HideInInspector]
     public int[] AssumeOverwritten2;
+    [HideInInspector]
     public int[] AssumeOverwritten3;
 
+    [HideInInspector]
     public float certaintyOne;
+    [HideInInspector]
     public float attackScoreOne;
+    [HideInInspector]
     public float certaintyTwo;
+    [HideInInspector]
     public float attackScoreTwo;
+    [HideInInspector]
     public float certaintyThree;
+    [HideInInspector]
     public float attackScoreThree;
 
     public static int knightOneRow = 0;
@@ -108,6 +127,12 @@ public class AI : BasePlayer
             // otherwise, end attacking
             if (result)
             {
+                if(attackedPiece.GetComponent<IPieceBase>().PieceID == 26 || attackedPiece.GetComponent<IPieceBase>().PieceID == 6)
+                {
+                    Manager.EndGame(this.gameObject);
+                    goto BREAK;
+                }
+
                 if(attackedPiece.GetComponent<Rigidbody>() == null)
                 {
                     var rb = attackedPiece.AddComponent(typeof(Rigidbody)) as Rigidbody;
@@ -132,7 +157,6 @@ public class AI : BasePlayer
             }
             else
             {
-
                 // reset static variables
                 attackingPiece = null;
                 cellToAttack = null;
@@ -141,6 +165,8 @@ public class AI : BasePlayer
                 isAttacking = false;
             }
         }
+
+    BREAK:;
     }
 
     public override void RemovePiece(GameObject pieceToRemove) 
@@ -153,12 +179,14 @@ public class AI : BasePlayer
         if (commanderPiece)
         {
             BishopLPieces.Remove(pieceToRemove);
+            goto END;
         }
 
         commanderPiece = BishopRPieces.Contains(pieceToRemove);
         if (commanderPiece)
         {
             BishopRPieces.Remove(pieceToRemove);
+            goto END;
         }
 
         commanderPiece = KingPieces.Contains(pieceToRemove);
@@ -166,6 +194,8 @@ public class AI : BasePlayer
         {
             KingPieces.Remove(pieceToRemove);
         }
+
+    END:;
     }
 
     // Update is called once per frame
@@ -348,10 +378,8 @@ public class AI : BasePlayer
         Manager.UpdateIntBoard(pieceBase.CurrColPos, pieceBase.CurrRowPos, x, y, pieceBase.PieceID);
 
         var previousCell = GameManager.boardArr[pieceBase.CurrRowPos, pieceBase.CurrColPos].GetComponent<Cell>();
-        previousCell.GetCurrentPiece = null;
 
         var cell = GameManager.boardArr[y, x].GetComponent<Cell>();
-        cell.GetCurrentPiece = piece;
 
         piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(x, y, Board);
         piece.GetComponent<IProtectionBoard>().UpdateDangerMap(x, y, Board);
