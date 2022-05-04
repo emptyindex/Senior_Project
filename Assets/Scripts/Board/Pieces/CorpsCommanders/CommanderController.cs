@@ -16,11 +16,11 @@ public enum MoveToMake
 
 public class CommanderController : MonoBehaviour, ICorpsCommander
 {
-    public string canvasName;
+    public Canvas canvas;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> controlledPieces = new List<GameObject>();
-    //[HideInInspector]
+    [HideInInspector]
     public PlayerManager player;
 
     protected new Camera camera;
@@ -33,8 +33,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     private static GameObject attackingPiece;
     private static Cell cellToAttack;
-
-    private GameObject deadPile;
 
     public List<GameObject> highlightedCells = new List<GameObject>();
     public List<GameObject> attackCells = new List<GameObject>();
@@ -84,44 +82,74 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         attackManager.AttackRollNeeded += manager.dice.Roll;
         manager.dice.OnDiceEnded += CheckAttackSuccessful;
 
-        this.MenuCanvas = gameObject.transform.Find(canvasName).gameObject;
+        this.MenuCanvas = canvas.gameObject;
 
         this.MenuCanvas.SetActive(false);
 
         this.CurrentMove = MoveToMake.None;
-
-        deadPile = GameObject.FindWithTag("Deadpile");
     }
 
     private void CheckAttackSuccessful()
     {
-        if(controlledPieces.Contains(attackingPiece) && attackingPiece != null && cellToAttack != null) 
+        if(attackingPiece != null && cellToAttack != null && controlledPieces.Contains(attackingPiece)) 
         {
-            bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber);
+            var attackingBasePiece = attackingPiece.GetComponent<IPieceBase>();
+            var adjNum = attackingBasePiece.PieceID > 20 ? attackingBasePiece.PieceID - 20 : attackingBasePiece.PieceID;
+
+            if (adjNum == 3)
+            {
+                var colDis = Mathf.Abs(attackingBasePiece.CurrColPos - cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().CurrColPos);
+                var rowDis = Mathf.Abs(attackingBasePiece.CurrRowPos - cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().CurrRowPos);
+
+                attackingPiece.GetComponent<IRoyalty>().HasMoved = colDis > 1 || rowDis > 1;
+            }
+
+            var diceRollAdj = adjNum == 3 ? (attackingPiece.GetComponent<IRoyalty>().HasMoved ? 1 : 0) : 0;
+            
+
+            bool result = attackingPiece.GetComponent<IPieceBase>().IsAttackSuccessful(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID, DiceNumberTextScript.diceNumber + diceRollAdj);
 
             print(result);
 
             if (result)
             {
+                // we successfully killed the king
+                if(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 6 || cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 26)
+                {
+                    commandAuthorityTaken = true;
+                    manager.EndGame(player.gameObject);
+
+                    goto BREAK;
+                }
+
                 FinishAttack();
             }
             else
             {
                 cellToAttack.GetComponent<Cell>().IsAttackHighlighted = false;
-                attackingPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+                attackingPiece.GetComponent<PieceColorManager>().SetHighlight(false);
 
                 this.ResetMove();
             }
         }
+
+        BREAK:;
     }
 
     private void FinishAttack()
     {
         var attackedPiece = cellToAttack.GetCurrentPiece;
 
-        // Do attack
-        attackedPiece.transform.SetParent(deadPile.transform, false);
-        attackedPiece.transform.position = attackedPiece.transform.parent.position + new Vector3(0, 2, 0);
+        if (attackedPiece.GetComponent<Rigidbody>() == null)
+        {
+            var rb = attackedPiece.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb.useGravity = true;
+        }
+
+        if (attackedPiece.GetComponent<BoxCollider>() == null)
+        {
+            var _ = attackedPiece.AddComponent(typeof(BoxCollider)) as BoxCollider;
+        }
 
         // Tell other player they lost a piece
         manager.RemoveKilledPieceFromPlayer(player.gameObject, attackedPiece);
@@ -130,7 +158,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
         attackingPiece.GetComponent<BasePiece>().MovePiece(cellToAttack, manager);
 
         cellToAttack.GetComponent<Cell>().IsAttackHighlighted = false;
-        attackingPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+        attackingPiece.GetComponent<PieceColorManager>().SetHighlight(false);
 
         this.ResetMove();
     }
@@ -147,7 +175,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         if(HasTakenCommand)
         {
-            Debug.Log($"The current move on: {this.gameObject.name} is {CurrentMove}");
+            //Debug.Log($"The current move on: {this.gameObject.name} is {CurrentMove}");
 
             if(CurrentMove == MoveToMake.None)
             {
@@ -192,25 +220,31 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
     protected void HighlightAllExceptCommander(List<GameObject> listToHighlight)
     {
-        listToHighlight.ForEach(p => p.GetComponent<BasePiece>().spotLight.enabled = true);
-        gameObject.GetComponent<BasePiece>().spotLight.enabled = false;
+        listToHighlight.ForEach(p => p.GetComponent<PieceColorManager>().SetHighlight(true));
+        gameObject.GetComponent<PieceColorManager>().SetHighlight(false);
     }
 
     protected bool SelectPiece(bool toMove, List<GameObject> piecesToCheck)
     {
         if(Input.GetMouseButtonUp(0))
         {
-            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+            int layerMask = 1 << 7;
+            Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, layerMask);
 
-            var cell = hit.transform.gameObject.GetComponent<Cell>();
+            Cell cell = null;
+
+            if(hit.transform)
+            {
+                cell = hit.transform.gameObject.GetComponent<Cell>();
+            }
 
             // if we clicked on a cell populated with one of this corps commander's controlled pieces
-            if(cell && cell.GetCurrentPiece && piecesToCheck.Contains(cell.GetCurrentPiece))
+            if (cell && cell.GetCurrentPiece && piecesToCheck.Contains(cell.GetCurrentPiece))
             {
                 if(selectedPiece)
                 {
                     ClearCells();
-                    selectedPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+                    selectedPiece.GetComponent<PieceColorManager>().SetHighlight(false);
                 }
 
                 previousCell = cell;
@@ -219,13 +253,13 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
                 if (toMove)
                 {
-                    (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
+                    (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell, selectedPiece);
                 }
 
                 piecesToCheck.ForEach(p =>
                 {
                     if (!p.Equals(selectedPiece))
-                        p.GetComponent<BasePiece>().spotLight.enabled = false;
+                        p.GetComponent<BasePiece>().GetComponent<PieceColorManager>().SetHighlight(false);
                 });
 
                 return true;
@@ -265,22 +299,20 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                             previousCell = GameManager.boardArr[basePiece.CurrRowPos, basePiece.CurrColPos].GetComponent<Cell>();
 
                             basePiece.MovePiece(cell, manager);
-                            previousCell.GetCurrentPiece = null;
 
                             royalty.UpdateMovementNum(indexes);
                             royalty.ResetPos(indexes);
 
                             ClearCells();
-                            (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell);
+                            (highlightedCells, attackCells) = manager.SetSelectedPiece(hit, cell, selectedPiece);
 
                             endPosX = basePiece.CurrRowPos;
                             endPosY = basePiece.CurrColPos;
 
                             if (!highlightedCells.Any())
                             {
-                                royalty.ResetMovementNum();
-
                                 EndMovement(startPosX, startPosY, endPosX, endPosY);
+                                royalty.ResetMovementNum();
 
                                 return;
                             }
@@ -296,7 +328,6 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                     else
                     {
                         selectedPiece.GetComponent<BasePiece>().MovePiece(cell, manager);
-                        previousCell.GetCurrentPiece = null;
 
                         endPosX = basePiece.CurrRowPos;
                         endPosY = basePiece.CurrColPos;
@@ -350,7 +381,13 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
 
         if (selectedPiece)
         {
-            selectedPiece.GetComponent<BasePiece>().spotLight.enabled = false;
+            var royalty = selectedPiece.GetComponent<IRoyalty>();
+            if (royalty != null)
+            {
+                royalty.ResetMovementNum();
+            }
+
+            selectedPiece.GetComponent<PieceColorManager>().SetHighlight(false);
             selectedPiece = null;
         }
 

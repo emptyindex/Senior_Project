@@ -9,10 +9,11 @@ public class Camera1 : MonoBehaviour
     public float minZoomDist;
     public float maxZoomDist;
 
-    private readonly Vector3 snapPosition = new Vector3(-0.3f, 107, -2);
+    private Vector3 snapPosition;
 
     public void Awake()
     {
+        snapPosition = transform.position;
         SnapToPosition();
     }
 

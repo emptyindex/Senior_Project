@@ -10,7 +10,7 @@ public class Knight : BasePiece, IRoyalty
 {
     public int[] InitialStartPos { get; private set; } = new int[2];
 
-    public bool HasMoved { get; private set; } = false;
+    public bool HasMoved { get; set; } = false;
 
     private readonly int maxMoves = 4;
 
@@ -42,6 +42,7 @@ public class Knight : BasePiece, IRoyalty
     public void ResetMovementNum()
     {
         this.MovementNum = maxMoves;
+        this.HasMoved = false;
     }
 
     public void ResetPos(int[] newPos)

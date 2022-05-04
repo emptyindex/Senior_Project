@@ -6,7 +6,7 @@ public interface IRoyalty
 {
     public int[] InitialStartPos { get; }
 
-    public bool HasMoved { get; }
+    public bool HasMoved { get; set; }
 
     public bool CanMoveAgain(int[] newPos);
 

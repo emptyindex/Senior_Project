@@ -46,13 +46,13 @@ public class Dice : MonoBehaviour
     {
         DiceNumberTextScript.diceNumber = 0;
 
-        float dirX = Random.Range(100, 700);
-        float dirY = Random.Range(100, 700);
-        float dirZ = Random.Range(100, 700);
+        float dirX = Random.Range(-700, 700);
+        float dirY = Random.Range(-700, 700);
+        float dirZ = Random.Range(-700, 700);
 
         //transform.SetPositionAndRotation(transform.position, transform.rotation);
 
-        rb.AddForce(transform.up * 1600);
+        rb.AddForce(transform.up * 100);
         rb.AddTorque(dirX, dirY, dirZ);
 
         isStarted = true;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using System;
+using TMPro;
 
 /// <summary>
 /// Public Enum to represent the 3 different types of game modes.
@@ -20,6 +20,7 @@ public enum GameMode
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    public TextMeshProUGUI checkNotifyText;
     public GameObject player;
     public GameObject ai;
 
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] humanPieces;
     public GameObject[] aiPieces;
 
+    private DeadPile deadPile;
     private GameObject[] players = new GameObject[2];
 
     private int indexer = 0;
@@ -43,7 +45,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
-    private GameMode currGameMode = GameMode.PvP;
+    public GameMode currGameMode;
 
     public BasePlayer[] GetBasePlayers()
     {
@@ -58,12 +60,15 @@ public class GameManager : MonoBehaviour
     /// and Two AI players for AIvAI.
     /// After creating the players, it assigns the appropriate collection of pieces to each.
     /// </summary>
-    void Awake()
+    void Start()
     {
-        Instantiate(boardPrefab);
+        checkNotifyText.text = string.Empty;
+        //Instantiate(boardPrefab);
+
+        deadPile = GameObject.FindWithTag("Deadpile").GetComponent<DeadPile>();
 
         var renderer = boardPrefab.GetComponent<Renderer>();
-        var startPos = renderer.bounds.min;
+        var startPos = renderer.bounds.min + new Vector3(0.04f, 0, 0.04f);
 
         // Nested for loop to create the chess board
         for (int i = 0; i < boardArr.GetLength(0); i++)
@@ -97,12 +102,12 @@ public class GameManager : MonoBehaviour
                     // if it's the second to last row on the board, we need to place the higher order piecs for the second player.
                     if (j == boardArr.GetLength(0) - 2)
                     {
-                        PopulateCellForGameMode(player2Pieces, i, j, false);
+                        PopulateCellForGameMode(player2Pieces, i, j, true);
                     }
                     // if it's in the second row of the board, we need to place a row of pawns for the second player.
                     if (j == boardArr.GetLength(0) - 1)
                     {
-                        PopulateCellForGameMode(player2Pieces, i, j, false, true);
+                        PopulateCellForGameMode(player2Pieces, i, j, true, true);
                     }
                 }
 
@@ -121,9 +126,7 @@ public class GameManager : MonoBehaviour
         {
             case GameMode.PvP:
                 players[0] = CreatePlayer(player, player1Pieces);
-                players[0].name = "player1"; // TODO: remove
                 players[1] = CreatePlayer(player, player2Pieces);
-                players[1].name = "player2"; // TODO: remove
 
                 break;
             case GameMode.PvAI:
@@ -179,6 +182,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void NotifiyCheck(int playerIndex)
+    {
+        checkNotifyText.text = $"Player {playerIndex + 1}'s King is Checked.";
+    }
+
+    public void NotifiyCheck(GameObject safePlayer)
+    {
+        var playerIndex = players.FindIndex(safePlayer).First() == 0 ? 1 : 0;
+
+        checkNotifyText.text = $"Player {playerIndex + 1}'s King is Checked.";
+    }
+
+    public void EndGame(GameObject winner)
+    {
+        foreach(var player in players)
+        {
+            player.GetComponent<BasePlayer>().isGameOver = true;
+        }
+
+        var playerIndex = players.FindIndex(winner).First();
+
+        Debug.Log($"Player {playerIndex + 1} won. END GAME.");
+
+        //gameOverPanel.SetActive(true);
+        //gameOverText.text = $"Player {playerIndex} won!";
+
+        Time.timeScale = 0f;
+    }
+
     /// <summary>
     /// Gets the position of a cell in the board array and gives
     /// the coordinates to the game piece.
@@ -198,7 +230,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 GetMovePosition(int i, int j)
     {
-        return boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+        return boardArr[i, j].transform.position;
     }
 
     private void UpdateIntBoard(List<GameObject> pieces)
@@ -220,6 +252,7 @@ public class GameManager : MonoBehaviour
     /// <param name="player">The player that just finished their turn.</param>
     public void ChangeTurn(GameObject player)
     {
+        checkNotifyText.text = string.Empty;
         int index = players.FindIndex(player).FirstOrDefault();
 
         switch(index)
@@ -237,6 +270,12 @@ public class GameManager : MonoBehaviour
 
     public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
     {
+        piece.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+        deadPile.deadPieces.Add(piece.GetComponent<IPieceBase>());
+        piece.transform.SetParent(deadPile.transform);
+        piece.transform.position = deadPile.transform.position + new Vector3(0, 0.5f, 0);
+
         int index = players.FindIndex(player).FirstOrDefault();
 
         switch (index)
@@ -258,12 +297,25 @@ public class GameManager : MonoBehaviour
     /// <param name="hit">The RaycastHit that represents the location the player has clicked.</param>
     /// <param name="cell">The Cell object to get the current piece that needs to be moved.</param>
     /// <returns>Returns all the highlighted cells where a piece can move.</returns>
-    public (List<GameObject>, List<GameObject>) SetSelectedPiece(RaycastHit hit, Cell cell)
+    public (List<GameObject>, List<GameObject>) SetSelectedPiece(RaycastHit hit, Cell cell, GameObject pieceToMove)
     {
         var indexes = Tools.FindIndex(boardArr, hit.transform.gameObject);
 
+        var highlightedCells = pieceToMove.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+
+        var containsKing = highlightedCells.attacks.Where(c => c.GetComponent<Cell>().GetCurrentPiece.GetComponent<KingAI>() || c.GetComponent<Cell>().GetCurrentPiece.GetComponent<King>());
+
+        if(containsKing.Any())
+        {
+            NotifiyCheck(containsKing.First().GetComponent<Cell>().GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 6 ? 0 : 1);
+        }
+        else
+        {
+            checkNotifyText.text = string.Empty;
+        }
+
         // highlight available slots
-        return cell.GetCurrentPiece.GetComponent<BasePiece>().Highlight(boardArr, indexes[0], indexes[1]);
+        return highlightedCells;
     }
 
     /// <summary>
@@ -323,12 +375,9 @@ public class GameManager : MonoBehaviour
 
     private void PopulateCell(List<GameObject> playerList, int i, int j, bool isBlack, GameObject newPiece)
     {
-        if (isBlack)
-        {
-            newPiece.GetComponent<Renderer>().material.color *= 0.5f;
-        }
+        newPiece.GetComponent<PieceColorManager>().SetMaterialAndRotation(isBlack);
 
-        if(newPiece.GetComponent<BaseAI>())
+        if (newPiece.GetComponent<BaseAI>())
         {
             if ((j == 6 && i == 7) || (j == 6 && i == 6) || (j == 6 && i == 5) || (j == 7 && i == 6) || (j == 7 && i == 5))
             {
@@ -341,6 +390,21 @@ public class GameManager : MonoBehaviour
             if ((j == 6 && i == 3) || (j == 6 && i == 4) || (j == 7 && i == 0) || (j == 7 && i == 7) || (j == 7 && i == 3) || (j == 7 && i == 4))
             {
                 AI.KingPieces.Add(newPiece);
+            }
+        }
+        else
+        {
+            if ((j == 1 && i == 0) || (j == 1 && i == 1) || (j == 1 && i == 2) || (j == 0 && i == 1) || (j == 0 && i == 2))
+            {
+                AI.PlayerBishopLPieces.Add(newPiece);
+            }
+            if ((j == 1 && i == 7) || (j == 1 && i == 6) || (j == 1 && i == 5) || (j == 0 && i == 6) || (j == 0 && i == 5))
+            {
+                AI.PlayerBishopRPieces.Add(newPiece);
+            }
+            if ((j == 1 && i == 3) || (j == 1 && i == 4) || (j == 0 && i == 0) || (j == 0 && i == 7) || (j == 0 && i == 3) || (j == 0 && i == 4))
+            {
+                AI.PlayerKingPieces.Add(newPiece);
             }
         }
 
@@ -362,9 +426,7 @@ public class GameManager : MonoBehaviour
     {
         playerList.Add(newPiece);
 
-        boardArr[i, j].GetComponent<Cell>().GetCurrentPiece = newPiece;
-
-        newPiece.transform.position = boardArr[i, j].transform.position + new Vector3(0, 0.02f, 0);
+        newPiece.transform.position = boardArr[i, j].transform.position /*+ new Vector3(0, 0.01f, 0)*/;
     }
 
     /// <summary>
@@ -383,7 +445,7 @@ public class GameManager : MonoBehaviour
         var offsetX = cellRenderer.bounds.size.x * i;
         var offsetZ = cellRenderer.bounds.size.z * j;
 
-        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 1.25f, offsetZ));
+        newCell.transform.position = (startPos - cellRenderer.bounds.min) + (new Vector3(offsetX, 0.025f, offsetZ));
         return newCell;
     }
 }

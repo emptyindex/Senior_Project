@@ -54,7 +54,8 @@ public class PlayerManager : BasePlayer
     {
         canMove = false;
 
-        corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+        //corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
+        corpsCommanders.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(false));
 
         usedCommanders.Clear();
         movesTaken = 0;
@@ -99,7 +100,7 @@ public class PlayerManager : BasePlayer
     /// </summary>
     void Update()
     {
-        if(movesTaken >= maxMovesPerTurn)
+        if(movesTaken >= maxMovesPerTurn || isGameOver)
         {
             canMove = false;
         }
@@ -114,9 +115,10 @@ public class PlayerManager : BasePlayer
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity);
+                    int layerMask = 1 << 7;
+                    Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity, layerMask);
 
-                    if(hit.transform)
+                    if (hit.transform)
                     {
                         var cell = hit.transform.gameObject.GetComponent<Cell>();
 
@@ -129,7 +131,7 @@ public class PlayerManager : BasePlayer
                             corpsCommanders.ForEach(c =>
                             {
                                 if (!c.Equals(selectedPiece))
-                                    c.GetComponent<BasePiece>().spotLight.enabled = false;
+                                    c.GetComponent<PieceColorManager>().SetHighlight(false);
                             });
                         }
                     }
@@ -199,6 +201,14 @@ public class PlayerManager : BasePlayer
     {
         var toHighlight = corpsCommanders.Except(usedCommanders).ToList();
 
-        toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        //toHighlight.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = true);
+        toHighlight.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(true));
+    }
+
+    public override List<IPieceBase> GetPieces()
+    {
+        var convertedPieces = pieces.ToList().ConvertAll(p => p.GetComponent<IPieceBase>());
+
+        return new List<IPieceBase>(convertedPieces);
     }
 }

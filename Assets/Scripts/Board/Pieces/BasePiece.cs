@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -11,19 +12,20 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     public int CurrRowPos { get; set; }
     public int CurrColPos { get; set; }
     public int PieceID { get; set; }
+    public bool IsDead { get; set; }
 
-    public Light spotLight;
+    [HideInInspector]
+    public List<int[]> validActions = new List<int[]>();
+    [HideInInspector]
+    public int dangerLevel;
 
-    public void Start()
-    {
-        spotLight.enabled = false;
-    }
+    private int protectionLevel;
+    public int ProtectionLevel { get => protectionLevel; set => protectionLevel = value; }
 
     public int[] GetNumberMoves(int x, int y)
     {
         return new int[] { Mathf.Abs(x - CurrRowPos), Mathf.Abs(y - CurrColPos) };
     }
-
 
     /// <summary>
     /// Moves the piece to the new cell location.
@@ -43,8 +45,6 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         manager.UpdateIntBoard(currX, currY, newX, newY, gameObject.GetComponent<IPieceBase>().PieceID);
 
         Move(newPos);
-
-        cell.GetCurrentPiece = gameObject;
     }
 
 
@@ -55,7 +55,7 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     /// <param name="x">The current piece's X position on the board.</param>
     /// <param name="y">The current piece's Y position on the board.</param>
     /// <returns></returns>
-    public abstract (List<GameObject>, List<GameObject>) Highlight(GameObject[,] board, int x, int y);
+    public abstract (List<GameObject> moves, List<GameObject> attacks) Highlight(GameObject[,] board, int x, int y);
 
     /// <summary>
     /// This method gets the all possible positions a piece can move - both forwards and backwards.
@@ -107,34 +107,34 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
             moveY = y + timesMoved;
 
             // get diagonal down left
-            diaLeft = CheckGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved);
+            diaLeft = CheckGetMove(board, diaLeft, inRange, inRangeToAttack, moveY, x - timesMoved, timesMoved);
 
             moveX = x + timesMoved;
 
             // move right
-            right = CheckGetMove(board, right, inRange, inRangeToAttack, y, moveX);
+            right = CheckGetMove(board, right, inRange, inRangeToAttack, y, moveX, timesMoved);
 
             // move forward
-            up = CheckGetMove(board, up, inRange, inRangeToAttack, moveY, x);
+            up = CheckGetMove(board, up, inRange, inRangeToAttack, moveY, x, timesMoved);
 
             // move diagonal down right
-            diaRight = CheckGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX);
+            diaRight = CheckGetMove(board, diaRight, inRange, inRangeToAttack, moveY, moveX, timesMoved);
 
             moveY = y - timesMoved;
 
             // move diagonal up right
-            diaRightUp = CheckGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX);
+            diaRightUp = CheckGetMove(board, diaRightUp, inRange, inRangeToAttack, moveY, moveX, timesMoved);
 
             // move backwards
-            down = CheckGetMove(board, down, inRange, inRangeToAttack, moveY, x);
+            down = CheckGetMove(board, down, inRange, inRangeToAttack, moveY, x, timesMoved);
 
             moveX = x - timesMoved;
 
             // move left
-            left = CheckGetMove(board, left, inRange, inRangeToAttack, y, moveX);
+            left = CheckGetMove(board, left, inRange, inRangeToAttack, y, moveX, timesMoved);
 
             // move diagonal up left
-            diaLeftUp = CheckGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX);
+            diaLeftUp = CheckGetMove(board, diaLeftUp, inRange, inRangeToAttack, moveY, moveX, timesMoved);
 
             timesMoved++;
         }
@@ -142,13 +142,13 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         return (inRange, inRangeToAttack);
     }
 
-    private bool CheckGetMove(GameObject[,] board, bool canContinueDirection, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX)
+    private bool CheckGetMove(GameObject[,] board, bool canContinueDirection, List<GameObject> inRange, List<GameObject> inRangeToAttack, int moveY, int moveX, int timesMoved)
     {
         if (canContinueDirection && IsValid(board, moveX, moveY))
         {
             if (IsPopulated(board, moveX, moveY))
             {
-                if(HasEnemyPiece(board, moveX, moveY))
+                if (HasEnemyPiece(board, moveX, moveY) && IsAbleToAttack(timesMoved))
                 {
                     GetMove(board, moveX, moveY, inRangeToAttack, true);
 
@@ -166,13 +166,36 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
         return false;
     }
 
+    private bool IsAbleToAttack(int timesMoved)
+    {
+        var adjPieceID = this.PieceID > 20 ? this.PieceID - 20 : this.PieceID;
+
+        if(timesMoved > 1)
+        {
+            if(adjPieceID == 3 || adjPieceID == 2)
+            {
+                //this.gameObject.GetComponent<IRoyalty>().HasMoved = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        if (this.gameObject.GetComponent<IRoyalty>() != null && this.gameObject.GetComponent<IRoyalty>().HasMoved)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Changes the transform of the gameobject that this script is attached to.
     /// </summary>
     /// <param name="position">The new position to move.</param>
     private void Move(Vector3 position)
     {
-        gameObject.transform.position = position + new Vector3(0, 0.02f, 0);
+        gameObject.transform.position = position + new Vector3(0, 0.01f, 0);
     }
 
     private bool IsValid(GameObject[,] board, int indexX, int indexY)
@@ -256,4 +279,14 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     }
 
     public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
+
+    public override bool Equals(object other)
+    {
+        return base.Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return System.HashCode.Combine(CurrRowPos, CurrColPos, PieceID, IsDead);
+    }
 }

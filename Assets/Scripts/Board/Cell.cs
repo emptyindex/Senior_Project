@@ -28,6 +28,18 @@ public class Cell : MonoBehaviour
         originalColor = renderer.material;
     }
 
+    private void FixedUpdate()
+    {
+        if (Physics.Raycast(gameObject.transform.position - new Vector3(0, 0.5f, 0), transform.up, out RaycastHit hit, Mathf.Infinity, 1 << 3) && hit.transform.gameObject.CompareTag("Piece"))
+        {
+            contains = hit.transform.gameObject;
+        }
+        else
+        {
+            contains = null;
+        }
+    }
+
     /// <summary>
     /// Update is called once per frame.
     /// Checks if this cell should be highlighted, if so, change the color to yellow
@@ -48,7 +60,7 @@ public class Cell : MonoBehaviour
             renderer.material = originalColor;
         }
 
-        containsPiece = GetCurrentPiece != null;
+        containsPiece = contains != null;
     }
 
     /// <summary>
@@ -63,6 +75,6 @@ public class Cell : MonoBehaviour
     public GameObject GetCurrentPiece
     {
         get => contains;
-        set => contains = value;
+        private set => contains = value;
     }
 }
