@@ -12,9 +12,10 @@ public class Dice : MonoBehaviour
     private bool isStarted = false;
 
     Rigidbody rb;
-    //Vector3 startPos;
+    Vector3 startPos;
+    Quaternion startRot;
 
-    //Vector3 diceVelocity ;
+    //Vector3 diceVelocity;
 
     public delegate void DiceFinishedEvent();
     public event DiceFinishedEvent OnDiceEnded;
@@ -24,6 +25,8 @@ public class Dice : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody> ();
+        startPos = transform.position;
+        startRot = transform.rotation;
     }
 
     // Update is called once per frame
@@ -38,6 +41,9 @@ public class Dice : MonoBehaviour
                 hasFinished = true;
                 isStarted = false;
                 time = 0f;
+
+                transform.position = startPos;
+                transform.rotation = startRot;
             }
         }
     }
@@ -46,9 +52,9 @@ public class Dice : MonoBehaviour
     {
         DiceNumberTextScript.diceNumber = 0;
 
-        float dirX = Random.Range(-700, 700);
-        float dirY = Random.Range(-700, 700);
-        float dirZ = Random.Range(-700, 700);
+        float dirX = Random.Range(-900, 900);
+        float dirY = Random.Range(-900, 900);
+        float dirZ = Random.Range(-900, 900);
 
         //transform.SetPositionAndRotation(transform.position, transform.rotation);
 
