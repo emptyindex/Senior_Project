@@ -20,6 +20,8 @@ public enum GameMode
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    public GameObject endGamePanel;
+    public TextMeshProUGUI endGameText;
     public TextMeshProUGUI checkNotifyText;
     public GameObject player;
     public GameObject ai;
@@ -50,6 +52,11 @@ public class GameManager : MonoBehaviour
     public BasePlayer[] GetBasePlayers()
     {
         return new BasePlayer[2] { players[0].GetComponent<BasePlayer>(), players[1].GetComponent<BasePlayer>() };
+    }
+
+    private void Awake()
+    {
+        endGamePanel.SetActive(false);
     }
 
     /// <summary>
@@ -205,10 +212,10 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Player {playerIndex + 1} won. END GAME.");
 
-        //gameOverPanel.SetActive(true);
-        //gameOverText.text = $"Player {playerIndex} won!";
+        endGameText.text = $"Player {playerIndex + 1} won!";
+        endGamePanel.SetActive(true);
 
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
     }
 
     /// <summary>
