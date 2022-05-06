@@ -56,6 +56,12 @@ public class PlayerManager : BasePlayer
 
         //corpsCommanders.ForEach(c => c.GetComponent<BasePiece>().spotLight.enabled = false);
         corpsCommanders.ForEach(c => c.GetComponent<PieceColorManager>().SetHighlight(false));
+        //corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().HasTakenCommand = false);
+        
+        if(selectedPiece != null)
+        {
+            selectedPiece.GetComponent<CommanderController>().ResetMove();
+        }
 
         usedCommanders.Clear();
         movesTaken = 0;
@@ -69,6 +75,20 @@ public class PlayerManager : BasePlayer
     public List<GameObject> GetBishopCommanders()
     {
         return corpsCommanders.Where(c => c.GetComponent<Bishop>()).ToList();
+    }
+
+    public void CancelMove()
+    {
+        selectedPiece = null;
+    }
+
+    public void UpdateMoves()
+    {
+        movesTaken++;
+        usedCommanders.Add(selectedPiece);
+        CancelMove();
+
+        Debug.Log("moves taken: " + movesTaken);
     }
 
     private void Start()
@@ -86,7 +106,6 @@ public class PlayerManager : BasePlayer
 
         Debug.Log(gameObject.name);
 
-        corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().OnCommandEnded += UpdateMoves);
         corpsCommanders.ForEach(c => c.GetComponent<CommanderController>().player = this);
     }
 
@@ -186,15 +205,6 @@ public class PlayerManager : BasePlayer
         return boolRange 
             && Mathf.Abs(posX - newX) <= 2
             && Mathf.Abs(newY - posY) <= 1;
-    }
-
-    private void UpdateMoves()
-    {
-        movesTaken++;
-        usedCommanders.Add(selectedPiece);
-        selectedPiece = null;
-
-        Debug.Log("moves taken: " + movesTaken);
     }
 
     private void HighlightCorpsCommanders()

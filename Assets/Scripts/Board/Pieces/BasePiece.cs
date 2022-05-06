@@ -279,14 +279,4 @@ public abstract class BasePiece : MonoBehaviour, IPieceBase
     }
 
     public abstract bool IsAttackSuccessful(int PieceToAttack, int numberRolled);
-
-    public override bool Equals(object other)
-    {
-        return base.Equals(other);
-    }
-
-    public override int GetHashCode()
-    {
-        return System.HashCode.Combine(CurrRowPos, CurrColPos, PieceID, IsDead);
-    }
 }
