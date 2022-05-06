@@ -114,6 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightBorder: {fileID: 2100000, guid: a5a5150b3b0a97d498432bc4fbe268e3, type: 2}
   highlightAttackBorder: {fileID: 2100000, guid: 350856bce68524848a45fdc8d3123b0f, type: 2}
+  aIMoveBorder: {fileID: 2100000, guid: 568ccb4792c007b46bc923c9ab8e6a49, type: 2}
   containsPiece: 0
 --- !u!1 &3092496600062158936
 GameObject:
