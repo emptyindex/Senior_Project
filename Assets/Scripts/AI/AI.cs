@@ -322,6 +322,11 @@ public class AI : BasePlayer
                 {
                     if(!indexesDone.Contains(i))
                     {
+                        GameManager.boardArr[bestAction[i][1], bestAction[i][0]].GetComponent<Cell>().IsAIHighlighted = true;
+                        GameManager.boardArr[bestAction[i][1], bestAction[i][0]].GetComponent<Cell>().ChangeAIBorder();
+
+                        yield return new WaitForSeconds(3f);
+
                         if (bestAction[i][2] == 0)
                         {
                             indexesDone.Add(i);
@@ -342,6 +347,13 @@ public class AI : BasePlayer
                             //yield return new WaitForSeconds(10);
                         }
                     }
+                }
+
+                yield return new WaitForSeconds(3f);
+
+                for (int i = 0; i < bestAction.GetLength(0); i++)
+                {
+                    GameManager.boardArr[bestAction[i][1], bestAction[i][0]].GetComponent<Cell>().IsAIHighlighted = false;
                 }
 
                 IsTurn(false);
@@ -376,10 +388,6 @@ public class AI : BasePlayer
         piece.transform.position = Manager.GetMovePosition(y, x);
 
         Manager.UpdateIntBoard(pieceBase.CurrColPos, pieceBase.CurrRowPos, x, y, pieceBase.PieceID);
-
-        var previousCell = GameManager.boardArr[pieceBase.CurrRowPos, pieceBase.CurrColPos].GetComponent<Cell>();
-
-        var cell = GameManager.boardArr[y, x].GetComponent<Cell>();
 
         piece.GetComponent<IProtectionBoard>().UpdateProtectionMap(x, y, Board);
         piece.GetComponent<IProtectionBoard>().UpdateDangerMap(x, y, Board);

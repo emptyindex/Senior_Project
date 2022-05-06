@@ -20,6 +20,8 @@ public enum GameMode
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    public GameObject endGamePanel;
+    public TextMeshProUGUI endGameText;
     public TextMeshProUGUI checkNotifyText;
     public GameObject player;
     public GameObject ai;
@@ -50,6 +52,11 @@ public class GameManager : MonoBehaviour
     public BasePlayer[] GetBasePlayers()
     {
         return new BasePlayer[2] { players[0].GetComponent<BasePlayer>(), players[1].GetComponent<BasePlayer>() };
+    }
+
+    private void Awake()
+    {
+        endGamePanel.SetActive(false);
     }
 
     /// <summary>
@@ -201,12 +208,14 @@ public class GameManager : MonoBehaviour
             player.GetComponent<BasePlayer>().isGameOver = true;
         }
 
-        var playerIndex = players.FindIndex(winner);
+        var playerIndex = players.FindIndex(winner).First();
 
-        //gameOverPanel.SetActive(true);
-        //gameOverText.text = $"Player {playerIndex} won!";
+        Debug.Log($"Player {playerIndex + 1} won. END GAME.");
 
-        Time.timeScale = 0f;
+        endGameText.text = $"Player {playerIndex + 1} won!";
+        endGamePanel.SetActive(true);
+
+        //Time.timeScale = 0f;
     }
 
     /// <summary>
@@ -268,6 +277,8 @@ public class GameManager : MonoBehaviour
 
     public void RemoveKilledPieceFromPlayer(GameObject player, GameObject piece)
     {
+        piece.layer = LayerMask.NameToLayer("Ignore Raycast");
+
         deadPile.deadPieces.Add(piece.GetComponent<IPieceBase>());
         piece.transform.SetParent(deadPile.transform);
         piece.transform.position = deadPile.transform.position + new Vector3(0, 0.5f, 0);

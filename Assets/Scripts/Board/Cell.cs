@@ -9,6 +9,7 @@ public class Cell : MonoBehaviour
 {
     public Material highlightBorder;
     public Material highlightAttackBorder;
+    public Material aIMoveBorder;
 
     public bool containsPiece;
 
@@ -51,17 +52,26 @@ public class Cell : MonoBehaviour
         {
             renderer.material = highlightBorder;
         }
-        else if (IsAttackHighlighted)
+        
+        if (IsAttackHighlighted)
         {
             renderer.material = highlightAttackBorder;
         }
-        else
+        
+        if(!IsAIHighlighted && !IsHighlighted && !IsAttackHighlighted)
         {
             renderer.material = originalColor;
         }
 
         containsPiece = contains != null;
     }
+
+    public void ChangeAIBorder()
+    {
+        renderer.material = aIMoveBorder;
+    }
+
+    public bool IsAIHighlighted { get; set; }
 
     /// <summary>
     /// Gets and sets the highlighted status of this cell.
