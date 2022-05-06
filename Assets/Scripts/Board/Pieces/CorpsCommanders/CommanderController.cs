@@ -113,7 +113,7 @@ public class CommanderController : MonoBehaviour, ICorpsCommander
                 if(cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 6 || cellToAttack.GetCurrentPiece.GetComponent<IPieceBase>().PieceID == 26)
                 {
                     this.ResetMove();
-                    manager.EndGame(this.gameObject);
+                    manager.EndGame(this.player.gameObject);
 
                     goto BREAK;
                 }

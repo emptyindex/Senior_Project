@@ -12,7 +12,7 @@ public class GameModeController : DontDestroyOnSelectedScenes
     {
         base.OnSceneLoaded(scene, mode);
 
-        if (scene.name.Equals("SampleScene"))
+        if (scene.name.Equals("MainScene"))
         {
             var manager = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
             if (manager != null)

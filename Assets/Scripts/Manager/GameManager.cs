@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     private readonly List<GameObject> player1Pieces = new List<GameObject>();
     private readonly List<GameObject> player2Pieces = new List<GameObject>();
 
+    [HideInInspector]
     public GameMode currGameMode;
 
     public BasePlayer[] GetBasePlayers()
